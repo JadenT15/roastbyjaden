@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A mobile-friendly online menu and ordering site for a food business."
+    />
+    <title>Luna Kitchen | Online Menu</title>
+    <link rel="preconnect" href="https://images.unsplash.com" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="Luna Kitchen home">
+        <span class="brand-mark">LK</span>
+        <span>
+          <strong>Luna Kitchen</strong>
+          <small>Fresh meals daily</small>
+        </span>
+      </a>
+
+      <nav aria-label="Main navigation">
+        <a href="#menu">Menu</a>
+        <a href="#order">Order</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Now accepting pre-orders</p>
+          <h1>Luna Kitchen</h1>
+          <p>
+            Homestyle rice bowls, noodles, snacks, and drinks prepared fresh for
+            pickup or local delivery.
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href="#menu">View menu</a>
+            <a class="button ghost" href="#order">Order now</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="quick-info" aria-label="Business information">
+        <div>
+          <span>Open</span>
+          <strong>10:00 AM - 8:30 PM</strong>
+        </div>
+        <div>
+          <span>Service</span>
+          <strong>Pickup & local delivery</strong>
+        </div>
+        <div>
+          <span>Payment</span>
+          <strong>Cash / QR / transfer</strong>
+        </div>
+      </section>
+
+      <section class="menu-section" id="menu">
+        <div class="section-heading">
+          <p class="eyebrow">Choose your favourites</p>
+          <h2>Menu</h2>
+        </div>
+
+        <div class="category-tabs" id="categoryTabs" aria-label="Menu categories"></div>
+        <div class="menu-grid" id="menuGrid" aria-live="polite"></div>
+      </section>
+
+      <section class="order-section" id="order">
+        <div class="order-panel">
+          <div class="section-heading">
+            <p class="eyebrow">Checkout</p>
+            <h2>Your order</h2>
+          </div>
+
+          <div class="cart-list" id="cartList"></div>
+          <div class="cart-empty" id="cartEmpty">Your cart is empty.</div>
+
+          <div class="cart-total">
+            <span>Total</span>
+            <strong id="cartTotal">RM0.00</strong>
+          </div>
+        </div>
+
+        <form class="customer-form" id="orderForm">
+          <label>
+            Name
+            <input id="customerName" type="text" placeholder="Your name" required />
+          </label>
+
+          <label>
+            Phone
+            <input id="customerPhone" type="tel" placeholder="012-345 6789" required />
+          </label>
+
+          <fieldset>
+            <legend>Order type</legend>
+            <label class="radio-row">
+              <input type="radio" name="orderType" value="Pickup" checked />
+              Pickup
+            </label>
+            <label class="radio-row">
+              <input type="radio" name="orderType" value="Delivery" />
+              Delivery
+            </label>
+          </fieldset>
+
+          <label>
+            Address or pickup time
+            <textarea
+              id="customerAddress"
+              rows="3"
+              placeholder="Example: Pickup at 6:30 PM, or delivery address"
+            ></textarea>
+          </label>
+
+          <label>
+            Notes
+            <textarea
+              id="customerNotes"
+              rows="3"
+              placeholder="Less spicy, no ice, extra sauce..."
+            ></textarea>
+          </label>
+
+          <button class="button primary full" type="submit">Send order on WhatsApp</button>
+          <p class="form-note">
+            Replace the WhatsApp number in <strong>app.js</strong> before launching.
+          </p>
+        </form>
+      </section>
+
+      <section class="contact-section" id="contact">
+        <div>
+          <p class="eyebrow">Visit us</p>
+          <h2>Pickup point</h2>
+          <p>123 Jalan Example, Kuala Lumpur</p>
+        </div>
+        <a class="button ghost dark" href="https://wa.me/60123456789" target="_blank" rel="noreferrer">
+          WhatsApp us
+        </a>
+      </section>
+    </main>
+
+    <div class="mobile-cart" aria-live="polite">
+      <span id="mobileCartCount">0 items</span>
+      <a href="#order">Checkout</a>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,277 @@
+const business = {
+  name: "Luna Kitchen",
+  // Replace this with your WhatsApp number in international format.
+  // Example for Malaysia: 60123456789
+  whatsappNumber: "60123456789",
+  currency: "RM",
+};
+
+const menuItems = [
+  {
+    id: "chicken-rice-bowl",
+    name: "Signature Chicken Rice Bowl",
+    category: "Rice Bowls",
+    price: 12.9,
+    description: "Soy garlic chicken, fragrant rice, cucumber, egg, and house chilli.",
+    image:
+      "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=900&q=85",
+  },
+  {
+    id: "beef-teriyaki-bowl",
+    name: "Beef Teriyaki Bowl",
+    category: "Rice Bowls",
+    price: 16.9,
+    description: "Tender beef slices with teriyaki glaze, greens, and sesame rice.",
+    image:
+      "https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?auto=format&fit=crop&w=900&q=85",
+  },
+  {
+    id: "veggie-mushroom-bowl",
+    name: "Veggie Mushroom Bowl",
+    category: "Rice Bowls",
+    price: 11.9,
+    description: "Roasted mushrooms, tofu, corn, greens, and savoury sauce.",
+    image:
+      "https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=900&q=85",
+  },
+  {
+    id: "curry-noodles",
+    name: "Creamy Curry Noodles",
+    category: "Noodles",
+    price: 13.9,
+    description: "Rich curry broth, noodles, fish cake, egg, tofu puff, and herbs.",
+    image:
+      "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=900&q=85",
+  },
+  {
+    id: "dry-chilli-noodles",
+    name: "Dry Chilli Noodles",
+    category: "Noodles",
+    price: 10.9,
+    description: "Springy noodles tossed in house chilli oil with crunchy toppings.",
+    image:
+      "https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?auto=format&fit=crop&w=900&q=85",
+  },
+  {
+    id: "dumplings",
+    name: "Pan-Fried Dumplings",
+    category: "Snacks",
+    price: 8.9,
+    description: "Six crispy dumplings served with ginger soy dipping sauce.",
+    image:
+      "https://images.unsplash.com/photo-1496116218417-1a781b1c416c?auto=format&fit=crop&w=900&q=85",
+  },
+  {
+    id: "spring-rolls",
+    name: "Crispy Spring Rolls",
+    category: "Snacks",
+    price: 7.9,
+    description: "Golden vegetable rolls with sweet chilli sauce.",
+    image:
+      "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=900&q=85",
+  },
+  {
+    id: "lemon-tea",
+    name: "Iced Lemon Tea",
+    category: "Drinks",
+    price: 4.9,
+    description: "Fresh brewed tea with lemon, served cold.",
+    image:
+      "https://images.unsplash.com/photo-1499638673689-79a0b5115d87?auto=format&fit=crop&w=900&q=85",
+  },
+  {
+    id: "milk-tea",
+    name: "Classic Milk Tea",
+    category: "Drinks",
+    price: 5.9,
+    description: "Smooth black tea with milk and light sweetness.",
+    image:
+      "https://images.unsplash.com/photo-1558857563-b371033873b8?auto=format&fit=crop&w=900&q=85",
+  },
+];
+
+const cart = new Map();
+let activeCategory = "All";
+
+const categoryTabs = document.querySelector("#categoryTabs");
+const menuGrid = document.querySelector("#menuGrid");
+const cartList = document.querySelector("#cartList");
+const cartEmpty = document.querySelector("#cartEmpty");
+const cartTotal = document.querySelector("#cartTotal");
+const orderForm = document.querySelector("#orderForm");
+const mobileCartCount = document.querySelector("#mobileCartCount");
+
+function formatPrice(value) {
+  return `${business.currency}${value.toFixed(2)}`;
+}
+
+function getCategories() {
+  return ["All", ...new Set(menuItems.map((item) => item.category))];
+}
+
+function renderCategories() {
+  categoryTabs.innerHTML = getCategories()
+    .map(
+      (category) => `
+        <button class="${category === activeCategory ? "active" : ""}" data-category="${category}">
+          ${category}
+        </button>
+      `,
+    )
+    .join("");
+}
+
+function renderMenu() {
+  const visibleItems =
+    activeCategory === "All"
+      ? menuItems
+      : menuItems.filter((item) => item.category === activeCategory);
+
+  menuGrid.innerHTML = visibleItems
+    .map(
+      (item) => `
+        <article class="menu-card">
+          <img src="${item.image}" alt="${item.name}" loading="lazy" />
+          <div class="menu-card-body">
+            <div>
+              <h3>${item.name}</h3>
+              <p>${item.description}</p>
+            </div>
+            <div class="menu-card-footer">
+              <span class="price">${formatPrice(item.price)}</span>
+              <button class="add-button" type="button" data-add="${item.id}" aria-label="Add ${item.name}">
+                +
+              </button>
+            </div>
+          </div>
+        </article>
+      `,
+    )
+    .join("");
+}
+
+function getCartItems() {
+  return [...cart.entries()].map(([id, quantity]) => {
+    const item = menuItems.find((menuItem) => menuItem.id === id);
+    return { ...item, quantity };
+  });
+}
+
+function getCartTotal() {
+  return getCartItems().reduce((total, item) => total + item.price * item.quantity, 0);
+}
+
+function renderCart() {
+  const items = getCartItems();
+  const totalQuantity = items.reduce((total, item) => total + item.quantity, 0);
+
+  cartEmpty.hidden = items.length > 0;
+  cartList.innerHTML = items
+    .map(
+      (item) => `
+        <div class="cart-item">
+          <div>
+            <strong>${item.name}</strong>
+            <span>${formatPrice(item.price)} each</span>
+          </div>
+          <div class="quantity" aria-label="${item.name} quantity">
+            <button type="button" data-decrease="${item.id}" aria-label="Remove one ${item.name}">-</button>
+            <output>${item.quantity}</output>
+            <button type="button" data-increase="${item.id}" aria-label="Add one ${item.name}">+</button>
+          </div>
+        </div>
+      `,
+    )
+    .join("");
+
+  cartTotal.textContent = formatPrice(getCartTotal());
+  mobileCartCount.textContent = `${totalQuantity} ${totalQuantity === 1 ? "item" : "items"}`;
+}
+
+function addToCart(id) {
+  cart.set(id, (cart.get(id) || 0) + 1);
+  renderCart();
+}
+
+function decreaseCartItem(id) {
+  const quantity = cart.get(id);
+  if (!quantity) return;
+
+  if (quantity === 1) {
+    cart.delete(id);
+  } else {
+    cart.set(id, quantity - 1);
+  }
+
+  renderCart();
+}
+
+function buildWhatsAppMessage() {
+  const name = document.querySelector("#customerName").value.trim();
+  const phone = document.querySelector("#customerPhone").value.trim();
+  const orderType = document.querySelector("input[name='orderType']:checked").value;
+  const address = document.querySelector("#customerAddress").value.trim();
+  const notes = document.querySelector("#customerNotes").value.trim();
+  const items = getCartItems();
+
+  const orderLines = items.map(
+    (item) =>
+      `- ${item.quantity} x ${item.name} (${formatPrice(item.price * item.quantity)})`,
+  );
+
+  return [
+    `Hi ${business.name}, I would like to order:`,
+    "",
+    ...orderLines,
+    "",
+    `Total: ${formatPrice(getCartTotal())}`,
+    `Order type: ${orderType}`,
+    `Name: ${name}`,
+    `Phone: ${phone}`,
+    address ? `Address / time: ${address}` : "",
+    notes ? `Notes: ${notes}` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
+
+categoryTabs.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-category]");
+  if (!button) return;
+
+  activeCategory = button.dataset.category;
+  renderCategories();
+  renderMenu();
+});
+
+menuGrid.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-add]");
+  if (!button) return;
+
+  addToCart(button.dataset.add);
+});
+
+cartList.addEventListener("click", (event) => {
+  const increaseButton = event.target.closest("[data-increase]");
+  const decreaseButton = event.target.closest("[data-decrease]");
+
+  if (increaseButton) addToCart(increaseButton.dataset.increase);
+  if (decreaseButton) decreaseCartItem(decreaseButton.dataset.decrease);
+});
+
+orderForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  if (cart.size === 0) {
+    alert("Please add at least one item before ordering.");
+    return;
+  }
+
+  const message = encodeURIComponent(buildWhatsAppMessage());
+  const url = `https://wa.me/${business.whatsappNumber}?text=${message}`;
+  window.open(url, "_blank", "noopener,noreferrer");
+});
+
+renderCategories();
+renderMenu();
+renderCart();

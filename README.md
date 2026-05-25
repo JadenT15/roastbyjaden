@@ -1,4 +1,4 @@
-# Luna Kitchen Online Ordering Site
+# Roast by Jaden Online Ordering Site
 
 This is a Vercel-ready static website for a food business. Customers can browse the menu, add items to a cart, fill in their details, and send the order through WhatsApp.
 
@@ -26,3 +26,9 @@ Open `index.html` and change:
 5. Deploy.
 
 Because this is a static site, it does not need a build command.
+
+Suggested custom domain: `roastbyjaden.com`
+
+## Order flowcharts
+
+See `docs/order-flowcharts.md` for the buyer ordering flow and merchant inventory flow for roast meat part selection.

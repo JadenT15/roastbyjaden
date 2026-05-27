@@ -107,6 +107,7 @@ const menuItems = [
     price: 19.9,
     description: "烧鸭、叉烧、烧肉、油鸡，经典港式烧味拼盘饭。",
     image: menuImages.roastDisplay,
+    choices: ["charSiuCut"],
   },
   {
     id: "roast-duck-portion",

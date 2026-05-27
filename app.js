@@ -434,6 +434,7 @@ function buildWhatsAppMessage() {
   const phone = document.querySelector("#customerPhone").value.trim();
   const orderType = document.querySelector("input[name='orderType']:checked").value;
   const pickupTime = document.querySelector("input[name='pickupTime']:checked").value;
+  const timeLabel = orderType === "Delivery" ? "Delivery time" : "Pickup time";
   const address = document.querySelector("#customerAddress").value.trim();
   const notes = document.querySelector("#customerNotes").value.trim();
   const items = getCartItems();
@@ -452,7 +453,7 @@ function buildWhatsAppMessage() {
     "",
     `Total: ${formatPrice(getCartTotal())}`,
     `Order type: ${orderType}`,
-    `Pickup time: ${pickupTime}`,
+    `${timeLabel}: ${pickupTime}`,
     `Name: ${name}`,
     `Phone: ${phone}`,
     address ? `Delivery address: ${address}` : "",

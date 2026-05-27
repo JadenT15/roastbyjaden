@@ -388,6 +388,37 @@ h2 {
   font-size: 12px;
 }
 
+.menu-quantity {
+  display: inline-grid;
+  grid-template-columns: 42px 42px 42px;
+  min-width: 126px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fffdf8;
+}
+
+.menu-quantity button,
+.menu-quantity output {
+  display: grid;
+  height: 42px;
+  place-items: center;
+  border: 0;
+  color: var(--red-dark);
+  font-weight: 950;
+}
+
+.menu-quantity button {
+  background: var(--gold);
+  cursor: pointer;
+  font-size: 24px;
+}
+
+.menu-quantity output {
+  background: #fff;
+  font-size: 18px;
+}
+
 .order-section {
   display: grid;
   grid-template-columns: minmax(0, 0.9fr) minmax(320px, 0.7fr);

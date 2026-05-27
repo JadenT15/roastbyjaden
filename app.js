@@ -223,7 +223,7 @@ function renderMenu() {
       const available = isItemAvailable(item);
 
       return `
-        <article class="menu-card">
+        <article class="menu-card" data-item-card="${item.id}">
           <img src="${item.image}" alt="${item.name}" loading="lazy" />
           <div class="menu-card-body">
             <div>
@@ -233,21 +233,20 @@ function renderMenu() {
             ${getItemChoiceGroups(item).map((group) => renderChoiceGroup(item, group)).join("")}
             <div class="menu-card-footer">
               <span class="price">${formatPrice(item.price)}</span>
-              <button
-                class="add-button"
-                type="button"
-                data-add="${item.id}"
-                aria-label="Add ${item.name}"
-                ${available ? "" : "disabled"}
-              >
-                ${available ? "+" : "Sold Out"}
-              </button>
+              ${renderMenuQuantity(item, available)}
             </div>
           </div>
         </article>
       `;
     })
     .join("");
+}
+
+function getDefaultChoices(item) {
+  return getItemChoiceGroups(item).map((group) => ({
+    label: group.label,
+    value: getFirstAvailableOption(group)?.value || "",
+  }));
 }
 
 function getSelectedChoices(item) {
@@ -268,6 +267,32 @@ function formatChoices(choices) {
 function getCartKey(item, choices) {
   const choiceKey = choices.map((choice) => `${choice.label}:${choice.value}`).join("|");
   return `${item.id}|${choiceKey}`;
+}
+
+function getCartQuantity(item, choices) {
+  return cart.get(getCartKey(item, choices))?.quantity || 0;
+}
+
+function renderMenuQuantity(item, available) {
+  if (!available) {
+    return `<button class="add-button" type="button" disabled>Sold Out</button>`;
+  }
+
+  return `
+    <div class="menu-quantity" aria-label="${item.name} menu quantity">
+      <button type="button" data-menu-decrease="${item.id}" aria-label="Remove one ${item.name}">-</button>
+      <output data-menu-count="${item.id}">${getCartQuantity(item, getDefaultChoices(item))}</output>
+      <button type="button" data-add="${item.id}" aria-label="Add ${item.name}">+</button>
+    </div>
+  `;
+}
+
+function updateMenuQuantityDisplay(id) {
+  const item = menuItems.find((menuItem) => menuItem.id === id);
+  const output = menuGrid.querySelector(`[data-menu-count="${id}"]`);
+
+  if (!item || !output) return;
+  output.textContent = getCartQuantity(item, getSelectedChoices(item));
 }
 
 function getCartItems() {
@@ -324,6 +349,7 @@ function addToCart(id) {
     quantity: existing ? existing.quantity + 1 : 1,
   });
   renderCart();
+  updateMenuQuantityDisplay(id);
 }
 
 function increaseCartItem(key) {
@@ -332,11 +358,13 @@ function increaseCartItem(key) {
 
   cart.set(key, { ...entry, quantity: entry.quantity + 1 });
   renderCart();
+  updateMenuQuantityDisplay(entry.itemId);
 }
 
 function decreaseCartItem(key) {
   const entry = cart.get(key);
   if (!entry) return;
+  const itemId = entry.itemId;
 
   if (entry.quantity === 1) {
     cart.delete(key);
@@ -345,6 +373,15 @@ function decreaseCartItem(key) {
   }
 
   renderCart();
+  updateMenuQuantityDisplay(itemId);
+}
+
+function decreaseMenuItem(id) {
+  const item = menuItems.find((menuItem) => menuItem.id === id);
+  if (!item) return;
+
+  const key = getCartKey(item, getSelectedChoices(item));
+  decreaseCartItem(key);
 }
 
 function buildWhatsAppMessage() {
@@ -390,10 +427,18 @@ categoryTabs.addEventListener("click", (event) => {
 });
 
 menuGrid.addEventListener("click", (event) => {
-  const button = event.target.closest("[data-add]");
-  if (!button) return;
+  const addButton = event.target.closest("[data-add]");
+  const decreaseButton = event.target.closest("[data-menu-decrease]");
 
-  addToCart(button.dataset.add);
+  if (addButton) addToCart(addButton.dataset.add);
+  if (decreaseButton) decreaseMenuItem(decreaseButton.dataset.menuDecrease);
+});
+
+menuGrid.addEventListener("change", (event) => {
+  const card = event.target.closest("[data-item-card]");
+  if (!card) return;
+
+  updateMenuQuantityDisplay(card.dataset.itemCard);
 });
 
 cartList.addEventListener("click", (event) => {

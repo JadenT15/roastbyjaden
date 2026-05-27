@@ -107,12 +107,36 @@
             </label>
           </fieldset>
 
+          <fieldset class="time-options">
+            <legend>Pickup time</legend>
+            <label class="time-chip">
+              <input type="radio" name="pickupTime" value="10:00 AM" checked />
+              10:00 AM
+            </label>
+            <label class="time-chip">
+              <input type="radio" name="pickupTime" value="12:00 PM" />
+              12:00 PM
+            </label>
+            <label class="time-chip">
+              <input type="radio" name="pickupTime" value="2:00 PM" />
+              2:00 PM
+            </label>
+            <label class="time-chip">
+              <input type="radio" name="pickupTime" value="4:00 PM" />
+              4:00 PM
+            </label>
+            <label class="time-chip">
+              <input type="radio" name="pickupTime" value="5:00 PM" />
+              5:00 PM
+            </label>
+          </fieldset>
+
           <label>
-            Address or pickup time
+            Delivery address
             <textarea
               id="customerAddress"
               rows="3"
-              placeholder="Example: Pickup at 6:30 PM, or delivery address"
+              placeholder="Required for delivery orders"
             ></textarea>
           </label>
 

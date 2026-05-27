@@ -507,6 +507,7 @@ textarea:focus {
 
 fieldset {
   display: flex;
+  flex-wrap: wrap;
   gap: 16px;
   margin: 0;
   border: 1px solid var(--line);
@@ -522,6 +523,34 @@ fieldset {
 }
 
 .radio-row input {
+  width: auto;
+  margin: 0;
+}
+
+.time-options {
+  gap: 10px;
+}
+
+.time-chip {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fffdf8;
+  cursor: pointer;
+  padding: 9px 11px;
+  font-weight: 900;
+}
+
+.time-chip:has(input:checked) {
+  border-color: var(--red);
+  background: var(--gold-soft);
+  color: var(--red-dark);
+}
+
+.time-chip input {
   width: auto;
   margin: 0;
 }

@@ -60,7 +60,7 @@ const choiceGroups = {
 const menuItems = [
   {
     id: "roast-duck-rice",
-    name: "港式烧鸭饭",
+    name: "港式当归烧鸭",
     category: "烧味饭",
     price: 13.9,
     description: "皮脆肉嫩烧鸭，配白饭、香港芥蓝或香港菜心和烧腊汁。",

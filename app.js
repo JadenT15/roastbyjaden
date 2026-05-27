@@ -42,15 +42,6 @@ const choiceGroups = {
       { value: "半肥瘦", available: true },
     ],
   },
-  porkCut: {
-    id: "porkCut",
-    label: "烧肉部位",
-    options: [
-      { value: "脆皮", available: true },
-      { value: "五花", available: true },
-      { value: "瘦肉多", available: false },
-    ],
-  },
 };
 
 const menuItems = [
@@ -78,7 +69,6 @@ const menuItems = [
     price: 13.9,
     description: "金黄脆皮烧肉，肥瘦相间，配白饭和特制酱汁。",
     image: menuImages.crispyPork,
-    choices: ["porkCut"],
   },
   {
     id: "soy-sauce-chicken-rice",
@@ -114,7 +104,7 @@ const menuItems = [
     price: 16.9,
     description: "脆皮烧肉配油鸡，咸香嫩滑，份量十足。",
     image: menuImages.crispyPork,
-    choices: ["porkCut", "chickenPart"],
+    choices: ["chickenPart"],
   },
   {
     id: "four-treasure-rice",
@@ -123,7 +113,7 @@ const menuItems = [
     price: 19.9,
     description: "烧鸭、叉烧、烧肉、油鸡，经典港式烧味拼盘饭。",
     image: menuImages.roastDisplay,
-    choices: ["charSiuCut", "porkCut", "chickenPart"],
+    choices: ["charSiuCut", "chickenPart"],
   },
   {
     id: "roast-duck-portion",
@@ -149,7 +139,6 @@ const menuItems = [
     price: 23.9,
     description: "脆皮烧肉例牌，皮脆肉香。",
     image: menuImages.crispyPork,
-    choices: ["porkCut"],
   },
   {
     id: "hk-milk-tea",

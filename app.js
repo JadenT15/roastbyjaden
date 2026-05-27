@@ -17,10 +17,6 @@ const menuImages = {
     "https://images.pexels.com/photos/8408377/pexels-photo-8408377.jpeg?auto=compress&cs=tinysrgb&w=900",
   roastChicken:
     "https://images.pexels.com/photos/12350418/pexels-photo-12350418.jpeg?auto=compress&cs=tinysrgb&w=900",
-  milkTea:
-    "https://images.unsplash.com/photo-1558857563-b371033873b8?auto=format&fit=crop&w=900&q=85",
-  lemonTea:
-    "https://images.pexels.com/photos/792613/pexels-photo-792613.jpeg?auto=compress&cs=tinysrgb&w=900",
 };
 
 const choiceGroups = {
@@ -136,22 +132,6 @@ const menuItems = [
     price: 23.9,
     description: "脆皮烧肉例牌，皮脆肉香。",
     image: menuImages.crispyPork,
-  },
-  {
-    id: "hk-milk-tea",
-    name: "港式奶茶",
-    category: "饮品",
-    price: 5.9,
-    description: "香滑港式奶茶，可选热或冷。",
-    image: menuImages.milkTea,
-  },
-  {
-    id: "lemon-tea",
-    name: "冻柠茶",
-    category: "饮品",
-    price: 5.9,
-    description: "清爽港式冻柠茶。",
-    image: menuImages.lemonTea,
   },
 ];
 

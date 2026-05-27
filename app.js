@@ -165,6 +165,7 @@ const cartEmpty = document.querySelector("#cartEmpty");
 const cartTotal = document.querySelector("#cartTotal");
 const orderForm = document.querySelector("#orderForm");
 const mobileCartCount = document.querySelector("#mobileCartCount");
+const pickupDateOptions = document.querySelector("#pickupDateOptions");
 
 function formatPrice(value) {
   return `${business.currency}${value.toFixed(2)}`;
@@ -429,10 +430,54 @@ function decreaseMenuItem(id) {
   decreaseCartItem(key);
 }
 
+function formatPickupDate(date, index) {
+  const day = date.toLocaleDateString("en-MY", { day: "numeric" });
+  const month = date.toLocaleDateString("en-MY", { month: "short" });
+  const year = date.getFullYear();
+  const weekday = date.toLocaleDateString("en-MY", { weekday: "short" });
+
+  if (index === 0) return `Today, ${day} ${month} ${year}`;
+  if (index === 1) return `Tomorrow, ${day} ${month} ${year}`;
+  return `${weekday}, ${day} ${month} ${year}`;
+}
+
+function renderPickupDates() {
+  if (!pickupDateOptions) return;
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const dateChoices = Array.from({ length: 7 }, (_, index) => {
+    const date = new Date(today);
+    date.setDate(today.getDate() + index);
+    return formatPickupDate(date, index);
+  });
+
+  pickupDateOptions.innerHTML = `
+    <legend>Pickup / delivery date</legend>
+    ${dateChoices
+      .map(
+        (dateLabel, index) => `
+          <label class="time-chip">
+            <input
+              type="radio"
+              name="pickupDate"
+              value="${dateLabel}"
+              ${index === 0 ? "checked" : ""}
+            />
+            ${dateLabel}
+          </label>
+        `,
+      )
+      .join("")}
+  `;
+}
+
 function buildWhatsAppMessage() {
   const name = document.querySelector("#customerName").value.trim();
   const phone = document.querySelector("#customerPhone").value.trim();
   const orderType = document.querySelector("input[name='orderType']:checked").value;
+  const pickupDate = document.querySelector("input[name='pickupDate']:checked")?.value || "";
   const pickupTime = document.querySelector("input[name='pickupTime']:checked").value;
   const paymentMethod = document.querySelector("input[name='paymentMethod']:checked").value;
   const timeLabel = orderType === "Delivery" ? "Delivery time" : "Pickup time";
@@ -454,6 +499,7 @@ function buildWhatsAppMessage() {
     "",
     `Total: ${formatPrice(getCartTotal())}`,
     `Order type: ${orderType}`,
+    pickupDate ? `Date: ${pickupDate}` : "",
     `${timeLabel}: ${pickupTime}`,
     `Payment method: ${paymentMethod}`,
     `Name: ${name}`,
@@ -510,6 +556,7 @@ orderForm.addEventListener("submit", (event) => {
   window.open(url, "_blank", "noopener,noreferrer");
 });
 
+renderPickupDates();
 renderCategories();
 renderMenu();
 renderCart();

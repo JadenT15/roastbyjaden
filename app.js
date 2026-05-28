@@ -121,10 +121,10 @@ const menuItems = [
   },
   {
     id: "siew-yoke-chicken-combo",
-    name: "烧肉油鸡双拼饭",
+    name: "烧肉烧鸡双拼饭",
     category: "双拼/拼盘",
     price: 16.9,
-    description: "脆皮烧肉配油鸡，咸香嫩滑，份量十足。",
+    description: "脆皮烧肉配港式烧鸡，咸香嫩滑，份量十足。",
     image: menuImages.crispyPork,
   },
   {
@@ -204,8 +204,8 @@ const translations = {
         description: "Roast duck paired with honey char siu for two classic Hong Kong roast flavours in one meal.",
       },
       "siew-yoke-chicken-combo": {
-        name: "Roast Pork & Soy Sauce Chicken Rice",
-        description: "Crispy roast pork served with soy sauce chicken for a hearty savoury combo.",
+        name: "Roast Pork & Roast Chicken Rice",
+        description: "Crispy roast pork served with HK-style roast chicken for a hearty savoury combo.",
       },
       "four-treasure-rice": {
         name: "Four Treasures Rice",

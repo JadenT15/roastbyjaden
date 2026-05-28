@@ -454,6 +454,19 @@ h2 {
   font-size: 12px;
 }
 
+.display-only-badge {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f7f1e6;
+  color: #111;
+  padding: 8px 12px;
+  font-weight: 900;
+}
+
 .menu-quantity {
   display: inline-grid;
   grid-template-columns: 42px 42px 42px;

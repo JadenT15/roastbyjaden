@@ -90,6 +90,7 @@ const menuItems = [
     price: 12.9,
     description: "港式豉油鸡，肉质嫩滑，酱香浓郁。",
     image: menuImages.roastChicken,
+    displayOnly: true,
     choices: ["chickenPart"],
   },
   {
@@ -231,6 +232,7 @@ const translations = {
     },
     ui: {
       soldOut: "Sold Out",
+      displayOnly: "Display only",
       each: "each",
       item: "item",
       items: "items",
@@ -248,6 +250,7 @@ const translations = {
     },
     ui: {
       soldOut: "已售完",
+      displayOnly: "展示 / 暂不售卖",
       each: "每份",
       item: "份",
       items: "份",
@@ -317,6 +320,7 @@ function getFirstAvailableOption(group) {
 }
 
 function isItemAvailable(item) {
+  if (item.displayOnly) return false;
   return getItemChoiceGroups(item).every((group) => getFirstAvailableOption(group));
 }
 
@@ -390,7 +394,7 @@ function renderMenu() {
               <span class="price" data-menu-price="${item.id}">${formatPrice(
                 getMenuDisplayPrice(item, getDefaultChoices(item)),
               )}</span>
-              ${renderMenuQuantity(item, available)}
+              ${item.displayOnly ? renderDisplayOnlyBadge() : renderMenuQuantity(item, available)}
             </div>
           </div>
         </article>
@@ -463,6 +467,10 @@ function renderMenuQuantity(item, available) {
   `;
 }
 
+function renderDisplayOnlyBadge() {
+  return `<span class="display-only-badge">${translateUi("displayOnly")}</span>`;
+}
+
 function updateMenuQuantityDisplay(id) {
   const item = menuItems.find((menuItem) => menuItem.id === id);
   const card = menuGrid.querySelector(`[data-item-card="${id}"]`);
@@ -519,7 +527,7 @@ function renderCart() {
 
 function addToCart(id) {
   const item = menuItems.find((menuItem) => menuItem.id === id);
-  if (!item || !isItemAvailable(item)) return;
+  if (!item || item.displayOnly || !isItemAvailable(item)) return;
 
   const choices = getSelectedChoices(item);
   const key = getCartKey(item, choices);

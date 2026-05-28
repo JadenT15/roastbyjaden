@@ -164,7 +164,7 @@ const menuItems = [
     name: "四宝饭",
     category: "双拼/拼盘",
     price: 19.9,
-    description: "烧鸭、叉烧、烧肉、油鸡，经典港式烧味拼盘饭。",
+    description: "烧鸭、叉烧、烧肉、烧鸡，经典港式烧味拼盘饭。",
     image: menuImages.roastDisplay,
     choices: ["charSiuCut"],
   },
@@ -257,7 +257,7 @@ const translations = {
       },
       "four-treasure-rice": {
         name: "Four Treasures Rice",
-        description: "A classic Hong Kong roast platter rice with roast duck, char siu, roast pork and soy sauce chicken.",
+        description: "A classic Hong Kong roast platter rice with roast duck, char siu, roast pork and roast chicken.",
       },
       "roast-duck-portion": {
         name: "Roast Duck Portion",

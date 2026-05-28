@@ -79,7 +79,7 @@ const menuItems = [
     name: "蜜汁叉烧饭",
     category: "烧味饭",
     price: 12.9,
-    description: "蜜汁叉烧切片，甜香入味，配白饭和烧腊汁。",
+    description: "蜜汁叉烧切片，甜香入味，配白饭、香港芥兰或香港菜心和烧腊汁。",
     image: menuImages.charSiu,
     choices: ["charSiuCut"],
   },
@@ -88,7 +88,7 @@ const menuItems = [
     name: "脆皮烧肉饭",
     category: "烧味饭",
     price: 13.9,
-    description: "金黄脆皮烧肉，肥瘦相间，搭配白饭和黄芥末。",
+    description: "金黄脆皮烧肉，肥瘦相间，搭配白饭、香港芥兰或香港菜心和黄芥末。",
     image: menuImages.crispyPork,
   },
   {
@@ -96,7 +96,7 @@ const menuItems = [
     name: "豉油鸡饭",
     category: "烧味饭",
     price: 12.9,
-    description: "港式豉油鸡，肉质嫩滑，酱香浓郁。",
+    description: "港式豉油鸡，肉质嫩滑，酱香浓郁，搭配白饭、香港芥兰或香港菜心。",
     image: menuImages.roastChicken,
     displayOnly: true,
     choices: ["chickenPart"],
@@ -106,7 +106,7 @@ const menuItems = [
     name: "白切鸡饭",
     category: "烧味饭",
     price: 12.9,
-    description: "滑嫩白切鸡，搭配姜蓉和清香白饭。",
+    description: "滑嫩白切鸡，搭配白饭、香港芥兰或香港菜心和姜蓉。",
     image: menuImages.roastChicken,
     choices: ["chickenPart"],
   },
@@ -115,7 +115,7 @@ const menuItems = [
     name: "港式烧鸡",
     category: "烧味饭",
     price: 12.9,
-    description: "港式烧鸡，皮香肉嫩，搭配白饭和烧腊汁。",
+    description: "港式烧鸡，皮香肉嫩，搭配白饭、香港芥兰或香港菜心和烧腊汁。",
     image: menuImages.roastChicken,
     choices: ["chickenPart"],
   },
@@ -124,7 +124,7 @@ const menuItems = [
     name: "自选双拼饭",
     category: "双拼/拼盘",
     price: 16.9,
-    description: "自选两款烧味，搭配白饭和烧腊汁。",
+    description: "自选两款烧味，搭配白饭、香港芥兰或香港菜心和烧腊汁。",
     image: menuImages.roastDisplay,
     comboChoices: {
       id: "roastMeats",
@@ -138,7 +138,7 @@ const menuItems = [
     name: "自选三拼饭",
     category: "三拼饭",
     price: 18.9,
-    description: "自选三款烧味，搭配白饭和烧腊汁。",
+    description: "自选三款烧味，搭配白饭、香港芥兰或香港菜心和烧腊汁。",
     image: menuImages.roastDisplay,
     comboChoices: {
       id: "roastMeats",
@@ -152,7 +152,7 @@ const menuItems = [
     name: "四宝饭",
     category: "双拼/拼盘",
     price: 19.9,
-    description: "烧鸭、叉烧、烧肉、烧鸡，经典港式烧味拼盘饭。",
+    description: "烧鸭、叉烧、烧肉、烧鸡，搭配白饭、香港芥兰或香港菜心和烧腊汁。",
     image: menuImages.roastDisplay,
   },
   {
@@ -201,35 +201,43 @@ const translations = {
       },
       "char-siu-rice": {
         name: "Honey Char Siu Rice",
-        description: "Sweet and savoury honey char siu slices served with steamed rice and roast gravy.",
+        description:
+          "Sweet and savoury honey char siu slices served with steamed rice, Hong Kong kai lan or choy sum, and roast gravy.",
       },
       "siew-yoke-rice": {
         name: "Crispy Roast Pork Rice",
-        description: "Golden crispy roast pork with balanced fat and lean meat, served with steamed rice and yellow mustard.",
+        description:
+          "Golden crispy roast pork with balanced fat and lean meat, served with steamed rice, Hong Kong kai lan or choy sum, and yellow mustard.",
       },
       "soy-sauce-chicken-rice": {
         name: "Soy Sauce Chicken Rice",
-        description: "HK-style soy sauce chicken with tender meat and rich savoury aroma.",
+        description:
+          "HK-style soy sauce chicken with tender meat and rich savoury aroma, served with steamed rice, Hong Kong kai lan or choy sum.",
       },
       "white-chicken-rice": {
         name: "Steamed White Chicken Rice",
-        description: "Silky steamed chicken served with ginger scallion sauce and fragrant steamed rice.",
+        description:
+          "Silky steamed chicken served with steamed rice, Hong Kong kai lan or choy sum, and ginger scallion sauce.",
       },
       "hk-roast-chicken-rice": {
         name: "HK-Style Roast Chicken Rice",
-        description: "HK-style roast chicken with fragrant skin and tender meat, served with steamed rice and roast gravy.",
+        description:
+          "HK-style roast chicken with fragrant skin and tender meat, served with steamed rice, Hong Kong kai lan or choy sum, and roast gravy.",
       },
       "custom-double-rice": {
         name: "Build Your Own Double Roast Rice",
-        description: "Choose any two roast meats, served with steamed rice and roast gravy.",
+        description:
+          "Choose any two roast meats, served with steamed rice, Hong Kong kai lan or choy sum, and roast gravy.",
       },
       "custom-triple-rice": {
         name: "Build Your Own Triple Roast Rice",
-        description: "Choose any three roast meats, served with steamed rice and roast gravy.",
+        description:
+          "Choose any three roast meats, served with steamed rice, Hong Kong kai lan or choy sum, and roast gravy.",
       },
       "four-treasure-rice": {
         name: "Four Treasures Rice",
-        description: "A classic Hong Kong roast platter rice with roast duck, char siu, roast pork and roast chicken.",
+        description:
+          "A classic Hong Kong roast platter rice with roast duck, char siu, roast pork and roast chicken, served with steamed rice, Hong Kong kai lan or choy sum, and roast gravy.",
       },
       "roast-duck-portion": {
         name: "Roast Duck Portion",

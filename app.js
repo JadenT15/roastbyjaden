@@ -167,6 +167,7 @@ const orderForm = document.querySelector("#orderForm");
 const mobileCartCount = document.querySelector("#mobileCartCount");
 const pickupDateOptions = document.querySelector("#pickupDateOptions");
 const languageToggle = document.querySelector("#languageToggle");
+const languageBadge = document.querySelector("[data-language-badge]");
 let currentLanguage = "zh";
 
 function formatPrice(value) {
@@ -490,6 +491,10 @@ function renderLanguage() {
       "aria-label",
       currentLanguage === "zh" ? "Switch to English" : "切换到中文",
     );
+  }
+
+  if (languageBadge) {
+    languageBadge.hidden = currentLanguage !== "en";
   }
 }
 

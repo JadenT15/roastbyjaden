@@ -155,6 +155,112 @@ const menuItems = [
   },
 ];
 
+const translations = {
+  en: {
+    categories: {
+      All: "All",
+      烧味饭: "Roast Rice",
+      "双拼/拼盘": "Combo Platters",
+      单点加料: "A La Carte",
+    },
+    items: {
+      "roast-duck-rice": {
+        name: "HK-Style Dang Gui Roast Duck Rice",
+        description:
+          "Tender roast duck with crisp skin, served with steamed rice, Hong Kong kai lan or choy sum, and roast gravy.",
+      },
+      "char-siu-rice": {
+        name: "Honey Char Siu Rice",
+        description: "Sweet and savoury honey char siu slices served with steamed rice and roast gravy.",
+      },
+      "siew-yoke-rice": {
+        name: "Crispy Roast Pork Rice",
+        description: "Golden crispy roast pork with balanced fat and lean meat, served with steamed rice and yellow mustard.",
+      },
+      "soy-sauce-chicken-rice": {
+        name: "Soy Sauce Chicken Rice",
+        description: "HK-style soy sauce chicken with tender meat and rich savoury aroma.",
+      },
+      "white-chicken-rice": {
+        name: "Steamed White Chicken Rice",
+        description: "Silky steamed chicken served with ginger scallion sauce and fragrant steamed rice.",
+      },
+      "duck-char-siu-combo": {
+        name: "Roast Duck & Char Siu Rice",
+        description: "Roast duck paired with honey char siu for two classic Hong Kong roast flavours in one meal.",
+      },
+      "siew-yoke-chicken-combo": {
+        name: "Roast Pork & Soy Sauce Chicken Rice",
+        description: "Crispy roast pork served with soy sauce chicken for a hearty savoury combo.",
+      },
+      "four-treasure-rice": {
+        name: "Four Treasures Rice",
+        description: "A classic Hong Kong roast platter rice with roast duck, char siu, roast pork and soy sauce chicken.",
+      },
+      "roast-duck-portion": {
+        name: "Roast Duck Portion",
+        description: "A shareable roast duck portion, perfect with rice or noodles.",
+      },
+      "char-siu-portion": {
+        name: "Char Siu Portion",
+        description: "Honey char siu portion, ideal as an add-on dish or for sharing.",
+      },
+      "siew-yoke-portion": {
+        name: "Crispy Roast Pork Portion",
+        description: "Crispy roast pork portion with fragrant crackling and savoury meat.",
+      },
+    },
+    choiceLabels: {
+      鸡肉部位: "Chicken Cut",
+      叉烧肥瘦: "Char Siu Cut",
+      重量: "Weight",
+      烧鸭规格: "Roast Duck Size",
+    },
+    choiceValues: {
+      鸡胸: "Breast",
+      鸡二度: "Second Joint",
+      鸡翅: "Wing",
+      鸡腿: "Leg",
+      瘦: "Lean",
+      半肥瘦: "Half Lean, Half Fat",
+      "100g": "100g",
+      "200g": "200g",
+      一例: "Regular Portion",
+      半只: "Half Duck",
+      一只: "Whole Duck",
+    },
+    ui: {
+      soldOut: "Sold Out",
+      each: "each",
+      item: "item",
+      items: "items",
+      dateLegend: "Pickup / delivery date",
+      today: "Today",
+      tomorrow: "Tomorrow",
+      addOne: "Add one",
+      removeOne: "Remove one",
+      menuQuantity: "menu quantity",
+    },
+  },
+  zh: {
+    categories: {
+      All: "全部",
+    },
+    ui: {
+      soldOut: "已售完",
+      each: "每份",
+      item: "份",
+      items: "份",
+      dateLegend: "取餐 / 送餐日期",
+      today: "今天",
+      tomorrow: "明天",
+      addOne: "加一份",
+      removeOne: "减少一份",
+      menuQuantity: "菜单数量",
+    },
+  },
+};
+
 const cart = new Map();
 let activeCategory = "All";
 
@@ -172,6 +278,30 @@ let currentLanguage = "zh";
 
 function formatPrice(value) {
   return `${business.currency}${value.toFixed(2)}`;
+}
+
+function translateCategory(category) {
+  return translations[currentLanguage]?.categories?.[category] || category;
+}
+
+function translateItemName(item) {
+  return translations[currentLanguage]?.items?.[item.id]?.name || item.name;
+}
+
+function translateItemDescription(item) {
+  return translations[currentLanguage]?.items?.[item.id]?.description || item.description;
+}
+
+function translateChoiceLabel(label) {
+  return translations[currentLanguage]?.choiceLabels?.[label] || label;
+}
+
+function translateChoiceValue(value) {
+  return translations[currentLanguage]?.choiceValues?.[value] || value;
+}
+
+function translateUi(key) {
+  return translations[currentLanguage]?.ui?.[key] || translations.en.ui[key] || key;
 }
 
 function getCategories() {
@@ -195,7 +325,7 @@ function renderCategories() {
     .map(
       (category) => `
         <button class="${category === activeCategory ? "active" : ""}" data-category="${category}">
-          ${category}
+          ${translateCategory(category)}
         </button>
       `,
     )
@@ -207,13 +337,14 @@ function renderChoiceGroup(item, group) {
 
   return `
     <fieldset class="choice-group">
-      <legend>${group.label}</legend>
+      <legend>${translateChoiceLabel(group.label)}</legend>
       <div class="choice-options">
         ${group.options
           .map((option) => {
             const checked = firstAvailable?.value === option.value ? "checked" : "";
             const disabled = option.available ? "" : "disabled";
-            const soldOut = option.available ? "" : "<span>Sold Out</span>";
+            const optionLabel = translateChoiceValue(option.value);
+            const soldOut = option.available ? "" : `<span>${translateUi("soldOut")}</span>`;
 
             return `
               <label class="choice-chip ${option.available ? "" : "sold-out"}">
@@ -225,7 +356,7 @@ function renderChoiceGroup(item, group) {
                   ${checked}
                   ${disabled}
                 />
-                ${option.value}${option.price ? ` ${formatPrice(option.price)}` : ""}
+                ${optionLabel}${option.price ? ` ${formatPrice(option.price)}` : ""}
                 ${soldOut}
               </label>
             `;
@@ -248,11 +379,11 @@ function renderMenu() {
 
       return `
         <article class="menu-card" data-item-card="${item.id}">
-          <img src="${item.image}" alt="${item.name}" loading="lazy" />
+          <img src="${item.image}" alt="${translateItemName(item)}" loading="lazy" />
           <div class="menu-card-body">
             <div>
-              <h3>${item.name}</h3>
-              <p>${item.description}</p>
+              <h3>${translateItemName(item)}</h3>
+              <p>${translateItemDescription(item)}</p>
             </div>
             ${getItemChoiceGroups(item).map((group) => renderChoiceGroup(item, group)).join("")}
             <div class="menu-card-footer">
@@ -290,7 +421,9 @@ function getSelectedChoices(item) {
 }
 
 function formatChoices(choices) {
-  return choices.map((choice) => `${choice.label}: ${choice.value}`).join(" / ");
+  return choices
+    .map((choice) => `${translateChoiceLabel(choice.label)}: ${translateChoiceValue(choice.value)}`)
+    .join(" / ");
 }
 
 function getCartKey(item, choices) {
@@ -316,14 +449,16 @@ function getMenuDisplayPrice(item, choices = []) {
 
 function renderMenuQuantity(item, available) {
   if (!available) {
-    return `<button class="add-button" type="button" disabled>Sold Out</button>`;
+    return `<button class="add-button" type="button" disabled>${translateUi("soldOut")}</button>`;
   }
 
+  const itemName = translateItemName(item);
+
   return `
-    <div class="menu-quantity" aria-label="${item.name} menu quantity">
-      <button type="button" data-menu-decrease="${item.id}" aria-label="Remove one ${item.name}">-</button>
+    <div class="menu-quantity" aria-label="${itemName} ${translateUi("menuQuantity")}">
+      <button type="button" data-menu-decrease="${item.id}" aria-label="${translateUi("removeOne")} ${itemName}">-</button>
       <output data-menu-count="${item.id}">${getCartQuantity(item, getDefaultChoices(item))}</output>
-      <button type="button" data-add="${item.id}" aria-label="Add ${item.name}">+</button>
+      <button type="button" data-add="${item.id}" aria-label="${translateUi("addOne")} ${itemName}">+</button>
     </div>
   `;
 }
@@ -364,14 +499,14 @@ function renderCart() {
       (item) => `
         <div class="cart-item">
           <div>
-            <strong>${item.name}</strong>
+            <strong>${translateItemName(item)}</strong>
             ${item.choices.length ? `<small>${formatChoices(item.choices)}</small>` : ""}
-            <span>${formatPrice(getItemPrice(item, item.choices))} each</span>
+            <span>${formatPrice(getItemPrice(item, item.choices))} ${translateUi("each")}</span>
           </div>
-          <div class="quantity" aria-label="${item.name} quantity">
-            <button type="button" data-decrease="${item.key}" aria-label="Remove one ${item.name}">-</button>
+          <div class="quantity" aria-label="${translateItemName(item)} quantity">
+            <button type="button" data-decrease="${item.key}" aria-label="${translateUi("removeOne")} ${translateItemName(item)}">-</button>
             <output>${item.quantity}</output>
-            <button type="button" data-increase="${item.key}" aria-label="Add one ${item.name}">+</button>
+            <button type="button" data-increase="${item.key}" aria-label="${translateUi("addOne")} ${translateItemName(item)}">+</button>
           </div>
         </div>
       `,
@@ -379,7 +514,7 @@ function renderCart() {
     .join("");
 
   cartTotal.textContent = formatPrice(getCartTotal());
-  mobileCartCount.textContent = `${totalQuantity} ${totalQuantity === 1 ? "item" : "items"}`;
+  mobileCartCount.textContent = `${totalQuantity} ${totalQuantity === 1 ? translateUi("item") : translateUi("items")}`;
 }
 
 function addToCart(id) {
@@ -434,13 +569,23 @@ function decreaseMenuItem(id) {
 }
 
 function formatPickupDate(date, index) {
-  const day = date.toLocaleDateString("en-MY", { day: "numeric" });
+  const day = date.getDate();
   const month = date.toLocaleDateString("en-MY", { month: "short" });
   const year = date.getFullYear();
-  const weekday = date.toLocaleDateString("en-MY", { weekday: "short" });
+  const weekday =
+    currentLanguage === "zh"
+      ? ["周日", "周一", "周二", "周三", "周四", "周五", "周六"][date.getDay()]
+      : date.toLocaleDateString("en-MY", { weekday: "short" });
 
-  if (index === 0) return `Today, ${day} ${month} ${year}`;
-  if (index === 1) return `Tomorrow, ${day} ${month} ${year}`;
+  if (currentLanguage === "zh") {
+    const zhDate = `${date.getMonth() + 1}月${day}日 ${year}`;
+    if (index === 0) return `${translateUi("today")}，${zhDate}`;
+    if (index === 1) return `${translateUi("tomorrow")}，${zhDate}`;
+    return `${weekday}，${zhDate}`;
+  }
+
+  if (index === 0) return `${translateUi("today")}, ${day} ${month} ${year}`;
+  if (index === 1) return `${translateUi("tomorrow")}, ${day} ${month} ${year}`;
   return `${weekday}, ${day} ${month} ${year}`;
 }
 
@@ -457,7 +602,7 @@ function renderPickupDates() {
   });
 
   pickupDateOptions.innerHTML = `
-    <legend>Pickup / delivery date</legend>
+    <legend>${translateUi("dateLegend")}</legend>
     ${dateChoices
       .map(
         (dateLabel, index) => `
@@ -485,6 +630,10 @@ function renderLanguage() {
     element.textContent = element.dataset[currentLanguage];
   });
 
+  document.querySelectorAll("[data-i18n-placeholder]").forEach((element) => {
+    element.placeholder = element.dataset[`${currentLanguage}Placeholder`];
+  });
+
   languageButtons.forEach((button) => {
     const isActive = button.dataset.languageOption === currentLanguage;
     button.classList.toggle("active", isActive);
@@ -510,7 +659,7 @@ function buildWhatsAppMessage() {
 
   const orderLines = items.map(
     (item) =>
-      `- ${item.quantity} x ${item.name}${
+      `- ${item.quantity} x ${translateItemName(item)}${
         item.choices.length ? ` [${formatChoices(item.choices)}]` : ""
       } (${formatPrice(getItemPrice(item, item.choices) * item.quantity)})`,
   );
@@ -570,6 +719,10 @@ languageButtons.forEach((button) => {
   button.addEventListener("click", () => {
     currentLanguage = button.dataset.languageOption;
     renderLanguage();
+    renderPickupDates();
+    renderCategories();
+    renderMenu();
+    renderCart();
   });
 });
 

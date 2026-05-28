@@ -9,7 +9,7 @@
     />
     <title>Roast by Jaden | Online Menu</title>
     <link rel="preconnect" href="https://images.unsplash.com" />
-    <link rel="stylesheet" href="styles.css?v=20260528-language-v6" />
+    <link rel="stylesheet" href="styles.css?v=20260528-full-i18n-v7" />
   </head>
   <body>
     <header class="site-header">
@@ -54,23 +54,23 @@
 
       <section class="quick-info" aria-label="Business information">
         <div>
-          <span>Open</span>
+          <span data-i18n data-zh="营业时间" data-en="Open">营业时间</span>
           <strong>10:00 AM - 5:30 PM</strong>
         </div>
         <div>
-          <span>Service</span>
-          <strong>Pickup & local delivery</strong>
+          <span data-i18n data-zh="服务" data-en="Service">服务</span>
+          <strong data-i18n data-zh="自取和附近配送" data-en="Pickup & local delivery">自取和附近配送</strong>
         </div>
         <div>
-          <span>Payment</span>
+          <span data-i18n data-zh="付款方式" data-en="Payment">付款方式</span>
           <strong>Touch 'n Go / transfer</strong>
         </div>
       </section>
 
       <section class="menu-section" id="menu">
         <div class="section-heading">
-          <p class="eyebrow">Choose your favourites</p>
-          <h2>Menu</h2>
+          <p class="eyebrow" data-i18n data-zh="选择你喜欢的烧味" data-en="Choose your favourites">选择你喜欢的烧味</p>
+          <h2 data-i18n data-zh="菜单" data-en="Menu">菜单</h2>
         </div>
 
         <div class="category-tabs" id="categoryTabs" aria-label="Menu categories"></div>
@@ -80,39 +80,39 @@
       <section class="order-section" id="order">
         <div class="order-panel">
           <div class="section-heading">
-            <p class="eyebrow">Checkout</p>
-            <h2>Your order</h2>
+            <p class="eyebrow" data-i18n data-zh="结账" data-en="Checkout">结账</p>
+            <h2 data-i18n data-zh="你的订单" data-en="Your order">你的订单</h2>
           </div>
 
           <div class="cart-list" id="cartList"></div>
-          <div class="cart-empty" id="cartEmpty">Your cart is empty.</div>
+          <div class="cart-empty" id="cartEmpty" data-i18n data-zh="你的购物车是空的。" data-en="Your cart is empty.">你的购物车是空的。</div>
 
           <div class="cart-total">
-            <span>Total</span>
+            <span data-i18n data-zh="总数" data-en="Total">总数</span>
             <strong id="cartTotal">RM0.00</strong>
           </div>
         </div>
 
         <form class="customer-form" id="orderForm">
           <label>
-            Name
-            <input id="customerName" type="text" placeholder="Your name" required />
+            <span data-i18n data-zh="姓名" data-en="Name">姓名</span>
+            <input id="customerName" type="text" placeholder="你的姓名" data-i18n-placeholder data-zh-placeholder="你的姓名" data-en-placeholder="Your name" required />
           </label>
 
           <label>
-            Phone
+            <span data-i18n data-zh="电话号码" data-en="Phone">电话号码</span>
             <input id="customerPhone" type="tel" placeholder="012-345 6789" required />
           </label>
 
           <fieldset>
-            <legend>Order type</legend>
+            <legend data-i18n data-zh="订单类型" data-en="Order type">订单类型</legend>
             <label class="radio-row">
               <input type="radio" name="orderType" value="Pickup" checked />
-              Pickup
+              <span data-i18n data-zh="自取" data-en="Pickup">自取</span>
             </label>
             <label class="radio-row">
               <input type="radio" name="orderType" value="Delivery" />
-              Delivery
+              <span data-i18n data-zh="配送" data-en="Delivery">配送</span>
             </label>
           </fieldset>
 
@@ -121,7 +121,7 @@
           </fieldset>
 
           <fieldset class="time-options">
-            <legend>Pickup / delivery time</legend>
+            <legend data-i18n data-zh="取餐 / 送餐时间" data-en="Pickup / delivery time">取餐 / 送餐时间</legend>
             <label class="time-chip">
               <input type="radio" name="pickupTime" value="10:00 AM - 12:00 PM" checked />
               10:00 AM - 12:00 PM
@@ -141,7 +141,7 @@
           </fieldset>
 
           <fieldset>
-            <legend>Payment method</legend>
+            <legend data-i18n data-zh="付款方式" data-en="Payment method">付款方式</legend>
             <label class="radio-row">
               <input type="radio" name="paymentMethod" value="Touch 'n Go" checked />
               Touch 'n Go
@@ -153,47 +153,53 @@
           </fieldset>
 
           <label>
-            Delivery address
+            <span data-i18n data-zh="配送地址" data-en="Delivery address">配送地址</span>
             <textarea
               id="customerAddress"
               rows="3"
-              placeholder="Required for delivery orders"
+              placeholder="配送订单请填写地址"
+              data-i18n-placeholder
+              data-zh-placeholder="配送订单请填写地址"
+              data-en-placeholder="Required for delivery orders"
             ></textarea>
           </label>
 
           <label>
-            Notes
+            <span data-i18n data-zh="备注" data-en="Notes">备注</span>
             <textarea
               id="customerNotes"
               rows="3"
-              placeholder="Less spicy, no ice, extra sauce..."
+              placeholder="少辣、不要冰、加酱汁..."
+              data-i18n-placeholder
+              data-zh-placeholder="少辣、不要冰、加酱汁..."
+              data-en-placeholder="Less spicy, no ice, extra sauce..."
             ></textarea>
           </label>
 
-          <button class="button primary full" type="submit">Send order on WhatsApp</button>
-          <p class="form-note">
-            Replace the WhatsApp number in <strong>app.js</strong> before launching.
+          <button class="button primary full" type="submit" data-i18n data-zh="用 WhatsApp 发送订单" data-en="Send order on WhatsApp">用 WhatsApp 发送订单</button>
+          <p class="form-note" data-i18n data-zh="下单后会自动打开 WhatsApp。" data-en="Your order will open automatically in WhatsApp.">
+            下单后会自动打开 WhatsApp。
           </p>
         </form>
       </section>
 
       <section class="contact-section" id="contact">
         <div>
-          <p class="eyebrow">Visit us</p>
-          <h2>Pickup point</h2>
-          <p>123 Jalan Example, Kuala Lumpur</p>
+          <p class="eyebrow" data-i18n data-zh="联系我们" data-en="Visit us">联系我们</p>
+          <h2 data-i18n data-zh="自取地点" data-en="Pickup point">自取地点</h2>
+          <p data-i18n data-zh="123 Jalan Example, Kuala Lumpur" data-en="123 Jalan Example, Kuala Lumpur">123 Jalan Example, Kuala Lumpur</p>
         </div>
         <a class="button ghost dark" href="https://wa.me/60123456789" target="_blank" rel="noreferrer">
-          WhatsApp us
+          <span data-i18n data-zh="WhatsApp 联系我们" data-en="WhatsApp us">WhatsApp 联系我们</span>
         </a>
       </section>
     </main>
 
     <div class="mobile-cart" aria-live="polite">
       <span id="mobileCartCount">0 items</span>
-      <a href="#order">Checkout</a>
+      <a href="#order" data-i18n data-zh="结账" data-en="Checkout">结账</a>
     </div>
 
-    <script src="app.js?v=20260528-language-v6"></script>
+    <script src="app.js?v=20260528-full-i18n-v7"></script>
   </body>
 </html>

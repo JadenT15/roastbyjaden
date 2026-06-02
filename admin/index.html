@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Roast by Jaden seller admin portal for orders, revenue, and menu availability."
+    />
+    <title>Roast by Jaden | Seller Admin</title>
+    <link rel="stylesheet" href="admin.css?v=20260602-admin-mvp" />
+  </head>
+  <body>
+    <header class="admin-header">
+      <a class="brand" href="../index.html">
+        <span class="brand-mark">
+          <img src="../assets/xianzai-hero.jpg" alt="Roast by Jaden" />
+        </span>
+        <span>
+          <strong>Seller Admin</strong>
+          <small>Roast by Jaden</small>
+        </span>
+      </a>
+      <nav>
+        <a href="../index.html">Customer site</a>
+      </nav>
+    </header>
+
+    <main class="admin-main">
+      <section class="admin-hero">
+        <div>
+          <p class="eyebrow">Separate portal folder</p>
+          <h1>Seller control for menu, orders, and today’s revenue.</h1>
+          <p>
+            This admin portal lives in its own folder and shares state through a common
+            module so it is easier to migrate into a future Next.js admin app.
+          </p>
+        </div>
+        <div class="hero-card">
+          <span>Current setup</span>
+          <strong>Browser-backed MVP</strong>
+          <small>Shared state module + separate admin folder</small>
+        </div>
+      </section>
+
+      <section class="auth-section" id="authSection">
+        <div class="auth-card">
+          <p class="eyebrow">Sign in</p>
+          <h2>Seller login</h2>
+          <form id="loginForm" class="login-form">
+            <label>
+              Email
+              <input id="loginEmail" type="email" value="seller@roastbyjaden.local" required />
+            </label>
+            <label>
+              Password
+              <input id="loginPassword" type="password" value="jaden123" required />
+            </label>
+            <button class="button primary full" type="submit">Log in</button>
+          </form>
+          <p class="auth-note">
+            Current static-MVP credentials: `seller@roastbyjaden.local` / `jaden123`
+          </p>
+          <p class="auth-error" id="loginError" hidden>Login failed. Check the current static-MVP credentials.</p>
+        </div>
+      </section>
+
+      <section class="console-section" id="consoleSection" hidden>
+        <div class="toolbar">
+          <div>
+            <p class="eyebrow">Control room</p>
+            <h2>Seller dashboard</h2>
+          </div>
+          <div class="toolbar-actions">
+            <button class="button secondary" id="toggleOrderingButton" type="button">Pause ordering</button>
+            <button class="button secondary" id="logoutButton" type="button">Log out</button>
+          </div>
+        </div>
+
+        <div class="stats-grid" id="statsGrid"></div>
+
+        <section class="admin-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Orders</p>
+              <h3>Today’s orders</h3>
+            </div>
+          </div>
+          <div class="orders-grid" id="adminOrders"></div>
+        </section>
+
+        <section class="admin-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Catalog</p>
+              <h3>Product availability</h3>
+            </div>
+          </div>
+          <div class="product-list" id="adminProductList"></div>
+        </section>
+
+        <section class="admin-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Options</p>
+              <h3>Roast part and portion control</h3>
+            </div>
+          </div>
+          <div class="option-group-list" id="adminOptionList"></div>
+        </section>
+
+        <section class="admin-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">New item</p>
+              <h3>Add product to customer portal</h3>
+            </div>
+          </div>
+          <form class="add-product-form" id="addProductForm">
+            <label>
+              Product name
+              <input id="productName" type="text" placeholder="招牌烧鸭腿饭" required />
+            </label>
+            <label>
+              Category
+              <input id="productCategory" type="text" list="categorySuggestions" placeholder="烧味饭" required />
+              <datalist id="categorySuggestions"></datalist>
+            </label>
+            <label>
+              Price
+              <input id="productPrice" type="number" min="0" step="0.1" placeholder="16.9" required />
+            </label>
+            <label class="full-span">
+              Description
+              <textarea id="productDescription" rows="3" placeholder="Describe the dish for customers." required></textarea>
+            </label>
+            <label class="full-span">
+              Image URL
+              <input id="productImage" type="url" placeholder="https://..." />
+            </label>
+            <fieldset class="full-span" id="productChoiceFieldset">
+              <legend>Attach option groups</legend>
+            </fieldset>
+            <label class="toggle-row">
+              <input id="productEnabled" type="checkbox" checked />
+              Enable immediately
+            </label>
+            <label class="toggle-row">
+              <input id="productSoldOut" type="checkbox" />
+              Start as sold out
+            </label>
+            <button class="button primary" type="submit">Add product</button>
+          </form>
+        </section>
+      </section>
+    </main>
+
+    <script type="module" src="admin.js?v=20260602-admin-mvp"></script>
+  </body>
+</html>

@@ -1,78 +1,86 @@
 <!doctype html>
-<html lang="zh">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="A mobile-friendly online menu and ordering site for a food business."
+      content="Roast by Jaden ordering portal with live seller-managed menu status and order tracking."
     />
-    <title>Roast by Jaden | Online Menu</title>
-    <link rel="preconnect" href="https://images.unsplash.com" />
-    <link rel="stylesheet" href="styles.css?v=20260529-duck-quarter-v19" />
+    <title>Roast by Jaden | Customer Ordering</title>
+    <link rel="stylesheet" href="styles.css?v=20260602-customer-mvp" />
   </head>
   <body>
     <header class="site-header">
       <a class="brand" href="#top" aria-label="Roast by Jaden home">
         <span class="brand-mark">
-          <img src="assets/xianzai-hero.jpg" alt="賢仔港式烧腊 logo" />
+          <img src="assets/xianzai-hero.jpg" alt="Roast by Jaden" />
         </span>
         <span>
-          <strong data-i18n data-zh="賢仔港式烧腊" data-en="Roast by Jaden">賢仔港式烧腊</strong>
-          <small data-i18n data-zh="Roast by Jaden" data-en="正宗港式烧腊">Roast by Jaden</small>
+          <strong>Roast by Jaden</strong>
+          <small>賢仔港式烧腊</small>
         </span>
       </a>
 
-      <div class="header-actions">
-        <nav aria-label="Main navigation">
-          <a href="#menu" data-i18n data-zh="菜单" data-en="Menu">菜单</a>
-          <a href="#order" data-i18n data-zh="下单" data-en="Order">下单</a>
-          <a href="#contact" data-i18n data-zh="联系" data-en="Contact">联系</a>
-        </nav>
-        <div class="language-switch" aria-label="Language switch">
-          <button class="language-toggle" type="button" data-language-option="en">EN</button>
-          <button class="language-toggle" type="button" data-language-option="zh">中文</button>
-        </div>
-      </div>
+      <nav aria-label="Main navigation">
+        <a href="#menu">Menu</a>
+        <a href="#order">Order</a>
+        <a href="#track">Track</a>
+        <a class="nav-admin" href="admin/">Seller</a>
+      </nav>
     </header>
 
     <main id="top">
       <section class="hero">
         <div class="hero-copy">
-          <p class="eyebrow" data-i18n data-zh="接受预订" data-en="Now accepting pre-orders">接受预订</p>
-          <h1 class="hero-title">
-            <span data-i18n data-zh="賢仔港式烧腊" data-en="Roast by Jaden">賢仔港式烧腊</span>
-            <small class="hero-title-badge" data-language-badge>HK STYLE</small>
-          </h1>
-          <p data-i18n data-zh="正宗港式烧腊，提供新鲜烧味饭、面、拼盘和外带订单。" data-en="Authentic Hong Kong roast meats, rice, noodles, platters and takeaway orders.">
-            正宗港式烧腊，提供新鲜烧味饭、面、拼盘和外带订单。
+          <p class="eyebrow">Live ordering MVP</p>
+          <h1>Hong Kong Roast Rice, with a real seller workflow.</h1>
+          <p>
+            Browse the menu, place an order, get a tracking code, and let the seller
+            manage availability and food status from a separate admin portal.
           </p>
           <div class="hero-actions">
-            <a class="button primary" href="#menu" data-i18n data-zh="看菜单" data-en="View menu">看菜单</a>
-            <a class="button ghost" href="#order" data-i18n data-zh="马上下单" data-en="Order now">马上下单</a>
+            <a class="button primary" href="#menu">Start order</a>
+            <a class="button ghost" href="admin/">Open seller portal</a>
           </div>
         </div>
+        <aside class="hero-panel">
+          <div class="hero-stat">
+            <span>Store status</span>
+            <strong id="storeStatusHero">Open for orders</strong>
+          </div>
+          <div class="hero-stat">
+            <span>Menu control</span>
+            <strong>Product and option-level sold out</strong>
+          </div>
+          <div class="hero-stat">
+            <span>Order flow</span>
+            <strong>NEW to DONE tracking</strong>
+          </div>
+        </aside>
       </section>
 
-      <section class="quick-info" aria-label="Business information">
+      <section class="notice-bar" id="storeNotice" hidden></section>
+
+      <section class="quick-info">
         <div>
-          <span data-i18n data-zh="营业时间" data-en="Open">营业时间</span>
+          <span>Hours</span>
           <strong>10:00 AM - 5:30 PM</strong>
         </div>
         <div>
-          <span data-i18n data-zh="服务" data-en="Service">服务</span>
-          <strong data-i18n data-zh="自取和附近配送" data-en="Pickup & local delivery">自取和附近配送</strong>
+          <span>Service</span>
+          <strong>Pickup and local delivery</strong>
         </div>
         <div>
-          <span data-i18n data-zh="付款方式" data-en="Payment">付款方式</span>
-          <strong>Touch 'n Go / transfer</strong>
+          <span>Tracking</span>
+          <strong>Customer code + seller status updates</strong>
         </div>
       </section>
 
       <section class="menu-section" id="menu">
         <div class="section-heading">
-          <p class="eyebrow" data-i18n data-zh="选择你喜欢的烧味" data-en="Choose your favourites">选择你喜欢的烧味</p>
-          <h2 data-i18n data-zh="菜单" data-en="Menu">菜单</h2>
+          <p class="eyebrow">Customer portal</p>
+          <h2>Menu</h2>
         </div>
 
         <div class="category-tabs" id="categoryTabs" aria-label="Menu categories"></div>
@@ -81,40 +89,57 @@
 
       <section class="order-section" id="order">
         <div class="order-panel">
-          <div class="section-heading">
-            <p class="eyebrow" data-i18n data-zh="结账" data-en="Checkout">结账</p>
-            <h2 data-i18n data-zh="你的订单" data-en="Your order">你的订单</h2>
+          <div class="section-heading compact">
+            <p class="eyebrow">Cart</p>
+            <h2>Your order</h2>
           </div>
 
           <div class="cart-list" id="cartList"></div>
-          <div class="cart-empty" id="cartEmpty" data-i18n data-zh="你的购物车是空的。" data-en="Your cart is empty.">你的购物车是空的。</div>
+          <div class="cart-empty" id="cartEmpty">Your cart is empty.</div>
 
           <div class="cart-total">
-            <span data-i18n data-zh="总数" data-en="Total">总数</span>
+            <span>Total</span>
             <strong id="cartTotal">RM0.00</strong>
           </div>
+
+          <article class="latest-order" id="latestOrder" hidden>
+            <p class="eyebrow">Order created</p>
+            <h3 id="latestOrderCode">RBJ-0000</h3>
+            <p id="latestOrderSummary"></p>
+            <div class="latest-order-actions">
+              <a class="button primary" id="latestOrderTrackLink" href="#track">Track this order</a>
+              <a class="button secondary" id="latestOrderWhatsappLink" href="#" target="_blank" rel="noreferrer">
+                Send to WhatsApp
+              </a>
+            </div>
+          </article>
         </div>
 
         <form class="customer-form" id="orderForm">
+          <div class="section-heading compact">
+            <p class="eyebrow">Checkout</p>
+            <h2>Place order</h2>
+          </div>
+
           <label>
-            <span data-i18n data-zh="姓名" data-en="Name">姓名</span>
-            <input id="customerName" type="text" placeholder="你的姓名" data-i18n-placeholder data-zh-placeholder="你的姓名" data-en-placeholder="Your name" required />
+            Name
+            <input id="customerName" type="text" placeholder="Your name" required />
           </label>
 
           <label>
-            <span data-i18n data-zh="电话号码" data-en="Phone">电话号码</span>
+            Phone
             <input id="customerPhone" type="tel" placeholder="012-345 6789" required />
           </label>
 
           <fieldset>
-            <legend data-i18n data-zh="订单类型" data-en="Order type">订单类型</legend>
+            <legend>Order type</legend>
             <label class="radio-row">
               <input type="radio" name="orderType" value="Pickup" checked />
-              <span data-i18n data-zh="自取" data-en="Pickup">自取</span>
+              Pickup
             </label>
             <label class="radio-row">
               <input type="radio" name="orderType" value="Delivery" />
-              <span data-i18n data-zh="配送" data-en="Delivery">配送</span>
+              Delivery
             </label>
           </fieldset>
 
@@ -123,7 +148,7 @@
           </fieldset>
 
           <fieldset class="time-options">
-            <legend data-i18n data-zh="取餐 / 送餐时间" data-en="Pickup / delivery time">取餐 / 送餐时间</legend>
+            <legend>Pickup / delivery time</legend>
             <label class="time-chip">
               <input type="radio" name="pickupTime" value="10:00 AM - 12:00 PM" checked />
               10:00 AM - 12:00 PM
@@ -143,7 +168,7 @@
           </fieldset>
 
           <fieldset>
-            <legend data-i18n data-zh="付款方式" data-en="Payment method">付款方式</legend>
+            <legend>Payment method</legend>
             <label class="radio-row">
               <input type="radio" name="paymentMethod" value="Touch 'n Go" checked />
               Touch 'n Go
@@ -155,53 +180,64 @@
           </fieldset>
 
           <label>
-            <span data-i18n data-zh="配送地址" data-en="Delivery address">配送地址</span>
+            Delivery address
             <textarea
               id="customerAddress"
               rows="3"
-              placeholder="配送订单请填写地址"
-              data-i18n-placeholder
-              data-zh-placeholder="配送订单请填写地址"
-              data-en-placeholder="Required for delivery orders"
+              placeholder="Required for delivery orders"
             ></textarea>
           </label>
 
           <label>
-            <span data-i18n data-zh="备注" data-en="Notes">备注</span>
+            Notes
             <textarea
               id="customerNotes"
               rows="3"
-              placeholder="少辣、不要冰、加酱汁..."
-              data-i18n-placeholder
-              data-zh-placeholder="少辣、不要冰、加酱汁..."
-              data-en-placeholder="Less spicy, no ice, extra sauce..."
+              placeholder="Less spicy, no spring onion, extra sauce..."
             ></textarea>
           </label>
 
-          <button class="button primary full" type="submit" data-i18n data-zh="用 WhatsApp 发送订单" data-en="Send order on WhatsApp">用 WhatsApp 发送订单</button>
-          <p class="form-note" data-i18n data-zh="下单后会自动打开 WhatsApp。" data-en="Your order will open automatically in WhatsApp.">
-            下单后会自动打开 WhatsApp。
+          <button class="button primary full" type="submit" id="placeOrderButton">Place order</button>
+          <p class="form-note" id="orderFormNote">
+            Orders are saved in the browser for this MVP and can be managed from the seller portal.
           </p>
         </form>
       </section>
 
+      <section class="track-section" id="track">
+        <div class="section-heading">
+          <p class="eyebrow">Tracking</p>
+          <h2>Track your order</h2>
+        </div>
+
+        <form class="track-form" id="trackForm">
+          <label>
+            Tracking code
+            <input id="trackCodeInput" type="text" placeholder="RBJ-1001" />
+          </label>
+          <button class="button primary" type="submit">Check status</button>
+        </form>
+
+        <div class="track-result empty" id="trackResult">
+          Enter your order code to view the latest status.
+        </div>
+      </section>
+
       <section class="contact-section" id="contact">
         <div>
-          <p class="eyebrow" data-i18n data-zh="联系我们" data-en="Visit us">联系我们</p>
-          <h2 data-i18n data-zh="自取地点" data-en="Pickup point">自取地点</h2>
-          <p data-i18n data-zh="123 Jalan Example, Kuala Lumpur" data-en="123 Jalan Example, Kuala Lumpur">123 Jalan Example, Kuala Lumpur</p>
+          <p class="eyebrow">Need help?</p>
+          <h2>Contact</h2>
+          <p>123 Jalan Example, Kuala Lumpur</p>
         </div>
-        <a class="button ghost dark" href="https://wa.me/60123456789" target="_blank" rel="noreferrer">
-          <span data-i18n data-zh="WhatsApp 联系我们" data-en="WhatsApp us">WhatsApp 联系我们</span>
-        </a>
+        <a class="button secondary" href="admin/">Seller admin</a>
       </section>
     </main>
 
     <div class="mobile-cart" aria-live="polite">
       <span id="mobileCartCount">0 items</span>
-      <a href="#order" data-i18n data-zh="结账" data-en="Checkout">结账</a>
+      <a href="#order">Checkout</a>
     </div>
 
-    <script src="app.js?v=20260529-duck-quarter-v19"></script>
+    <script type="module" src="app.js?v=20260602-customer-mvp"></script>
   </body>
 </html>

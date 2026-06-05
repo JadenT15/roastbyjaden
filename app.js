@@ -17,6 +17,7 @@ const menuImages = {
   charSiuPortion: "assets/regular-char-siu-natural.png",
   crispyPork:
     "https://images.pexels.com/photos/8408377/pexels-photo-8408377.jpeg?auto=compress&cs=tinysrgb&w=900",
+  crispyPorkPortion: "assets/regular-roast-pork-natural.jpg",
   roastChicken:
     "https://images.pexels.com/photos/12350418/pexels-photo-12350418.jpeg?auto=compress&cs=tinysrgb&w=900",
 };
@@ -182,7 +183,7 @@ const menuItems = [
     category: "单点加料",
     price: 23.9,
     description: "脆皮烧肉例牌，皮脆肉香。",
-    image: menuImages.crispyPork,
+    image: menuImages.crispyPorkPortion,
     choices: ["portionWeight"],
   },
 ];

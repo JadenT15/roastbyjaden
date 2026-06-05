@@ -13,6 +13,7 @@ const menuImages = {
     "https://images.pexels.com/photos/6645928/pexels-photo-6645928.jpeg?auto=compress&cs=tinysrgb&w=900",
   charSiu:
     "https://images.pexels.com/photos/8969968/pexels-photo-8969968.jpeg?auto=compress&cs=tinysrgb&w=900",
+  charSiuRice: "assets/charsiu-rice-closeup-fresh-greens-steam.jpg",
   charSiuPortion: "assets/regular-char-siu-natural.png",
   crispyPork:
     "https://images.pexels.com/photos/8408377/pexels-photo-8408377.jpeg?auto=compress&cs=tinysrgb&w=900",
@@ -82,7 +83,7 @@ const menuItems = [
     category: "烧味饭",
     price: 12.9,
     description: "蜜汁叉烧切片，甜香入味，配白饭、香港芥兰或香港菜心和烧腊汁。",
-    image: menuImages.charSiu,
+    image: menuImages.charSiuRice,
     choices: ["charSiuCut"],
   },
   {

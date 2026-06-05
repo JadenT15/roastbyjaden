@@ -13,6 +13,7 @@ const menuImages = {
     "https://images.pexels.com/photos/6645928/pexels-photo-6645928.jpeg?auto=compress&cs=tinysrgb&w=900",
   charSiu:
     "https://images.pexels.com/photos/8969968/pexels-photo-8969968.jpeg?auto=compress&cs=tinysrgb&w=900",
+  charSiuPortion: "assets/regular-char-siu-natural.png",
   crispyPork:
     "https://images.pexels.com/photos/8408377/pexels-photo-8408377.jpeg?auto=compress&cs=tinysrgb&w=900",
   roastChicken:
@@ -171,7 +172,7 @@ const menuItems = [
     category: "单点加料",
     price: 22.9,
     description: "蜜汁叉烧例牌，适合加餸或多人分享。",
-    image: menuImages.charSiu,
+    image: menuImages.charSiuPortion,
     choices: ["charSiuCut", "portionWeight"],
   },
   {

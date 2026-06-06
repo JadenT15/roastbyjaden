@@ -9,6 +9,7 @@ const business = {
 const menuImages = {
   roastDuck:
     "https://images.unsplash.com/photo-1762088200446-f32ff63f8399?auto=format&fit=crop&w=900&q=85",
+  roastDuckRice: "assets/duck-rice-roast-skin-fresh-greens-steam.jpg",
   roastDisplay:
     "https://images.pexels.com/photos/6645928/pexels-photo-6645928.jpeg?auto=compress&cs=tinysrgb&w=900",
   charSiu:
@@ -17,6 +18,7 @@ const menuImages = {
   charSiuPortion: "assets/regular-char-siu-natural.png",
   crispyPork:
     "https://images.pexels.com/photos/8408377/pexels-photo-8408377.jpeg?auto=compress&cs=tinysrgb&w=900",
+  crispyPorkRice: "assets/roast-pork-rice-natural-steam.jpg",
   crispyPorkPortion: "assets/regular-roast-pork-natural.jpg",
   roastChicken:
     "https://images.pexels.com/photos/12350418/pexels-photo-12350418.jpeg?auto=compress&cs=tinysrgb&w=900",
@@ -72,11 +74,11 @@ const roastMeatOptions = [
 const menuItems = [
   {
     id: "roast-duck-rice",
-    name: "港式当归烧鸭",
+    name: "港式当归烧鸭饭",
     category: "烧味饭",
     price: 13.9,
     description: "皮脆肉嫩烧鸭，配白饭、香港芥兰或香港菜心和烧腊汁。",
-    image: menuImages.roastDuck,
+    image: menuImages.roastDuckRice,
   },
   {
     id: "char-siu-rice",
@@ -93,7 +95,7 @@ const menuItems = [
     category: "烧味饭",
     price: 13.9,
     description: "金黄脆皮烧肉，肥瘦相间，搭配白饭、香港芥兰或香港菜心和黄芥末。",
-    image: menuImages.crispyPork,
+    image: menuImages.crispyPorkRice,
   },
   {
     id: "soy-sauce-chicken-rice",

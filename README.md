@@ -1,34 +1,30 @@
-# Roast by Jaden Online Ordering Site
+# Roast by Jaden Ordering MVP
 
-This is a Vercel-ready static website for a food business. Customers can browse the menu, add items to a cart, fill in their details, and send the order through WhatsApp.
+This project now includes:
 
-## How to edit your business details
+- a customer website at `index.html`
+- a separate seller admin portal at `admin/index.html`
+- shared browser-based MVP state for demo and flow testing
 
-Open `app.js` and change:
+## Start and deploy guide
 
-- `business.name`
-- `business.whatsappNumber`
-- Menu item names, categories, prices, descriptions, and images
+For the simplest non-technical guide, read:
 
-Open `index.html` and change:
+- `docs/simple-start-and-deploy-guide.md`
 
-- Business name
-- Opening hours
-- Pickup address
-- Short homepage description
+## Important current limitation
 
-## Deploy on Vercel
+This version is still a browser-only MVP.
 
-1. Create a GitHub repository and upload these files.
-2. Go to Vercel.
-3. Import the GitHub repository.
-4. Keep the default settings.
-5. Deploy.
+That means customer and admin data are not yet shared across different devices or different domains in a real production way.
 
-Because this is a static site, it does not need a build command.
+For a true live system, the next step is:
 
-Suggested custom domain: `roastbyjaden.com`
+- Next.js frontend
+- Go backend
+- Postgres or Supabase database
 
-## Order flowcharts
+## Planning references
 
-See `docs/order-flowcharts.md` for the buyer ordering flow and merchant inventory flow for roast meat part selection.
+- `docs/admin-platform-flow.md`
+- `docs/order-flowcharts.md`

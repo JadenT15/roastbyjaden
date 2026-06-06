@@ -1,520 +1,68 @@
-const business = {
-  name: "Roast by Jaden",
-  // Replace this with your WhatsApp number in international format.
-  // Example for Malaysia: 60123456789
-  whatsappNumber: "60123456789",
-  currency: "RM",
-};
-
-const menuImages = {
-  roastDuck:
-    "https://images.unsplash.com/photo-1762088200446-f32ff63f8399?auto=format&fit=crop&w=900&q=85",
-  roastDuckRice: "assets/duck-rice-roast-skin-fresh-greens-steam.jpg",
-  roastDisplay:
-    "https://images.pexels.com/photos/6645928/pexels-photo-6645928.jpeg?auto=compress&cs=tinysrgb&w=900",
-  charSiu:
-    "https://images.pexels.com/photos/8969968/pexels-photo-8969968.jpeg?auto=compress&cs=tinysrgb&w=900",
-  charSiuRice: "assets/charsiu-rice-closeup-fresh-greens-steam.jpg",
-  charSiuPortion: "assets/regular-char-siu-natural.png",
-  crispyPork:
-    "https://images.pexels.com/photos/8408377/pexels-photo-8408377.jpeg?auto=compress&cs=tinysrgb&w=900",
-  crispyPorkRice: "assets/roast-pork-rice-natural-steam.jpg",
-  crispyPorkPortion: "assets/regular-roast-pork-natural.jpg",
-  roastChicken:
-    "https://images.pexels.com/photos/12350418/pexels-photo-12350418.jpeg?auto=compress&cs=tinysrgb&w=900",
-};
-
-const choiceGroups = {
-  chickenPart: {
-    id: "chickenPart",
-    label: "鸡肉部位",
-    options: [
-      { value: "鸡胸", available: true },
-      { value: "鸡二度", available: true },
-      { value: "鸡翅", available: false },
-      { value: "鸡腿", available: true },
-    ],
-  },
-  charSiuCut: {
-    id: "charSiuCut",
-    label: "叉烧肥瘦",
-    options: [
-      { value: "瘦", available: true },
-      { value: "半肥瘦", available: true },
-    ],
-  },
-  portionWeight: {
-    id: "portionWeight",
-    label: "重量",
-    options: [
-      { value: "100g", available: true, price: 12 },
-      { value: "200g", available: true, price: 23 },
-    ],
-  },
-  duckPortionSize: {
-    id: "duckPortionSize",
-    label: "烧鸭规格",
-    options: [
-      { value: "一例上庄", available: true, price: 24.9 },
-      { value: "一例下庄", available: true, price: 24.9 },
-      { value: "半只", available: true, price: 48 },
-      { value: "一只", available: true, price: 88 },
-    ],
-  },
-};
-
-const roastMeatOptions = [
-  { value: "烧鸭", available: true },
-  { value: "叉烧", available: true },
-  { value: "烧肉", available: true },
-  { value: "烧鸡", available: true },
-  { value: "白切鸡", available: true },
-];
-
-const menuItems = [
-  {
-    id: "roast-duck-rice",
-    name: "港式当归烧鸭饭",
-    category: "烧味饭",
-    price: 13.9,
-    description: "皮脆肉嫩烧鸭，配白饭、香港芥兰或香港菜心和烧腊汁。",
-    image: menuImages.roastDuckRice,
-  },
-  {
-    id: "char-siu-rice",
-    name: "蜜汁叉烧饭",
-    category: "烧味饭",
-    price: 12.9,
-    description: "蜜汁叉烧切片，甜香入味，配白饭、香港芥兰或香港菜心和烧腊汁。",
-    image: menuImages.charSiuRice,
-    choices: ["charSiuCut"],
-  },
-  {
-    id: "siew-yoke-rice",
-    name: "脆皮烧肉饭",
-    category: "烧味饭",
-    price: 13.9,
-    description: "金黄脆皮烧肉，肥瘦相间，搭配白饭、香港芥兰或香港菜心和黄芥末。",
-    image: menuImages.crispyPorkRice,
-  },
-  {
-    id: "soy-sauce-chicken-rice",
-    name: "豉油鸡饭",
-    category: "烧味饭",
-    price: 12.9,
-    description: "港式豉油鸡，肉质嫩滑，酱香浓郁，搭配白饭、香港芥兰或香港菜心。",
-    image: menuImages.roastChicken,
-    displayOnly: true,
-    choices: ["chickenPart"],
-  },
-  {
-    id: "white-chicken-rice",
-    name: "白切鸡饭",
-    category: "烧味饭",
-    price: 12.9,
-    description: "滑嫩白切鸡，搭配白饭、香港芥兰或香港菜心和姜蓉。",
-    image: menuImages.roastChicken,
-    choices: ["chickenPart"],
-  },
-  {
-    id: "hk-roast-chicken-rice",
-    name: "港式烧鸡",
-    category: "烧味饭",
-    price: 12.9,
-    description: "港式烧鸡，皮香肉嫩，搭配白饭、香港芥兰或香港菜心和烧腊汁。",
-    image: menuImages.roastChicken,
-    choices: ["chickenPart"],
-  },
-  {
-    id: "custom-double-rice",
-    name: "自选双拼饭",
-    category: "双拼 / 三拼 / 拼盘",
-    price: 16.9,
-    description: "自选两款烧味，搭配白饭、香港芥兰或香港菜心和烧腊汁。",
-    image: menuImages.roastDisplay,
-    comboChoices: {
-      id: "roastMeats",
-      label: "选择两款烧味",
-      count: 2,
-      options: roastMeatOptions,
-    },
-  },
-  {
-    id: "custom-triple-rice",
-    name: "自选三拼饭",
-    category: "双拼 / 三拼 / 拼盘",
-    price: 18.9,
-    description: "自选三款烧味，搭配白饭、香港芥兰或香港菜心和烧腊汁。",
-    image: menuImages.roastDisplay,
-    comboChoices: {
-      id: "roastMeats",
-      label: "选择三款烧味",
-      count: 3,
-      options: roastMeatOptions,
-    },
-  },
-  {
-    id: "four-treasure-rice",
-    name: "四宝饭",
-    category: "双拼 / 三拼 / 拼盘",
-    price: 19.9,
-    description: "烧鸭、叉烧、烧肉、烧鸡，搭配白饭、香港芥兰或香港菜心和烧腊汁。",
-    image: menuImages.roastDisplay,
-  },
-  {
-    id: "roast-duck-portion",
-    name: "烧鸭例牌",
-    category: "单点加料",
-    price: 24.9,
-    description: "适合分享的烧鸭例牌，可搭配饭或面。",
-    image: menuImages.roastDuck,
-    choices: ["duckPortionSize"],
-  },
-  {
-    id: "char-siu-portion",
-    name: "叉烧例牌",
-    category: "单点加料",
-    price: 22.9,
-    description: "蜜汁叉烧例牌，适合加餸或多人分享。",
-    image: menuImages.charSiuPortion,
-    choices: ["charSiuCut", "portionWeight"],
-  },
-  {
-    id: "siew-yoke-portion",
-    name: "烧肉例牌",
-    category: "单点加料",
-    price: 23.9,
-    description: "脆皮烧肉例牌，皮脆肉香。",
-    image: menuImages.crispyPorkPortion,
-    choices: ["portionWeight"],
-  },
-];
-
-const translations = {
-  en: {
-    categories: {
-      All: "All",
-      烧味饭: "Roast Rice",
-      "双拼 / 三拼 / 拼盘": "Double / Triple / Platters",
-      单点加料: "A La Carte",
-    },
-    items: {
-      "roast-duck-rice": {
-        name: "HK-Style Dang Gui Roast Duck Rice",
-        description:
-          "Tender roast duck with crisp skin, served with steamed rice, Hong Kong kai lan or choy sum, and roast gravy.",
-      },
-      "char-siu-rice": {
-        name: "Honey Char Siu Rice",
-        description:
-          "Sweet and savoury honey char siu slices served with steamed rice, Hong Kong kai lan or choy sum, and roast gravy.",
-      },
-      "siew-yoke-rice": {
-        name: "Crispy Roast Pork Rice",
-        description:
-          "Golden crispy roast pork with balanced fat and lean meat, served with steamed rice, Hong Kong kai lan or choy sum, and yellow mustard.",
-      },
-      "soy-sauce-chicken-rice": {
-        name: "Soy Sauce Chicken Rice",
-        description:
-          "HK-style soy sauce chicken with tender meat and rich savoury aroma, served with steamed rice, Hong Kong kai lan or choy sum.",
-      },
-      "white-chicken-rice": {
-        name: "Steamed White Chicken Rice",
-        description:
-          "Silky steamed chicken served with steamed rice, Hong Kong kai lan or choy sum, and ginger scallion sauce.",
-      },
-      "hk-roast-chicken-rice": {
-        name: "HK-Style Roast Chicken Rice",
-        description:
-          "HK-style roast chicken with fragrant skin and tender meat, served with steamed rice, Hong Kong kai lan or choy sum, and roast gravy.",
-      },
-      "custom-double-rice": {
-        name: "Build Your Own Double Roast Rice",
-        description:
-          "Choose any two roast meats, served with steamed rice, Hong Kong kai lan or choy sum, and roast gravy.",
-      },
-      "custom-triple-rice": {
-        name: "Build Your Own Triple Roast Rice",
-        description:
-          "Choose any three roast meats, served with steamed rice, Hong Kong kai lan or choy sum, and roast gravy.",
-      },
-      "four-treasure-rice": {
-        name: "Four Treasures Rice",
-        description:
-          "A classic Hong Kong roast platter rice with roast duck, char siu, roast pork and roast chicken, served with steamed rice, Hong Kong kai lan or choy sum, and roast gravy.",
-      },
-      "roast-duck-portion": {
-        name: "Roast Duck Portion",
-        description: "A shareable roast duck portion, perfect with rice or noodles.",
-      },
-      "char-siu-portion": {
-        name: "Char Siu Portion",
-        description: "Honey char siu portion, ideal as an add-on dish or for sharing.",
-      },
-      "siew-yoke-portion": {
-        name: "Crispy Roast Pork Portion",
-        description: "Crispy roast pork portion with fragrant crackling and savoury meat.",
-      },
-    },
-    choiceLabels: {
-      鸡肉部位: "Chicken Cut",
-      叉烧肥瘦: "Char Siu Cut",
-      重量: "Weight",
-      烧鸭规格: "Roast Duck Size",
-      选择两款烧味: "Choose 2 Roast Meats",
-      选择三款烧味: "Choose 3 Roast Meats",
-    },
-    choiceValues: {
-      鸡胸: "Breast",
-      鸡二度: "Second Joint",
-      鸡翅: "Wing",
-      鸡腿: "Drumstick",
-      瘦: "Lean",
-      半肥瘦: "Half Lean, Half Fat",
-      "100g": "100g",
-      "200g": "200g",
-      一例上庄: "Upper Quarter",
-      一例下庄: "Lower Quarter",
-      半只: "Half Duck",
-      一只: "Whole Duck",
-      烧鸭: "Roast Duck",
-      叉烧: "Char Siu",
-      烧肉: "Roast Pork",
-      烧鸡: "Roast Chicken",
-      白切鸡: "White Chicken",
-    },
-    ui: {
-      soldOut: "Sold Out",
-      displayOnly: "Currently unavailable",
-      each: "each",
-      item: "item",
-      items: "items",
-      dateLegend: "Pickup / delivery date",
-      today: "Today",
-      tomorrow: "Tomorrow",
-      addOne: "Add one",
-      removeOne: "Remove one",
-      menuQuantity: "menu quantity",
-    },
-  },
-  zh: {
-    categories: {
-      All: "全部",
-    },
-    ui: {
-      soldOut: "已售完",
-      displayOnly: "暂不售卖",
-      each: "每份",
-      item: "份",
-      items: "份",
-      dateLegend: "取餐 / 送餐日期",
-      today: "今天",
-      tomorrow: "明天",
-      addOne: "加一份",
-      removeOne: "减少一份",
-      menuQuantity: "菜单数量",
-    },
-  },
-};
+import {
+  buildWhatsAppUrl,
+  createOrder,
+  findOrderByCode,
+  formatChoiceSummary,
+  formatPrice,
+  getBusinessDateLabel,
+  getCategories,
+  getChoiceGroupsForProduct,
+  getComboGroupForProduct,
+  getFirstAvailableOption,
+  getState,
+  isProductAvailable,
+  subscribe,
+} from "./shared/platform-store.js";
 
 const cart = new Map();
 let activeCategory = "All";
+let latestOrderCode = "";
+let trackedOrderCode = "";
 
 const categoryTabs = document.querySelector("#categoryTabs");
 const menuGrid = document.querySelector("#menuGrid");
 const cartList = document.querySelector("#cartList");
 const cartEmpty = document.querySelector("#cartEmpty");
 const cartTotal = document.querySelector("#cartTotal");
-const orderForm = document.querySelector("#orderForm");
 const mobileCartCount = document.querySelector("#mobileCartCount");
 const pickupDateOptions = document.querySelector("#pickupDateOptions");
-const languageButtons = document.querySelectorAll("[data-language-option]");
-const languageBadge = document.querySelector("[data-language-badge]");
-let currentLanguage = "zh";
+const orderForm = document.querySelector("#orderForm");
+const placeOrderButton = document.querySelector("#placeOrderButton");
+const orderFormNote = document.querySelector("#orderFormNote");
+const latestOrder = document.querySelector("#latestOrder");
+const latestOrderCodeLabel = document.querySelector("#latestOrderCode");
+const latestOrderSummary = document.querySelector("#latestOrderSummary");
+const latestOrderTrackLink = document.querySelector("#latestOrderTrackLink");
+const latestOrderWhatsappLink = document.querySelector("#latestOrderWhatsappLink");
+const storeStatusHero = document.querySelector("#storeStatusHero");
+const storeNotice = document.querySelector("#storeNotice");
+const trackForm = document.querySelector("#trackForm");
+const trackCodeInput = document.querySelector("#trackCodeInput");
+const trackResult = document.querySelector("#trackResult");
 
-function formatPrice(value) {
-  return `${business.currency}${value.toFixed(2)}`;
-}
-
-function translateCategory(category) {
-  return translations[currentLanguage]?.categories?.[category] || category;
-}
-
-function translateItemName(item) {
-  return translations[currentLanguage]?.items?.[item.id]?.name || item.name;
-}
-
-function translateItemDescription(item) {
-  return translations[currentLanguage]?.items?.[item.id]?.description || item.description;
-}
-
-function translateChoiceLabel(label) {
-  return translations[currentLanguage]?.choiceLabels?.[label] || label;
-}
-
-function translateChoiceValue(value) {
-  if (Array.isArray(value)) {
-    return value.map((item) => translateChoiceValue(item)).join(currentLanguage === "zh" ? "、" : ", ");
-  }
-
-  return translations[currentLanguage]?.choiceValues?.[value] || value;
-}
-
-function translateUi(key) {
-  return translations[currentLanguage]?.ui?.[key] || translations.en.ui[key] || key;
-}
-
-function getCategories() {
-  return ["All", ...new Set(menuItems.map((item) => item.category))];
-}
-
-function getItemChoiceGroups(item) {
-  return (item.choices || []).map((choiceId) => choiceGroups[choiceId]).filter(Boolean);
-}
-
-function getItemComboChoiceGroup(item) {
-  return item.comboChoices || null;
-}
-
-function getFirstAvailableOption(group) {
-  return group.options.find((option) => option.available);
-}
-
-function isItemAvailable(item) {
-  if (item.displayOnly) return false;
-  const comboGroup = getItemComboChoiceGroup(item);
-  const comboAvailable =
-    !comboGroup || comboGroup.options.filter((option) => option.available).length >= comboGroup.count;
-
-  return comboAvailable && getItemChoiceGroups(item).every((group) => getFirstAvailableOption(group));
-}
-
-function renderCategories() {
-  categoryTabs.innerHTML = getCategories()
-    .map(
-      (category) => `
-        <button class="${category === activeCategory ? "active" : ""}" data-category="${category}">
-          ${translateCategory(category)}
-        </button>
-      `,
-    )
-    .join("");
-}
-
-function renderChoiceGroup(item, group) {
-  const firstAvailable = getFirstAvailableOption(group);
-
-  return `
-    <fieldset class="choice-group">
-      <legend>${translateChoiceLabel(group.label)}</legend>
-      <div class="choice-options">
-        ${group.options
-          .map((option) => {
-            const checked = firstAvailable?.value === option.value ? "checked" : "";
-            const disabled = option.available ? "" : "disabled";
-            const optionLabel = translateChoiceValue(option.value);
-            const soldOut = option.available ? "" : `<span>${translateUi("soldOut")}</span>`;
-
-            return `
-              <label class="choice-chip ${option.available ? "" : "sold-out"}">
-                <input
-                  type="radio"
-                  name="${item.id}-${group.id}"
-                  value="${option.value}"
-                  ${option.price ? `data-price="${option.price}"` : ""}
-                  ${checked}
-                  ${disabled}
-                />
-                ${optionLabel}${option.price ? ` ${formatPrice(option.price)}` : ""}
-                ${soldOut}
-              </label>
-            `;
-          })
-          .join("")}
-      </div>
-    </fieldset>
-  `;
-}
-
-function getComboHint(count, selectedCount = count) {
-  return currentLanguage === "zh" ? `已选 ${selectedCount} / ${count}` : `Selected ${selectedCount} / ${count}`;
-}
-
-function renderComboChoiceGroup(item, group) {
-  return `
-    <fieldset class="choice-group combo-choice-group" data-combo-group="${item.id}" data-combo-count="${group.count}">
-      <legend>${translateChoiceLabel(group.label)}</legend>
-      <div class="choice-options">
-        ${group.options
-          .map((option, index) => {
-            const checked = index < group.count ? "checked" : "";
-            const disabled = option.available ? "" : "disabled";
-            const optionLabel = translateChoiceValue(option.value);
-            const soldOut = option.available ? "" : `<span>${translateUi("soldOut")}</span>`;
-
-            return `
-              <label class="choice-chip ${option.available ? "" : "sold-out"}">
-                <input
-                  type="checkbox"
-                  name="${item.id}-${group.id}"
-                  value="${option.value}"
-                  ${checked}
-                  ${disabled}
-                />
-                ${optionLabel}
-                ${soldOut}
-              </label>
-            `;
-          })
-          .join("")}
-      </div>
-      <small class="choice-limit" data-combo-hint="${item.id}">${getComboHint(group.count)}</small>
-    </fieldset>
-  `;
-}
-
-function renderMenu() {
-  const visibleItems =
+function getVisibleProducts(state) {
+  const products =
     activeCategory === "All"
-      ? menuItems
-      : menuItems.filter((item) => item.category === activeCategory);
+      ? state.products
+      : state.products.filter((product) => product.category === activeCategory);
 
-  menuGrid.innerHTML = visibleItems
-    .map((item) => {
-      const available = isItemAvailable(item);
-
-      return `
-        <article class="menu-card" data-item-card="${item.id}">
-          <img src="${item.image}" alt="${translateItemName(item)}" loading="lazy" />
-          <div class="menu-card-body">
-            <div>
-              <h3>${translateItemName(item)}</h3>
-              <p>${translateItemDescription(item)}</p>
-            </div>
-            ${getItemChoiceGroups(item).map((group) => renderChoiceGroup(item, group)).join("")}
-            ${getItemComboChoiceGroup(item) ? renderComboChoiceGroup(item, getItemComboChoiceGroup(item)) : ""}
-            <div class="menu-card-footer">
-              <span class="price" data-menu-price="${item.id}">${formatPrice(
-                getMenuDisplayPrice(item, getDefaultChoices(item)),
-              )}</span>
-              ${item.displayOnly ? renderDisplayOnlyBadge() : renderMenuQuantity(item, available)}
-            </div>
-          </div>
-        </article>
-      `;
-    })
-    .join("");
+  return [...products].sort((left, right) => {
+    if (left.enabled === right.enabled) return left.name.localeCompare(right.name, "zh");
+    return left.enabled ? -1 : 1;
+  });
 }
 
-function getDefaultChoices(item) {
-  const choices = getItemChoiceGroups(item).map((group) => ({
-    label: group.label,
-    value: getFirstAvailableOption(group)?.value || "",
-    price: getFirstAvailableOption(group)?.price,
-  }));
+function getDefaultChoices(product, state) {
+  const choices = getChoiceGroupsForProduct(product, state).map((group) => {
+    const firstAvailable = getFirstAvailableOption(group);
+    return {
+      label: group.label,
+      value: firstAvailable?.value || "",
+      price: firstAvailable?.price,
+    };
+  });
 
-  const comboGroup = getItemComboChoiceGroup(item);
+  const comboGroup = getComboGroupForProduct(product, state);
   if (comboGroup) {
     choices.push({
       label: comboGroup.label,
@@ -528,9 +76,9 @@ function getDefaultChoices(item) {
   return choices;
 }
 
-function getSelectedChoices(item) {
-  const choices = getItemChoiceGroups(item).map((group) => {
-    const selected = document.querySelector(`input[name="${item.id}-${group.id}"]:checked`);
+function getSelectedChoices(product, state) {
+  const choices = getChoiceGroupsForProduct(product, state).map((group) => {
+    const selected = document.querySelector(`input[name="${product.id}-${group.id}"]:checked`);
     const fallback = getFirstAvailableOption(group);
 
     return {
@@ -540,258 +88,76 @@ function getSelectedChoices(item) {
     };
   });
 
-  const comboGroup = getItemComboChoiceGroup(item);
+  const comboGroup = getComboGroupForProduct(product, state);
   if (comboGroup) {
-    const inputs = [...document.querySelectorAll(`input[name="${item.id}-${comboGroup.id}"]`)];
-    const selectedValues =
-      inputs.length > 0
-        ? inputs.filter((input) => input.checked).map((input) => input.value)
-        : comboGroup.options
-            .filter((option) => option.available)
-            .slice(0, comboGroup.count)
-            .map((option) => option.value);
-
+    const inputs = [...document.querySelectorAll(`input[name="${product.id}-${comboGroup.id}"]`)];
     choices.push({
       label: comboGroup.label,
-      value: selectedValues,
+      value: inputs.filter((input) => input.checked).map((input) => input.value),
     });
   }
 
   return choices;
 }
 
-function formatChoices(choices) {
-  return choices
-    .filter((choice) => (Array.isArray(choice.value) ? choice.value.length > 0 : choice.value))
-    .map((choice) => `${translateChoiceLabel(choice.label)}: ${translateChoiceValue(choice.value)}`)
-    .join(" / ");
-}
-
-function getCartKey(item, choices) {
+function getCartKey(product, choices) {
   const choiceKey = choices
     .map((choice) => {
       const value = Array.isArray(choice.value) ? choice.value.join(",") : choice.value;
       return `${choice.label}:${value}`;
     })
     .join("|");
-  return `${item.id}|${choiceKey}`;
+
+  return `${product.id}|${choiceKey}`;
 }
 
-function getCartQuantity(item, choices) {
-  return cart.get(getCartKey(item, choices))?.quantity || 0;
+function getItemPrice(product, choices) {
+  const override = choices.find((choice) => Number.isFinite(choice.price));
+  return override?.price || product.price;
 }
 
-function getItemPrice(item, choices = []) {
-  const priceChoice = choices.find((choice) => Number.isFinite(choice.price));
-  return priceChoice?.price || item.price;
+function getCartQuantity(product, choices) {
+  return cart.get(getCartKey(product, choices))?.quantity || 0;
 }
 
-function getMenuDisplayPrice(item, choices = []) {
-  const quantity = getCartQuantity(item, choices);
-  const unitPrice = getItemPrice(item, choices);
-
-  return quantity > 0 ? unitPrice * quantity : unitPrice;
+function getCartItems(state) {
+  return [...cart.values()]
+    .map((entry) => {
+      const product = state.products.find((item) => item.id === entry.productId);
+      return product ? { ...entry, product } : null;
+    })
+    .filter(Boolean);
 }
 
-function renderMenuQuantity(item, available) {
-  if (!available) {
-    return `<button class="add-button" type="button" disabled>${translateUi("soldOut")}</button>`;
-  }
-
-  const itemName = translateItemName(item);
-
-  return `
-    <div class="menu-quantity" aria-label="${itemName} ${translateUi("menuQuantity")}">
-      <button type="button" data-menu-decrease="${item.id}" aria-label="${translateUi("removeOne")} ${itemName}">-</button>
-      <output data-menu-count="${item.id}">${getCartQuantity(item, getDefaultChoices(item))}</output>
-      <button type="button" data-add="${item.id}" aria-label="${translateUi("addOne")} ${itemName}">+</button>
-    </div>
-  `;
-}
-
-function renderDisplayOnlyBadge() {
-  return `<span class="display-only-badge">${translateUi("displayOnly")}</span>`;
-}
-
-function updateMenuQuantityDisplay(id) {
-  const item = menuItems.find((menuItem) => menuItem.id === id);
-  const card = menuGrid.querySelector(`[data-item-card="${id}"]`);
-  const output = card?.querySelector(`[data-menu-count="${id}"]`);
-  const price = card?.querySelector(`[data-menu-price="${id}"]`);
-  const choices = item ? getSelectedChoices(item) : [];
-
-  if (!item || !output || !price) return;
-  output.textContent = getCartQuantity(item, choices);
-  price.textContent = formatPrice(getMenuDisplayPrice(item, choices));
-}
-
-function getSelectedComboCount(item) {
-  const comboGroup = getItemComboChoiceGroup(item);
-  if (!comboGroup) return 0;
-
-  return document.querySelectorAll(`input[name="${item.id}-${comboGroup.id}"]:checked`).length;
-}
-
-function hasValidComboSelection(item) {
-  const comboGroup = getItemComboChoiceGroup(item);
-  if (!comboGroup) return true;
-
-  return getSelectedComboCount(item) === comboGroup.count;
-}
-
-function updateComboSelectionState(item) {
-  const comboGroup = getItemComboChoiceGroup(item);
-  if (!comboGroup) return;
-
-  const selectedCount = getSelectedComboCount(item);
-  const card = menuGrid.querySelector(`[data-item-card="${item.id}"]`);
-  const addButton = card?.querySelector(`[data-add="${item.id}"]`);
-  const hint = card?.querySelector(`[data-combo-hint="${item.id}"]`);
-
-  if (addButton) addButton.disabled = selectedCount !== comboGroup.count;
-  if (hint) hint.textContent = getComboHint(comboGroup.count, selectedCount);
-}
-
-function getCartItems() {
-  return [...cart.values()].map((entry) => {
-    const item = menuItems.find((menuItem) => menuItem.id === entry.itemId);
-    return { ...item, ...entry };
-  });
-}
-
-function getCartTotal() {
-  return getCartItems().reduce(
-    (total, item) => total + getItemPrice(item, item.choices) * item.quantity,
-    0,
-  );
-}
-
-function renderCart() {
-  const items = getCartItems();
-  const totalQuantity = items.reduce((total, item) => total + item.quantity, 0);
-
-  cartEmpty.hidden = items.length > 0;
-  cartList.innerHTML = items
-    .map(
-      (item) => `
-        <div class="cart-item">
-          <div>
-            <strong>${translateItemName(item)}</strong>
-            ${item.choices.length ? `<small>${formatChoices(item.choices)}</small>` : ""}
-            <span>${formatPrice(getItemPrice(item, item.choices))} ${translateUi("each")}</span>
-          </div>
-          <div class="quantity" aria-label="${translateItemName(item)} quantity">
-            <button type="button" data-decrease="${item.key}" aria-label="${translateUi("removeOne")} ${translateItemName(item)}">-</button>
-            <output>${item.quantity}</output>
-            <button type="button" data-increase="${item.key}" aria-label="${translateUi("addOne")} ${translateItemName(item)}">+</button>
-          </div>
-        </div>
-      `,
-    )
-    .join("");
-
-  cartTotal.textContent = formatPrice(getCartTotal());
-  mobileCartCount.textContent = `${totalQuantity} ${totalQuantity === 1 ? translateUi("item") : translateUi("items")}`;
-}
-
-function addToCart(id) {
-  const item = menuItems.find((menuItem) => menuItem.id === id);
-  if (!item || item.displayOnly || !isItemAvailable(item)) return;
-  if (!hasValidComboSelection(item)) return;
-
-  const choices = getSelectedChoices(item);
-  const key = getCartKey(item, choices);
-  const existing = cart.get(key);
-
-  cart.set(key, {
-    key,
-    itemId: id,
-    choices,
-    price: getItemPrice(item, choices),
-    quantity: existing ? existing.quantity + 1 : 1,
-  });
-  renderCart();
-  updateMenuQuantityDisplay(id);
-}
-
-function increaseCartItem(key) {
-  const entry = cart.get(key);
-  if (!entry) return;
-
-  cart.set(key, { ...entry, quantity: entry.quantity + 1 });
-  renderCart();
-  updateMenuQuantityDisplay(entry.itemId);
-}
-
-function decreaseCartItem(key) {
-  const entry = cart.get(key);
-  if (!entry) return;
-  const itemId = entry.itemId;
-
-  if (entry.quantity === 1) {
-    cart.delete(key);
-  } else {
-    cart.set(key, { ...entry, quantity: entry.quantity - 1 });
-  }
-
-  renderCart();
-  updateMenuQuantityDisplay(itemId);
-}
-
-function decreaseMenuItem(id) {
-  const item = menuItems.find((menuItem) => menuItem.id === id);
-  if (!item) return;
-
-  const key = getCartKey(item, getSelectedChoices(item));
-  decreaseCartItem(key);
-}
-
-function formatPickupDate(date, index) {
-  const day = date.getDate();
-  const month = date.toLocaleDateString("en-MY", { month: "short" });
-  const year = date.getFullYear();
-  const weekday =
-    currentLanguage === "zh"
-      ? ["周日", "周一", "周二", "周三", "周四", "周五", "周六"][date.getDay()]
-      : date.toLocaleDateString("en-MY", { weekday: "short" });
-
-  if (currentLanguage === "zh") {
-    const zhDate = `${date.getMonth() + 1}月${day}日 ${year}`;
-    if (index === 0) return `${translateUi("today")}，${zhDate}`;
-    if (index === 1) return `${translateUi("tomorrow")}，${zhDate}`;
-    return `${weekday}，${zhDate}`;
-  }
-
-  if (index === 0) return `${translateUi("today")}, ${day} ${month} ${year}`;
-  if (index === 1) return `${translateUi("tomorrow")}, ${day} ${month} ${year}`;
-  return `${weekday}, ${day} ${month} ${year}`;
+function getCartTotal(state) {
+  return getCartItems(state).reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
 }
 
 function renderPickupDates() {
-  if (!pickupDateOptions) return;
-
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const dateChoices = Array.from({ length: 7 }, (_, index) => {
+  const labels = Array.from({ length: 7 }, (_, index) => {
     const date = new Date(today);
-    date.setDate(today.getDate() + index);
-    return formatPickupDate(date, index);
+    date.setDate(date.getDate() + index);
+    if (index === 0) return `Today, ${getBusinessDateLabel(date)}`;
+    if (index === 1) return `Tomorrow, ${getBusinessDateLabel(date)}`;
+    return getBusinessDateLabel(date);
   });
 
   pickupDateOptions.innerHTML = `
-    <legend>${translateUi("dateLegend")}</legend>
-    ${dateChoices
+    <legend>Pickup / delivery date</legend>
+    ${labels
       .map(
-        (dateLabel, index) => `
+        (label, index) => `
           <label class="time-chip">
             <input
               type="radio"
               name="pickupDate"
-              value="${dateLabel}"
+              value="${label}"
               ${index === 0 ? "checked" : ""}
             />
-            ${dateLabel}
+            ${label}
           </label>
         `,
       )
@@ -799,75 +165,395 @@ function renderPickupDates() {
   `;
 }
 
-function renderLanguage() {
-  document.documentElement.lang = currentLanguage;
-  document.title =
-    currentLanguage === "zh" ? "賢仔港式烧腊 | Online Menu" : "Roast by Jaden | Online Menu";
+function renderCategories(state) {
+  categoryTabs.innerHTML = getCategories(state)
+    .map(
+      (category) => `
+        <button class="${category === activeCategory ? "active" : ""}" data-category="${category}">
+          ${category}
+        </button>
+      `,
+    )
+    .join("");
+}
 
-  document.querySelectorAll("[data-i18n]").forEach((element) => {
-    element.textContent = element.dataset[currentLanguage];
-  });
+function renderChoiceGroup(product, group) {
+  const firstAvailable = getFirstAvailableOption(group);
 
-  document.querySelectorAll("[data-i18n-placeholder]").forEach((element) => {
-    element.placeholder = element.dataset[`${currentLanguage}Placeholder`];
-  });
+  return `
+    <fieldset class="choice-group">
+      <legend>${group.label}</legend>
+      <div class="choice-options">
+        ${group.options
+          .map((option) => {
+            const checked = firstAvailable?.value === option.value ? "checked" : "";
+            const disabled = option.available ? "" : "disabled";
 
-  languageButtons.forEach((button) => {
-    const isActive = button.dataset.languageOption === currentLanguage;
-    button.classList.toggle("active", isActive);
-    button.setAttribute("aria-pressed", String(isActive));
-  });
+            return `
+              <label class="choice-chip ${option.available ? "" : "sold-out"}">
+                <input
+                  type="radio"
+                  name="${product.id}-${group.id}"
+                  value="${option.value}"
+                  ${option.price ? `data-price="${option.price}"` : ""}
+                  ${checked}
+                  ${disabled}
+                />
+                ${option.value}${option.price ? ` ${formatPrice(option.price)}` : ""}
+                ${option.available ? "" : "<span>Sold Out</span>"}
+              </label>
+            `;
+          })
+          .join("")}
+      </div>
+    </fieldset>
+  `;
+}
 
-  if (languageBadge) {
-    languageBadge.hidden = currentLanguage !== "en";
+function renderComboGroup(product, group) {
+  return `
+    <fieldset class="choice-group combo-choice-group" data-combo-group="${product.id}" data-combo-count="${group.count}">
+      <legend>${group.label}</legend>
+      <div class="choice-options">
+        ${group.options
+          .map((option, index) => `
+            <label class="choice-chip ${option.available ? "" : "sold-out"}">
+              <input
+                type="checkbox"
+                name="${product.id}-${group.id}"
+                value="${option.value}"
+                ${option.available ? "" : "disabled"}
+                ${option.available && index < group.count ? "checked" : ""}
+              />
+              ${option.value}
+              ${option.available ? "" : "<span>Sold Out</span>"}
+            </label>
+          `)
+          .join("")}
+      </div>
+      <small class="choice-limit" data-combo-hint="${product.id}">Selected ${group.count} / ${group.count}</small>
+    </fieldset>
+  `;
+}
+
+function getProductBadge(product, available) {
+  if (!product.enabled) return '<span class="product-badge idle">Unavailable</span>';
+  if (!available || product.soldOut) return '<span class="product-badge sold">Sold Out</span>';
+  return '<span class="product-badge live">Available</span>';
+}
+
+function renderMenu(state) {
+  const products = getVisibleProducts(state);
+
+  menuGrid.innerHTML = products
+    .map((product) => {
+      const available = isProductAvailable(product, state);
+      const defaultChoices = getDefaultChoices(product, state);
+      const choiceGroups = getChoiceGroupsForProduct(product, state);
+      const comboGroup = getComboGroupForProduct(product, state);
+
+      return `
+        <article class="menu-card" data-item-card="${product.id}">
+          <img src="${product.image}" alt="${product.name}" loading="lazy" />
+          <div class="menu-card-body">
+            <div class="menu-card-top">
+              <div>
+                <h3>${product.name}</h3>
+                <p>${product.description}</p>
+              </div>
+              ${getProductBadge(product, available)}
+            </div>
+            ${choiceGroups.map((group) => renderChoiceGroup(product, group)).join("")}
+            ${comboGroup ? renderComboGroup(product, comboGroup) : ""}
+            <div class="menu-card-footer">
+              <span class="price" data-menu-price="${product.id}">${formatPrice(getItemPrice(product, defaultChoices))}</span>
+              ${
+                available
+                  ? `
+                    <div class="menu-quantity" aria-label="${product.name} quantity">
+                      <button type="button" data-menu-decrease="${product.id}">-</button>
+                      <output data-menu-count="${product.id}">${getCartQuantity(product, defaultChoices)}</output>
+                      <button type="button" data-add="${product.id}">+</button>
+                    </div>
+                  `
+                  : '<button class="add-button" type="button" disabled>Not Available</button>'
+              }
+            </div>
+          </div>
+        </article>
+      `;
+    })
+    .join("");
+
+  if (!products.length) {
+    menuGrid.innerHTML = '<div class="empty-card">No products in this category yet.</div>';
+  }
+
+  refreshAllMenuCards(state);
+}
+
+function refreshAllMenuCards(state) {
+  getVisibleProducts(state).forEach((product) => updateMenuCard(product.id, state));
+}
+
+function updateMenuCard(productId, state) {
+  const product = state.products.find((entry) => entry.id === productId);
+  const card = document.querySelector(`[data-item-card="${productId}"]`);
+  if (!product || !card) return;
+
+  const choices = getSelectedChoices(product, state);
+  const output = card.querySelector(`[data-menu-count="${productId}"]`);
+  const price = card.querySelector(`[data-menu-price="${productId}"]`);
+
+  if (output) output.textContent = getCartQuantity(product, choices);
+  if (price) price.textContent = formatPrice(getItemPrice(product, choices));
+}
+
+function renderCart(state) {
+  const items = getCartItems(state);
+  const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
+
+  cartEmpty.hidden = items.length > 0;
+  cartList.innerHTML = items
+    .map(
+      (item) => `
+        <div class="cart-item">
+          <div>
+            <strong>${item.product.name}</strong>
+            ${item.choicesText ? `<small>${item.choicesText}</small>` : ""}
+            <span>${formatPrice(item.unitPrice)} each</span>
+          </div>
+          <div class="quantity">
+            <button type="button" data-decrease="${item.key}">-</button>
+            <output>${item.quantity}</output>
+            <button type="button" data-increase="${item.key}">+</button>
+          </div>
+        </div>
+      `,
+    )
+    .join("");
+
+  cartTotal.textContent = formatPrice(getCartTotal(state));
+  mobileCartCount.textContent = `${totalQuantity} ${totalQuantity === 1 ? "item" : "items"}`;
+}
+
+function renderStoreState(state) {
+  if (state.settings.orderingOpen) {
+    storeStatusHero.textContent = "Open for orders";
+    storeNotice.hidden = true;
+    placeOrderButton.disabled = false;
+    orderFormNote.textContent =
+      "Orders are saved in the browser for this MVP and can be managed from the seller portal.";
+  } else {
+    storeStatusHero.textContent = "Paused by seller";
+    storeNotice.hidden = false;
+    storeNotice.textContent =
+      "The seller has paused ordering for now. You can still browse the menu and track existing orders.";
+    placeOrderButton.disabled = true;
+    orderFormNote.textContent = "Ordering is currently paused in the seller portal.";
   }
 }
 
-function buildWhatsAppMessage() {
-  const name = document.querySelector("#customerName").value.trim();
-  const phone = document.querySelector("#customerPhone").value.trim();
+function renderLatestOrder(state) {
+  if (!latestOrderCode) {
+    latestOrder.hidden = true;
+    return;
+  }
+
+  const order = findOrderByCode(latestOrderCode) || state.orders.find((entry) => entry.code === latestOrderCode);
+  if (!order) {
+    latestOrder.hidden = true;
+    return;
+  }
+
+  latestOrder.hidden = false;
+  latestOrderCodeLabel.textContent = order.code;
+  latestOrderSummary.textContent = `${order.status} • ${formatPrice(order.total)} • ${order.orderType}`;
+  latestOrderTrackLink.href = `#track`;
+  latestOrderWhatsappLink.href = buildWhatsAppUrl(order);
+}
+
+function renderTracking(state) {
+  if (!trackedOrderCode) {
+    trackResult.className = "track-result empty";
+    trackResult.textContent = "Enter your order code to view the latest status.";
+    return;
+  }
+
+  const order = state.orders.find(
+    (entry) => entry.code.toUpperCase() === trackedOrderCode.toUpperCase(),
+  );
+
+  if (!order) {
+    trackResult.className = "track-result empty";
+    trackResult.textContent = "We could not find that code yet.";
+    return;
+  }
+
+  trackResult.className = "track-result";
+  trackResult.innerHTML = `
+    <div class="track-card-head">
+      <div>
+        <p class="eyebrow">Order code</p>
+        <h3>${order.code}</h3>
+      </div>
+      <span class="status-pill">${order.status}</span>
+    </div>
+    <p class="track-meta">${order.customerName} • ${order.orderType} • ${formatPrice(order.total)}</p>
+    <ul class="track-items">
+      ${order.items
+        .map(
+          (item) => `
+            <li>
+              <strong>${item.quantity} x ${item.name}</strong>
+              ${item.choicesText ? `<span>${item.choicesText}</span>` : ""}
+            </li>
+          `,
+        )
+        .join("")}
+    </ul>
+    <div class="track-history">
+      ${order.history
+        .map(
+          (entry) => `
+            <div class="track-history-row">
+              <strong>${entry.status}</strong>
+              <span>${new Date(entry.timestamp).toLocaleString("en-MY")}</span>
+            </div>
+          `,
+        )
+        .join("")}
+    </div>
+  `;
+}
+
+function renderAll(state = getState()) {
+  renderStoreState(state);
+  renderCategories(state);
+  renderMenu(state);
+  renderCart(state);
+  renderLatestOrder(state);
+  renderTracking(state);
+}
+
+function addToCart(productId) {
+  const state = getState();
+  const product = state.products.find((entry) => entry.id === productId);
+  if (!product || !isProductAvailable(product, state)) return;
+
+  const choices = getSelectedChoices(product, state);
+  const comboGroup = getComboGroupForProduct(product, state);
+  if (comboGroup) {
+    const comboChoice = choices.find((entry) => entry.label === comboGroup.label);
+    if (!comboChoice || comboChoice.value.length !== comboGroup.count) {
+      alert(`Please select exactly ${comboGroup.count} roast meats.`);
+      return;
+    }
+  }
+
+  const key = getCartKey(product, choices);
+  const existing = cart.get(key);
+
+  cart.set(key, {
+    key,
+    productId,
+    quantity: existing ? existing.quantity + 1 : 1,
+    unitPrice: getItemPrice(product, choices),
+    choices,
+    choicesText: formatChoiceSummary(choices),
+  });
+
+  renderCart(state);
+  updateMenuCard(productId, state);
+}
+
+function increaseCartItem(key) {
+  const entry = cart.get(key);
+  if (!entry) return;
+  entry.quantity += 1;
+  const state = getState();
+  renderCart(state);
+  updateMenuCard(entry.productId, state);
+}
+
+function decreaseCartItem(key) {
+  const entry = cart.get(key);
+  if (!entry) return;
+
+  if (entry.quantity === 1) {
+    cart.delete(key);
+  } else {
+    entry.quantity -= 1;
+  }
+
+  const state = getState();
+  renderCart(state);
+  updateMenuCard(entry.productId, state);
+}
+
+function handleComboSelection(event) {
+  const input = event.target;
+  if (input.type !== "checkbox") return;
+
+  const fieldset = input.closest("[data-combo-group]");
+  if (!fieldset) return;
+
+  const limit = Number(fieldset.dataset.comboCount);
+  const checked = [...fieldset.querySelectorAll("input:checked")];
+  if (checked.length > limit) {
+    input.checked = false;
+    return;
+  }
+
+  const hint = fieldset.querySelector("[data-combo-hint]");
+  if (hint) {
+    hint.textContent = `Selected ${checked.length} / ${limit}`;
+  }
+}
+
+function clearCartAndForm() {
+  cart.clear();
+  orderForm.reset();
+  renderPickupDates();
+}
+
+function collectOrderPayload(state) {
+  const customerName = document.querySelector("#customerName").value.trim();
+  const customerPhone = document.querySelector("#customerPhone").value.trim();
   const orderType = document.querySelector("input[name='orderType']:checked").value;
   const pickupDate = document.querySelector("input[name='pickupDate']:checked")?.value || "";
   const pickupTime = document.querySelector("input[name='pickupTime']:checked").value;
   const paymentMethod = document.querySelector("input[name='paymentMethod']:checked").value;
-  const timeLabel = orderType === "Delivery" ? "Delivery time" : "Pickup time";
-  const address = document.querySelector("#customerAddress").value.trim();
-  const notes = document.querySelector("#customerNotes").value.trim();
-  const items = getCartItems();
+  const customerAddress = document.querySelector("#customerAddress").value.trim();
+  const customerNotes = document.querySelector("#customerNotes").value.trim();
+  const items = getCartItems(state);
 
-  const orderLines = items.map(
-    (item) =>
-      `- ${item.quantity} x ${translateItemName(item)}${
-        item.choices.length ? ` [${formatChoices(item.choices)}]` : ""
-      } (${formatPrice(getItemPrice(item, item.choices) * item.quantity)})`,
-  );
-
-  return [
-    `Hi ${business.name}, I would like to order:`,
-    "",
-    ...orderLines,
-    "",
-    `Total: ${formatPrice(getCartTotal())}`,
-    `Order type: ${orderType}`,
-    pickupDate ? `Date: ${pickupDate}` : "",
-    `${timeLabel}: ${pickupTime}`,
-    `Payment method: ${paymentMethod}`,
-    `Name: ${name}`,
-    `Phone: ${phone}`,
-    address ? `Delivery address: ${address}` : "",
-    notes ? `Notes: ${notes}` : "",
-  ]
-    .filter(Boolean)
-    .join("\n");
+  return {
+    customerName,
+    customerPhone,
+    orderType,
+    pickupDate,
+    pickupTime,
+    paymentMethod,
+    customerAddress,
+    customerNotes,
+    items: items.map((item) => ({
+      productId: item.productId,
+      name: item.product.name,
+      choices: item.choices,
+      choicesText: item.choicesText,
+      unitPrice: item.unitPrice,
+      quantity: item.quantity,
+    })),
+    total: getCartTotal(state),
+  };
 }
 
 categoryTabs.addEventListener("click", (event) => {
   const button = event.target.closest("[data-category]");
   if (!button) return;
-
   activeCategory = button.dataset.category;
-  renderCategories();
-  renderMenu();
+  renderAll();
 });
 
 menuGrid.addEventListener("click", (event) => {
@@ -875,25 +561,20 @@ menuGrid.addEventListener("click", (event) => {
   const decreaseButton = event.target.closest("[data-menu-decrease]");
 
   if (addButton) addToCart(addButton.dataset.add);
-  if (decreaseButton) decreaseMenuItem(decreaseButton.dataset.menuDecrease);
+  if (decreaseButton) {
+    const state = getState();
+    const product = state.products.find((entry) => entry.id === decreaseButton.dataset.menuDecrease);
+    if (!product) return;
+    const key = getCartKey(product, getSelectedChoices(product, state));
+    decreaseCartItem(key);
+  }
 });
 
 menuGrid.addEventListener("change", (event) => {
+  handleComboSelection(event);
   const card = event.target.closest("[data-item-card]");
   if (!card) return;
-
-  const item = menuItems.find((menuItem) => menuItem.id === card.dataset.itemCard);
-  const comboGroup = item ? getItemComboChoiceGroup(item) : null;
-
-  if (comboGroup && event.target.matches(`input[name="${item.id}-${comboGroup.id}"]`)) {
-    const selectedInputs = [...card.querySelectorAll(`input[name="${item.id}-${comboGroup.id}"]:checked`)];
-    if (selectedInputs.length > comboGroup.count) {
-      event.target.checked = false;
-    }
-    updateComboSelectionState(item);
-  }
-
-  updateMenuQuantityDisplay(card.dataset.itemCard);
+  updateMenuCard(card.dataset.itemCard, getState());
 });
 
 cartList.addEventListener("click", (event) => {
@@ -904,32 +585,44 @@ cartList.addEventListener("click", (event) => {
   if (decreaseButton) decreaseCartItem(decreaseButton.dataset.decrease);
 });
 
-languageButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    currentLanguage = button.dataset.languageOption;
-    renderLanguage();
-    renderPickupDates();
-    renderCategories();
-    renderMenu();
-    renderCart();
-  });
-});
-
 orderForm.addEventListener("submit", (event) => {
   event.preventDefault();
 
-  if (cart.size === 0) {
-    alert("Please add at least one item before ordering.");
+  const state = getState();
+  if (!state.settings.orderingOpen) {
+    alert("Ordering is paused right now.");
     return;
   }
 
-  const message = encodeURIComponent(buildWhatsAppMessage());
-  const url = `https://wa.me/${business.whatsappNumber}?text=${message}`;
-  window.open(url, "_blank", "noopener,noreferrer");
+  if (cart.size === 0) {
+    alert("Please add at least one item before placing the order.");
+    return;
+  }
+
+  const payload = collectOrderPayload(state);
+  if (payload.orderType === "Delivery" && !payload.customerAddress) {
+    alert("Please fill in the delivery address.");
+    return;
+  }
+
+  const order = createOrder(payload);
+  latestOrderCode = order.code;
+  trackedOrderCode = order.code;
+  trackCodeInput.value = order.code;
+  clearCartAndForm();
+  renderAll();
+  latestOrder.scrollIntoView({ behavior: "smooth", block: "nearest" });
 });
 
-renderLanguage();
+trackForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  trackedOrderCode = trackCodeInput.value.trim();
+  renderTracking(getState());
+});
+
+subscribe((state) => {
+  renderAll(state);
+});
+
 renderPickupDates();
-renderCategories();
-renderMenu();
-renderCart();
+renderAll();

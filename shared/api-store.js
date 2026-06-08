@@ -10,8 +10,11 @@ import {
   getChoiceGroupsForProduct,
   getComboGroupForProduct,
   getFirstAvailableOption,
+  getState as getLocalState,
   isProductAvailable,
   isToday,
+  createOrder as createLocalOrder,
+  findOrderByCode as findLocalOrderByCode,
   orderStatuses,
 } from "./platform-store.js";
 
@@ -33,6 +36,7 @@ let currentState = {
 };
 
 const listeners = new Set();
+let usingLocalFallback = false;
 
 class ApiError extends Error {
   constructor(message, status) {
@@ -122,9 +126,19 @@ function replaceState(nextState) {
   emitChange();
 }
 
+function replaceWithLocalState() {
+  usingLocalFallback = true;
+  replaceState(getLocalState());
+}
+
 export async function loadPublicState() {
-  const state = await apiFetch("/api/menu");
-  replaceState({ ...state, orders: currentState.orders });
+  try {
+    const state = await apiFetch("/api/menu");
+    usingLocalFallback = false;
+    replaceState({ ...state, orders: currentState.orders });
+  } catch (error) {
+    replaceWithLocalState();
+  }
   return getState();
 }
 
@@ -148,16 +162,44 @@ export function subscribe(listener) {
 }
 
 export async function createOrder(payload) {
-  const order = await apiFetch("/api/orders", {
-    method: "POST",
-    body: JSON.stringify(payload),
-  });
+  if (usingLocalFallback) {
+    const order = createLocalOrder(payload);
+    replaceWithLocalState();
+    return order;
+  }
+
+  let order;
+  try {
+    order = await apiFetch("/api/orders", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  } catch (error) {
+    order = createLocalOrder(payload);
+    replaceWithLocalState();
+    return order;
+  }
   replaceState({ orders: [order, ...currentState.orders] });
   return order;
 }
 
 export async function fetchOrderByCode(code) {
-  const order = await apiFetch(`/api/orders/${encodeURIComponent(code.trim())}`);
+  if (usingLocalFallback) {
+    const localOrder = findLocalOrderByCode(code);
+    if (!localOrder) throw new ApiError("We could not find that code yet.", 404);
+    replaceWithLocalState();
+    return localOrder;
+  }
+
+  let order;
+  try {
+    order = await apiFetch(`/api/orders/${encodeURIComponent(code.trim())}`);
+  } catch (error) {
+    const localOrder = findLocalOrderByCode(code);
+    if (!localOrder) throw error;
+    replaceWithLocalState();
+    return localOrder;
+  }
   const others = currentState.orders.filter((entry) => entry.code !== order.code);
   replaceState({ orders: [order, ...others] });
   return order;

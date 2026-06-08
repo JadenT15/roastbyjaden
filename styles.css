@@ -693,16 +693,23 @@ select:focus {
   box-shadow: 0 0 0 3px rgba(183, 42, 24, 0.14);
 }
 
+.address-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
 .map-link {
   display: inline-flex;
   width: fit-content;
   align-items: center;
   justify-content: center;
-  margin-top: 10px;
   border: 1px solid var(--line);
   border-radius: 999px;
   background: #fff;
   color: var(--accent-dark);
+  cursor: pointer;
   padding: 8px 12px;
   font-size: 14px;
   font-weight: 900;
@@ -717,6 +724,12 @@ select:focus {
 .map-link.has-address {
   border-color: var(--accent);
   background: var(--gold-soft);
+}
+
+.map-link:disabled {
+  cursor: wait;
+  opacity: 0.68;
+  transform: none;
 }
 
 fieldset {

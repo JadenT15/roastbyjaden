@@ -155,6 +155,10 @@ const translations = {
         "The cloud order system is not reachable. Please start the Go backend or check the API URL.",
       backendDownNote: "Ordering needs the backend to be running.",
       imageReference: "Image for reference only",
+      locating: "Locating...",
+      useCurrentLocation: "Use current location",
+      locationUnsupported: "This browser does not support location sharing.",
+      locationFailed: "Could not get your location. Please allow location access or type the address.",
       selected: "Selected",
     },
   },
@@ -211,6 +215,10 @@ const translations = {
       backendDown: "订单系统暂时连接不到。请确认 Go 后端已经启动，或检查 API 地址。",
       backendDownNote: "下单需要后端系统正在运行。",
       imageReference: "图片仅供参考",
+      locating: "正在定位...",
+      useCurrentLocation: "使用当前位置",
+      locationUnsupported: "这个浏览器不支持定位。",
+      locationFailed: "拿不到你的位置。请允许定位，或手动填写地址。",
       selected: "已选",
     },
   },
@@ -245,6 +253,7 @@ const trackCodeInput = document.querySelector("#trackCodeInput");
 const trackResult = document.querySelector("#trackResult");
 const customerAddressInput = document.querySelector("#customerAddress");
 const addressMapLink = document.querySelector("#addressMapLink");
+const useLocationButton = document.querySelector("#useLocationButton");
 const languageSwitch = document.querySelector(".language-switch");
 const languageButtons = document.querySelectorAll("[data-language-option]");
 const languageBadge = document.querySelector("[data-language-badge]");
@@ -326,8 +335,57 @@ function updateAddressMapLink() {
     return;
   }
 
+  const mapsUrl = address.match(/https:\/\/www\.google\.com\/maps[^\s]*/)?.[0];
+  if (mapsUrl) {
+    addressMapLink.href = mapsUrl;
+    addressMapLink.classList.add("has-address");
+    return;
+  }
+
   addressMapLink.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
   addressMapLink.classList.add("has-address");
+}
+
+function setCustomerAddress(value) {
+  if (!customerAddressInput) return;
+  customerAddressInput.value = value;
+  updateAddressMapLink();
+}
+
+function useCurrentLocation() {
+  if (!navigator.geolocation) {
+    alert(translateUi("locationUnsupported"));
+    return;
+  }
+
+  if (useLocationButton) {
+    useLocationButton.disabled = true;
+    useLocationButton.textContent = translateUi("locating");
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      const { latitude, longitude } = position.coords;
+      const coordinates = `${latitude.toFixed(6)},${longitude.toFixed(6)}`;
+      setCustomerAddress(`Google Maps: https://www.google.com/maps?q=${coordinates}`);
+      if (useLocationButton) {
+        useLocationButton.disabled = false;
+        useLocationButton.textContent = translateUi("useCurrentLocation");
+      }
+    },
+    () => {
+      alert(translateUi("locationFailed"));
+      if (useLocationButton) {
+        useLocationButton.disabled = false;
+        useLocationButton.textContent = translateUi("useCurrentLocation");
+      }
+    },
+    {
+      enableHighAccuracy: true,
+      maximumAge: 60000,
+      timeout: 12000,
+    },
+  );
 }
 
 function formatChoicesForDisplay(choices) {
@@ -938,6 +996,8 @@ cartList.addEventListener("click", (event) => {
 });
 
 customerAddressInput?.addEventListener("input", updateAddressMapLink);
+
+useLocationButton?.addEventListener("click", useCurrentLocation);
 
 languageButtons.forEach((button) => {
   button.addEventListener("click", () => {

@@ -8,7 +8,7 @@
       content="Roast by Jaden seller admin portal for orders, revenue, and menu availability."
     />
     <title>Roast by Jaden | Seller Admin</title>
-    <link rel="stylesheet" href="admin.css?v=20260602-admin-mvp" />
+    <link rel="stylesheet" href="admin.css?v=20260606-go-api" />
   </head>
   <body>
     <header class="admin-header">
@@ -29,17 +29,17 @@
     <main class="admin-main">
       <section class="admin-hero">
         <div>
-          <p class="eyebrow">Separate portal folder</p>
+          <p class="eyebrow">Protected seller portal</p>
           <h1>Seller control for menu, orders, and today’s revenue.</h1>
           <p>
-            This admin portal lives in its own folder and shares state through a common
-            module so it is easier to migrate into a future Next.js admin app.
+            This admin portal talks to the Go backend, so menu changes, orders, and
+            status updates are protected before they reach the database.
           </p>
         </div>
         <div class="hero-card">
           <span>Current setup</span>
-          <strong>Browser-backed MVP</strong>
-          <small>Shared state module + separate admin folder</small>
+          <strong>Go API + Supabase</strong>
+          <small>Protected backend actions + shared database</small>
         </div>
       </section>
 
@@ -59,9 +59,9 @@
             <button class="button primary full" type="submit">Log in</button>
           </form>
           <p class="auth-note">
-            Current static-MVP credentials: `seller@roastbyjaden.local` / `jaden123`
+            First seeded seller credentials: `seller@roastbyjaden.local` / `jaden123`
           </p>
-          <p class="auth-error" id="loginError" hidden>Login failed. Check the current static-MVP credentials.</p>
+          <p class="auth-error" id="loginError" hidden>Login failed. Check the seller credentials or backend connection.</p>
         </div>
       </section>
 
@@ -155,6 +155,6 @@
       </section>
     </main>
 
-    <script type="module" src="admin.js?v=20260602-admin-mvp"></script>
+    <script type="module" src="admin.js?v=20260607-public-refresh"></script>
   </body>
 </html>

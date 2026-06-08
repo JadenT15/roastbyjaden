@@ -2,7 +2,6 @@ import {
   buildWhatsAppUrl,
   createOrder,
   findOrderByCode,
-  formatChoiceSummary,
   formatPrice,
   getBusinessDateLabel,
   getCategories,
@@ -11,13 +10,218 @@ import {
   getFirstAvailableOption,
   getState,
   isProductAvailable,
+  fetchOrderByCode,
+  loadPublicState,
   subscribe,
-} from "./shared/platform-store.js";
+} from "./shared/api-store.js?v=20260607-live-look-api";
+
+const translations = {
+  en: {
+    categories: {
+      All: "All",
+      烧味饭: "Roast Rice",
+      "双拼 / 三拼 / 拼盘": "Double / Triple / Platters",
+      单点加料: "A La Carte",
+    },
+    items: {
+      "roast-duck-rice": {
+        name: "HK-Style Dang Gui Roast Duck Rice",
+        description:
+          "Tender roast duck with crisp skin, served with steamed rice, Hong Kong greens and roast gravy.",
+      },
+      "char-siu-rice": {
+        name: "Honey Char Siu Rice",
+        description:
+          "Sweet and savoury honey char siu slices served with steamed rice, Hong Kong greens and roast gravy.",
+      },
+      "siew-yoke-rice": {
+        name: "Crispy Roast Pork Rice",
+        description:
+          "Golden crispy roast pork with balanced fat and lean meat, served with steamed rice, Hong Kong greens and yellow mustard.",
+      },
+      "white-chicken-rice": {
+        name: "Steamed White Chicken Rice",
+        description:
+          "Silky steamed chicken served with steamed rice, Hong Kong greens and ginger scallion sauce.",
+      },
+      "hk-roast-chicken-rice": {
+        name: "HK-Style Roast Chicken Rice",
+        description:
+          "HK-style roast chicken with fragrant skin and tender meat, served with steamed rice, Hong Kong greens and roast gravy.",
+      },
+      "custom-double-rice": {
+        name: "Build Your Own Double Roast Rice",
+        description:
+          "Choose any two roast meats, served with steamed rice, Hong Kong greens and roast gravy.",
+      },
+      "custom-triple-rice": {
+        name: "Build Your Own Triple Roast Rice",
+        description:
+          "Choose any three roast meats, served with steamed rice, Hong Kong greens and roast gravy.",
+      },
+      "four-treasure-rice": {
+        name: "Four Treasures Rice",
+        description:
+          "A classic Hong Kong roast platter rice with roast duck, char siu, roast pork and roast chicken.",
+      },
+      "roast-duck-portion": {
+        name: "Roast Duck Portion",
+        description: "A shareable roast duck portion, perfect with rice or noodles.",
+      },
+      "char-siu-portion": {
+        name: "Char Siu Portion",
+        description: "Honey char siu portion, ideal as an add-on dish or for sharing.",
+      },
+      "siew-yoke-portion": {
+        name: "Crispy Roast Pork Portion",
+        description: "Crispy roast pork portion with fragrant crackling and savoury meat.",
+      },
+    },
+    choiceLabels: {
+      鸡肉部位: "Chicken Cut",
+      叉烧肥瘦: "Char Siu Cut",
+      重量: "Weight",
+      烧鸭规格: "Roast Duck Size",
+      选择两款烧味: "Choose 2 Roast Meats",
+      选择三款烧味: "Choose 3 Roast Meats",
+    },
+    choiceValues: {
+      鸡胸: "Breast",
+      鸡二度: "Second Joint",
+      鸡翅: "Wing",
+      鸡腿: "Leg",
+      瘦: "Lean",
+      半肥瘦: "Half Lean, Half Fat",
+      一例: "Regular Portion",
+      一例上庄: "Upper Quarter Portion",
+      一例下庄: "Lower Quarter Portion",
+      半只: "Half Duck",
+      一只: "Whole Duck",
+      烧鸭: "Roast Duck",
+      叉烧: "Char Siu",
+      烧肉: "Roast Pork",
+      烧鸡: "Roast Chicken",
+      白切鸡: "White Chicken",
+    },
+    statuses: {
+      NEW: "Order received",
+      ACCEPTED: "Accepted",
+      PREPARING: "Preparing",
+      READY: "Ready",
+      OUT_FOR_DELIVERY: "Out for delivery",
+      DONE: "Done",
+      CANCELLED: "Cancelled",
+    },
+    orderTypes: {
+      Pickup: "Pickup",
+      Delivery: "Delivery",
+    },
+    ui: {
+      available: "Available",
+      soldOut: "Sold Out",
+      unavailable: "Unavailable",
+      notAvailable: "Not Available",
+      each: "each",
+      item: "item",
+      items: "items",
+      dateLegend: "Pickup / delivery date",
+      today: "Today",
+      tomorrow: "Tomorrow",
+      addOne: "Add one",
+      removeOne: "Remove one",
+      menuQuantity: "menu quantity",
+      openForOrders: "Open for orders",
+      pausedBySeller: "Paused by shop",
+      pausedNotice:
+        "The shop has paused ordering for now. You can still browse the menu and track existing orders.",
+      activeOrderNote: "Your order goes directly to the shop and is saved in the order system.",
+      pausedOrderNote: "Ordering is currently paused by the shop.",
+      loadingMenu:
+        "Menu is loading from the kitchen system. If this stays here, please check that the backend is running.",
+      noProducts: "No products in this category yet.",
+      emptyCartAlert: "Please add at least one item before placing the order.",
+      pausedAlert: "Ordering is paused right now.",
+      addressAlert: "Please fill in the delivery address.",
+      comboAlert: "Please select exactly {count} roast meats.",
+      placingOrder: "Sending order...",
+      placeOrder: "Place order",
+      orderError: "Could not place the order. Please try again.",
+      latestSummary: "{status} • {total} • {type}",
+      trackingEmpty: "Enter your order code to view the latest status.",
+      trackingChecking: "Checking the cloud order system...",
+      trackingMissing: "We could not find that code yet.",
+      orderCode: "Order code",
+      backendDown:
+        "The cloud order system is not reachable. Please start the Go backend or check the API URL.",
+      backendDownNote: "Ordering needs the backend to be running.",
+      imageReference: "Image for reference only",
+      selected: "Selected",
+    },
+  },
+  zh: {
+    categories: {
+      All: "全部",
+    },
+    statuses: {
+      NEW: "已收到订单",
+      ACCEPTED: "已接单",
+      PREPARING: "准备中",
+      READY: "可取餐",
+      OUT_FOR_DELIVERY: "配送中",
+      DONE: "已完成",
+      CANCELLED: "已取消",
+    },
+    orderTypes: {
+      Pickup: "自取",
+      Delivery: "配送",
+    },
+    ui: {
+      available: "可购买",
+      soldOut: "已售完",
+      unavailable: "暂不售卖",
+      notAvailable: "不可购买",
+      each: "每份",
+      item: "份",
+      items: "份",
+      dateLegend: "取餐 / 送餐日期",
+      today: "今天",
+      tomorrow: "明天",
+      addOne: "加一份",
+      removeOne: "减少一份",
+      menuQuantity: "菜单数量",
+      openForOrders: "营业中",
+      pausedBySeller: "商家暂停接单",
+      pausedNotice: "商家现在暂停接单。你仍然可以浏览菜单，也可以查询已经提交的订单。",
+      activeOrderNote: "订单会直接发送给商家，并保存到订单系统。",
+      pausedOrderNote: "商家现在暂停接单。",
+      loadingMenu: "菜单正在从厨房系统读取。如果一直没有显示，请确认后端已经启动。",
+      noProducts: "这个分类暂时没有产品。",
+      emptyCartAlert: "请先加入至少一份菜品再下单。",
+      pausedAlert: "商家现在暂停接单。",
+      addressAlert: "配送订单请填写地址。",
+      comboAlert: "请选择刚好 {count} 款烧味。",
+      placingOrder: "正在提交...",
+      placeOrder: "提交订单",
+      orderError: "订单提交失败，请再试一次。",
+      latestSummary: "{status} • {total} • {type}",
+      trackingEmpty: "输入订单编号查看最新状态。",
+      trackingChecking: "正在查询订单系统...",
+      trackingMissing: "找不到这个订单编号。",
+      orderCode: "订单编号",
+      backendDown: "订单系统暂时连接不到。请确认 Go 后端已经启动，或检查 API 地址。",
+      backendDownNote: "下单需要后端系统正在运行。",
+      imageReference: "图片仅供参考",
+      selected: "已选",
+    },
+  },
+};
 
 const cart = new Map();
 let activeCategory = "All";
 let latestOrderCode = "";
 let trackedOrderCode = "";
+let publicRefreshTimer = null;
+let currentLanguage = window.localStorage.getItem("roast-by-jaden-language") || "zh";
 
 const categoryTabs = document.querySelector("#categoryTabs");
 const menuGrid = document.querySelector("#menuGrid");
@@ -39,6 +243,93 @@ const storeNotice = document.querySelector("#storeNotice");
 const trackForm = document.querySelector("#trackForm");
 const trackCodeInput = document.querySelector("#trackCodeInput");
 const trackResult = document.querySelector("#trackResult");
+const languageSwitch = document.querySelector(".language-switch");
+const languageButtons = document.querySelectorAll("[data-language-option]");
+const languageBadge = document.querySelector("[data-language-badge]");
+
+function translateCategory(category) {
+  return translations[currentLanguage]?.categories?.[category] || category;
+}
+
+function translateProductName(product) {
+  return translations[currentLanguage]?.items?.[product.id]?.name || product.name;
+}
+
+function translateProductDescription(product) {
+  return translations[currentLanguage]?.items?.[product.id]?.description || product.description;
+}
+
+function translateChoiceLabel(label) {
+  return translations[currentLanguage]?.choiceLabels?.[label] || label;
+}
+
+function translateChoiceValue(value) {
+  if (Array.isArray(value)) {
+    return value.map((entry) => translateChoiceValue(entry)).join(currentLanguage === "zh" ? "、" : ", ");
+  }
+
+  return translations[currentLanguage]?.choiceValues?.[value] || value;
+}
+
+function translateStatus(status) {
+  return translations[currentLanguage]?.statuses?.[status] || status;
+}
+
+function translateOrderType(type) {
+  return translations[currentLanguage]?.orderTypes?.[type] || type;
+}
+
+function translateUi(key, replacements = {}) {
+  const template = translations[currentLanguage]?.ui?.[key] || translations.en.ui[key] || key;
+  return Object.entries(replacements).reduce(
+    (text, [name, value]) => text.replace(`{${name}}`, value),
+    template,
+  );
+}
+
+function renderLanguage() {
+  document.documentElement.lang = currentLanguage;
+  document.title =
+    currentLanguage === "zh" ? "賢仔港式烧腊 | Online Menu" : "Roast by Jaden | Online Menu";
+  if (languageSwitch) {
+    languageSwitch.dataset.current = currentLanguage;
+  }
+
+  document.querySelectorAll("[data-i18n]").forEach((element) => {
+    element.textContent = element.dataset[currentLanguage];
+  });
+
+  document.querySelectorAll("[data-i18n-placeholder]").forEach((element) => {
+    element.placeholder = element.dataset[`${currentLanguage}Placeholder`];
+  });
+
+  languageButtons.forEach((button) => {
+    const isActive = button.dataset.languageOption === currentLanguage;
+    button.classList.toggle("active", isActive);
+    button.setAttribute("aria-pressed", String(isActive));
+  });
+
+  if (languageBadge) {
+    languageBadge.hidden = currentLanguage !== "en";
+  }
+}
+
+function formatChoicesForDisplay(choices) {
+  return choices
+    .filter((choice) => (Array.isArray(choice.value) ? choice.value.length > 0 : choice.value))
+    .map((choice) => `${translateChoiceLabel(choice.label)}: ${translateChoiceValue(choice.value)}`)
+    .join(" / ");
+}
+
+function formatChoicesForOrder(choices) {
+  return choices
+    .filter((choice) => (Array.isArray(choice.value) ? choice.value.length > 0 : choice.value))
+    .map((choice) => {
+      const value = Array.isArray(choice.value) ? choice.value.join(", ") : choice.value;
+      return `${choice.label}: ${value}`;
+    })
+    .join(" / ");
+}
 
 function getVisibleProducts(state) {
   const products =
@@ -133,6 +424,20 @@ function getCartTotal(state) {
   return getCartItems(state).reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
 }
 
+function formatPickupDate(date, index) {
+  if (currentLanguage === "zh") {
+    const label = `${date.getMonth() + 1}月${date.getDate()}日 ${date.getFullYear()}`;
+    if (index === 0) return `${translateUi("today")}，${label}`;
+    if (index === 1) return `${translateUi("tomorrow")}，${label}`;
+    const weekday = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"][date.getDay()];
+    return `${weekday}，${label}`;
+  }
+
+  if (index === 0) return `${translateUi("today")}, ${getBusinessDateLabel(date)}`;
+  if (index === 1) return `${translateUi("tomorrow")}, ${getBusinessDateLabel(date)}`;
+  return getBusinessDateLabel(date);
+}
+
 function renderPickupDates() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -140,13 +445,11 @@ function renderPickupDates() {
   const labels = Array.from({ length: 7 }, (_, index) => {
     const date = new Date(today);
     date.setDate(date.getDate() + index);
-    if (index === 0) return `Today, ${getBusinessDateLabel(date)}`;
-    if (index === 1) return `Tomorrow, ${getBusinessDateLabel(date)}`;
-    return getBusinessDateLabel(date);
+    return formatPickupDate(date, index);
   });
 
   pickupDateOptions.innerHTML = `
-    <legend>Pickup / delivery date</legend>
+    <legend>${translateUi("dateLegend")}</legend>
     ${labels
       .map(
         (label, index) => `
@@ -170,7 +473,7 @@ function renderCategories(state) {
     .map(
       (category) => `
         <button class="${category === activeCategory ? "active" : ""}" data-category="${category}">
-          ${category}
+          ${translateCategory(category)}
         </button>
       `,
     )
@@ -182,7 +485,7 @@ function renderChoiceGroup(product, group) {
 
   return `
     <fieldset class="choice-group">
-      <legend>${group.label}</legend>
+      <legend>${translateChoiceLabel(group.label)}</legend>
       <div class="choice-options">
         ${group.options
           .map((option) => {
@@ -199,8 +502,8 @@ function renderChoiceGroup(product, group) {
                   ${checked}
                   ${disabled}
                 />
-                ${option.value}${option.price ? ` ${formatPrice(option.price)}` : ""}
-                ${option.available ? "" : "<span>Sold Out</span>"}
+                ${translateChoiceValue(option.value)}${option.price ? ` ${formatPrice(option.price)}` : ""}
+                ${option.available ? "" : `<span>${translateUi("soldOut")}</span>`}
               </label>
             `;
           })
@@ -210,10 +513,16 @@ function renderChoiceGroup(product, group) {
   `;
 }
 
+function getComboHint(count, selectedCount = count) {
+  return currentLanguage === "zh"
+    ? `${translateUi("selected")} ${selectedCount} / ${count}`
+    : `${translateUi("selected")} ${selectedCount} / ${count}`;
+}
+
 function renderComboGroup(product, group) {
   return `
     <fieldset class="choice-group combo-choice-group" data-combo-group="${product.id}" data-combo-count="${group.count}">
-      <legend>${group.label}</legend>
+      <legend>${translateChoiceLabel(group.label)}</legend>
       <div class="choice-options">
         ${group.options
           .map((option, index) => `
@@ -225,25 +534,30 @@ function renderComboGroup(product, group) {
                 ${option.available ? "" : "disabled"}
                 ${option.available && index < group.count ? "checked" : ""}
               />
-              ${option.value}
-              ${option.available ? "" : "<span>Sold Out</span>"}
+              ${translateChoiceValue(option.value)}
+              ${option.available ? "" : `<span>${translateUi("soldOut")}</span>`}
             </label>
           `)
           .join("")}
       </div>
-      <small class="choice-limit" data-combo-hint="${product.id}">Selected ${group.count} / ${group.count}</small>
+      <small class="choice-limit" data-combo-hint="${product.id}">${getComboHint(group.count)}</small>
     </fieldset>
   `;
 }
 
 function getProductBadge(product, available) {
-  if (!product.enabled) return '<span class="product-badge idle">Unavailable</span>';
-  if (!available || product.soldOut) return '<span class="product-badge sold">Sold Out</span>';
-  return '<span class="product-badge live">Available</span>';
+  if (!product.enabled) return `<span class="product-badge idle">${translateUi("unavailable")}</span>`;
+  if (!available || product.soldOut) return `<span class="product-badge sold">${translateUi("soldOut")}</span>`;
+  return `<span class="product-badge live">${translateUi("available")}</span>`;
 }
 
 function renderMenu(state) {
   const products = getVisibleProducts(state);
+
+  if (!products.length) {
+    menuGrid.innerHTML = `<div class="empty-card">${translateUi("loadingMenu")}</div>`;
+    return;
+  }
 
   menuGrid.innerHTML = products
     .map((product) => {
@@ -254,12 +568,15 @@ function renderMenu(state) {
 
       return `
         <article class="menu-card" data-item-card="${product.id}">
-          <img src="${product.image}" alt="${product.name}" loading="lazy" />
+          <div class="menu-card-image">
+            <img src="${product.image}" alt="${translateProductName(product)}" loading="lazy" />
+            <span>${translateUi("imageReference")}</span>
+          </div>
           <div class="menu-card-body">
             <div class="menu-card-top">
               <div>
-                <h3>${product.name}</h3>
-                <p>${product.description}</p>
+                <h3>${translateProductName(product)}</h3>
+                <p>${translateProductDescription(product)}</p>
               </div>
               ${getProductBadge(product, available)}
             </div>
@@ -270,13 +587,13 @@ function renderMenu(state) {
               ${
                 available
                   ? `
-                    <div class="menu-quantity" aria-label="${product.name} quantity">
-                      <button type="button" data-menu-decrease="${product.id}">-</button>
+                    <div class="menu-quantity" aria-label="${translateProductName(product)} ${translateUi("menuQuantity")}">
+                      <button type="button" data-menu-decrease="${product.id}" aria-label="${translateUi("removeOne")} ${translateProductName(product)}">-</button>
                       <output data-menu-count="${product.id}">${getCartQuantity(product, defaultChoices)}</output>
-                      <button type="button" data-add="${product.id}">+</button>
+                      <button type="button" data-add="${product.id}" aria-label="${translateUi("addOne")} ${translateProductName(product)}">+</button>
                     </div>
                   `
-                  : '<button class="add-button" type="button" disabled>Not Available</button>'
+                  : `<button class="add-button" type="button" disabled>${translateUi("notAvailable")}</button>`
               }
             </div>
           </div>
@@ -286,7 +603,7 @@ function renderMenu(state) {
     .join("");
 
   if (!products.length) {
-    menuGrid.innerHTML = '<div class="empty-card">No products in this category yet.</div>';
+    menuGrid.innerHTML = `<div class="empty-card">${translateUi("noProducts")}</div>`;
   }
 
   refreshAllMenuCards(state);
@@ -319,14 +636,14 @@ function renderCart(state) {
       (item) => `
         <div class="cart-item">
           <div>
-            <strong>${item.product.name}</strong>
-            ${item.choicesText ? `<small>${item.choicesText}</small>` : ""}
-            <span>${formatPrice(item.unitPrice)} each</span>
+            <strong>${translateProductName(item.product)}</strong>
+            ${item.choices.length ? `<small>${formatChoicesForDisplay(item.choices)}</small>` : ""}
+            <span>${formatPrice(item.unitPrice)} ${translateUi("each")}</span>
           </div>
-          <div class="quantity">
-            <button type="button" data-decrease="${item.key}">-</button>
+          <div class="quantity" aria-label="${translateProductName(item.product)} quantity">
+            <button type="button" data-decrease="${item.key}" aria-label="${translateUi("removeOne")}">-</button>
             <output>${item.quantity}</output>
-            <button type="button" data-increase="${item.key}">+</button>
+            <button type="button" data-increase="${item.key}" aria-label="${translateUi("addOne")}">+</button>
           </div>
         </div>
       `,
@@ -334,23 +651,21 @@ function renderCart(state) {
     .join("");
 
   cartTotal.textContent = formatPrice(getCartTotal(state));
-  mobileCartCount.textContent = `${totalQuantity} ${totalQuantity === 1 ? "item" : "items"}`;
+  mobileCartCount.textContent = `${totalQuantity} ${totalQuantity === 1 ? translateUi("item") : translateUi("items")}`;
 }
 
 function renderStoreState(state) {
   if (state.settings.orderingOpen) {
-    storeStatusHero.textContent = "Open for orders";
+    storeStatusHero.textContent = translateUi("openForOrders");
     storeNotice.hidden = true;
     placeOrderButton.disabled = false;
-    orderFormNote.textContent =
-      "Orders are saved in the browser for this MVP and can be managed from the seller portal.";
+    orderFormNote.textContent = translateUi("activeOrderNote");
   } else {
-    storeStatusHero.textContent = "Paused by seller";
+    storeStatusHero.textContent = translateUi("pausedBySeller");
     storeNotice.hidden = false;
-    storeNotice.textContent =
-      "The seller has paused ordering for now. You can still browse the menu and track existing orders.";
+    storeNotice.textContent = translateUi("pausedNotice");
     placeOrderButton.disabled = true;
-    orderFormNote.textContent = "Ordering is currently paused in the seller portal.";
+    orderFormNote.textContent = translateUi("pausedOrderNote");
   }
 }
 
@@ -368,15 +683,19 @@ function renderLatestOrder(state) {
 
   latestOrder.hidden = false;
   latestOrderCodeLabel.textContent = order.code;
-  latestOrderSummary.textContent = `${order.status} • ${formatPrice(order.total)} • ${order.orderType}`;
-  latestOrderTrackLink.href = `#track`;
+  latestOrderSummary.textContent = translateUi("latestSummary", {
+    status: translateStatus(order.status),
+    total: formatPrice(order.total),
+    type: translateOrderType(order.orderType),
+  });
+  latestOrderTrackLink.href = "#track";
   latestOrderWhatsappLink.href = buildWhatsAppUrl(order);
 }
 
 function renderTracking(state) {
   if (!trackedOrderCode) {
     trackResult.className = "track-result empty";
-    trackResult.textContent = "Enter your order code to view the latest status.";
+    trackResult.textContent = translateUi("trackingEmpty");
     return;
   }
 
@@ -386,7 +705,7 @@ function renderTracking(state) {
 
   if (!order) {
     trackResult.className = "track-result empty";
-    trackResult.textContent = "We could not find that code yet.";
+    trackResult.textContent = translateUi("trackingMissing");
     return;
   }
 
@@ -394,12 +713,12 @@ function renderTracking(state) {
   trackResult.innerHTML = `
     <div class="track-card-head">
       <div>
-        <p class="eyebrow">Order code</p>
+        <p class="eyebrow">${translateUi("orderCode")}</p>
         <h3>${order.code}</h3>
       </div>
-      <span class="status-pill">${order.status}</span>
+      <span class="status-pill">${translateStatus(order.status)}</span>
     </div>
-    <p class="track-meta">${order.customerName} • ${order.orderType} • ${formatPrice(order.total)}</p>
+    <p class="track-meta">${order.customerName} • ${translateOrderType(order.orderType)} • ${formatPrice(order.total)}</p>
     <ul class="track-items">
       ${order.items
         .map(
@@ -417,8 +736,8 @@ function renderTracking(state) {
         .map(
           (entry) => `
             <div class="track-history-row">
-              <strong>${entry.status}</strong>
-              <span>${new Date(entry.timestamp).toLocaleString("en-MY")}</span>
+              <strong>${translateStatus(entry.status)}</strong>
+              <span>${new Date(entry.timestamp).toLocaleString(currentLanguage === "zh" ? "zh-MY" : "en-MY")}</span>
             </div>
           `,
         )
@@ -428,12 +747,28 @@ function renderTracking(state) {
 }
 
 function renderAll(state = getState()) {
+  renderLanguage();
   renderStoreState(state);
   renderCategories(state);
   renderMenu(state);
   renderCart(state);
   renderLatestOrder(state);
   renderTracking(state);
+}
+
+function startPublicRefresh() {
+  if (publicRefreshTimer) return;
+
+  publicRefreshTimer = window.setInterval(async () => {
+    try {
+      await loadPublicState();
+      if (trackedOrderCode) {
+        await fetchOrderByCode(trackedOrderCode);
+      }
+    } catch {
+      // Keep the current screen usable if the backend briefly drops.
+    }
+  }, 5000);
 }
 
 function addToCart(productId) {
@@ -446,7 +781,7 @@ function addToCart(productId) {
   if (comboGroup) {
     const comboChoice = choices.find((entry) => entry.label === comboGroup.label);
     if (!comboChoice || comboChoice.value.length !== comboGroup.count) {
-      alert(`Please select exactly ${comboGroup.count} roast meats.`);
+      alert(translateUi("comboAlert", { count: comboGroup.count }));
       return;
     }
   }
@@ -460,7 +795,7 @@ function addToCart(productId) {
     quantity: existing ? existing.quantity + 1 : 1,
     unitPrice: getItemPrice(product, choices),
     choices,
-    choicesText: formatChoiceSummary(choices),
+    choicesText: formatChoicesForOrder(choices),
   });
 
   renderCart(state);
@@ -507,7 +842,7 @@ function handleComboSelection(event) {
 
   const hint = fieldset.querySelector("[data-combo-hint]");
   if (hint) {
-    hint.textContent = `Selected ${checked.length} / ${limit}`;
+    hint.textContent = getComboHint(limit, checked.length);
   }
 }
 
@@ -585,44 +920,95 @@ cartList.addEventListener("click", (event) => {
   if (decreaseButton) decreaseCartItem(decreaseButton.dataset.decrease);
 });
 
-orderForm.addEventListener("submit", (event) => {
+languageButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    currentLanguage = button.dataset.languageOption;
+    window.localStorage.setItem("roast-by-jaden-language", currentLanguage);
+    renderPickupDates();
+    renderAll();
+  });
+});
+
+languageSwitch?.addEventListener("click", (event) => {
+  const rect = languageSwitch.getBoundingClientRect();
+  const nextLanguage = event.clientX - rect.left < rect.width / 2 ? "en" : "zh";
+  if (nextLanguage === currentLanguage) return;
+  currentLanguage = nextLanguage;
+  window.localStorage.setItem("roast-by-jaden-language", currentLanguage);
+  renderPickupDates();
+  renderAll();
+});
+
+orderForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   const state = getState();
   if (!state.settings.orderingOpen) {
-    alert("Ordering is paused right now.");
+    alert(translateUi("pausedAlert"));
     return;
   }
 
   if (cart.size === 0) {
-    alert("Please add at least one item before placing the order.");
+    alert(translateUi("emptyCartAlert"));
     return;
   }
 
   const payload = collectOrderPayload(state);
   if (payload.orderType === "Delivery" && !payload.customerAddress) {
-    alert("Please fill in the delivery address.");
+    alert(translateUi("addressAlert"));
     return;
   }
 
-  const order = createOrder(payload);
-  latestOrderCode = order.code;
-  trackedOrderCode = order.code;
-  trackCodeInput.value = order.code;
-  clearCartAndForm();
-  renderAll();
-  latestOrder.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  try {
+    placeOrderButton.disabled = true;
+    placeOrderButton.textContent = translateUi("placingOrder");
+    const order = await createOrder(payload);
+    latestOrderCode = order.code;
+    trackedOrderCode = order.code;
+    trackCodeInput.value = order.code;
+    clearCartAndForm();
+    renderAll();
+    latestOrder.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  } catch (error) {
+    alert(error.message || translateUi("orderError"));
+  } finally {
+    placeOrderButton.disabled = !getState().settings.orderingOpen;
+    placeOrderButton.textContent = translateUi("placeOrder");
+  }
 });
 
-trackForm.addEventListener("submit", (event) => {
+trackForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   trackedOrderCode = trackCodeInput.value.trim();
-  renderTracking(getState());
+  if (!trackedOrderCode) {
+    renderTracking(getState());
+    return;
+  }
+  trackResult.className = "track-result empty";
+  trackResult.textContent = translateUi("trackingChecking");
+  try {
+    await fetchOrderByCode(trackedOrderCode);
+    renderTracking(getState());
+  } catch {
+    trackResult.className = "track-result empty";
+    trackResult.textContent = translateUi("trackingMissing");
+  }
 });
 
 subscribe((state) => {
   renderAll(state);
 });
 
+renderLanguage();
 renderPickupDates();
 renderAll();
+
+try {
+  await loadPublicState();
+  startPublicRefresh();
+} catch {
+  storeNotice.hidden = false;
+  storeNotice.textContent = translateUi("backendDown");
+  orderFormNote.textContent = translateUi("backendDownNote");
+  placeOrderButton.disabled = true;
+}

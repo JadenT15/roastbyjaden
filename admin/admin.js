@@ -7,7 +7,9 @@ import {
   getTodayOrders,
   getTodayRevenue,
   loginAdmin,
+  loadAdminState,
   orderStatuses,
+  restoreAdminSession,
   setAdminSession,
   subscribe,
   toggleOptionAvailability,
@@ -15,7 +17,7 @@ import {
   toggleProductEnabled,
   toggleProductSoldOut,
   updateOrderStatus,
-} from "../shared/platform-store.js";
+} from "../shared/api-store.js?v=20260607-public-refresh";
 
 const authSection = document.querySelector("#authSection");
 const consoleSection = document.querySelector("#consoleSection");
@@ -206,64 +208,101 @@ function renderAll(state = getState()) {
   renderAddProductForm(state);
 }
 
-loginForm.addEventListener("submit", (event) => {
+loginForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   const email = document.querySelector("#loginEmail").value.trim().toLowerCase();
   const password = document.querySelector("#loginPassword").value;
 
-  const success = loginAdmin(email, password);
-  loginError.hidden = success;
-  if (success) renderAll();
+  try {
+    await loginAdmin(email, password);
+    loginError.hidden = true;
+  } catch {
+    loginError.hidden = false;
+  }
 });
 
-toggleOrderingButton.addEventListener("click", () => {
-  toggleOrderingOpen();
+toggleOrderingButton.addEventListener("click", async () => {
+  toggleOrderingButton.disabled = true;
+  try {
+    await toggleOrderingOpen();
+  } catch (error) {
+    alert(error.message || "Could not update ordering status.");
+  } finally {
+    toggleOrderingButton.disabled = false;
+  }
 });
 
-logoutButton.addEventListener("click", () => {
-  setAdminSession(false);
+logoutButton.addEventListener("click", async () => {
+  try {
+    await setAdminSession(false);
+  } catch {
+    renderAll({ ...getState(), session: { loggedIn: false } });
+  }
 });
 
-adminOrders.addEventListener("change", (event) => {
+adminOrders.addEventListener("change", async (event) => {
   const select = event.target.closest("[data-order-status]");
   if (!select) return;
-  updateOrderStatus(select.dataset.orderStatus, select.value);
+  select.disabled = true;
+  try {
+    await updateOrderStatus(select.dataset.orderStatus, select.value);
+  } catch (error) {
+    alert(error.message || "Could not update order status.");
+    await loadAdminState();
+  } finally {
+    select.disabled = false;
+  }
 });
 
-adminProductList.addEventListener("click", (event) => {
+adminProductList.addEventListener("click", async (event) => {
   const enabledButton = event.target.closest("[data-toggle-enabled]");
   const soldOutButton = event.target.closest("[data-toggle-soldout]");
 
-  if (enabledButton) toggleProductEnabled(enabledButton.dataset.toggleEnabled);
-  if (soldOutButton) toggleProductSoldOut(soldOutButton.dataset.toggleSoldout);
+  try {
+    if (enabledButton) await toggleProductEnabled(enabledButton.dataset.toggleEnabled);
+    if (soldOutButton) await toggleProductSoldOut(soldOutButton.dataset.toggleSoldout);
+  } catch (error) {
+    alert(error.message || "Could not update product.");
+  }
 });
 
-adminOptionList.addEventListener("click", (event) => {
+adminOptionList.addEventListener("click", async (event) => {
   const button = event.target.closest("[data-option-group][data-option-value]");
   if (!button) return;
-  toggleOptionAvailability(button.dataset.optionGroup, button.dataset.optionValue);
+  button.disabled = true;
+  try {
+    await toggleOptionAvailability(button.dataset.optionGroup, button.dataset.optionValue);
+  } catch (error) {
+    alert(error.message || "Could not update option.");
+  } finally {
+    button.disabled = false;
+  }
 });
 
-addProductForm.addEventListener("submit", (event) => {
+addProductForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   const choices = [...document.querySelectorAll("input[name='productChoiceGroup']:checked")].map(
     (input) => input.value,
   );
 
-  addProduct({
-    name: document.querySelector("#productName").value,
-    category: document.querySelector("#productCategory").value,
-    price: document.querySelector("#productPrice").value,
-    description: document.querySelector("#productDescription").value,
-    image: document.querySelector("#productImage").value,
-    enabled: document.querySelector("#productEnabled").checked,
-    soldOut: document.querySelector("#productSoldOut").checked,
-    choices,
-  });
+  try {
+    await addProduct({
+      name: document.querySelector("#productName").value,
+      category: document.querySelector("#productCategory").value,
+      price: document.querySelector("#productPrice").value,
+      description: document.querySelector("#productDescription").value,
+      image: document.querySelector("#productImage").value,
+      enabled: document.querySelector("#productEnabled").checked,
+      soldOut: document.querySelector("#productSoldOut").checked,
+      choices,
+    });
 
-  addProductForm.reset();
-  document.querySelector("#productEnabled").checked = true;
+    addProductForm.reset();
+    document.querySelector("#productEnabled").checked = true;
+  } catch (error) {
+    alert(error.message || "Could not add product.");
+  }
 });
 
 subscribe((state) => {
@@ -271,3 +310,9 @@ subscribe((state) => {
 });
 
 renderAll();
+
+try {
+  await restoreAdminSession();
+} catch {
+  loginError.hidden = true;
+}

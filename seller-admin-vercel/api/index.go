@@ -7,7 +7,7 @@ import (
 	"sync"
 
 	"github.com/jackc/pgx/v5/pgxpool"
-	"roastbyjaden/selleradmin/internal/app"
+	"roastbyjaden/selleradmin/app"
 )
 
 var (

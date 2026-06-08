@@ -2,13 +2,17 @@
 
 这是独立给 Vercel 部署的商家后台目录，不包含买家网页。
 
-上线前需要把 `index.html` 里的：
+这个目录包含独立后台网页和 Vercel Go API Function。
 
-```html
-window.ROAST_API_BASE_URL = "https://YOUR-BACKEND-API.example.com";
+Vercel 项目需要设置这些 Environment Variables：
+
+```bash
+DATABASE_URL=postgres://postgres:YOUR_PASSWORD@db.YOUR_PROJECT_REF.supabase.co:5432/postgres?sslmode=require
+JWT_SECRET=change-this-to-a-long-random-secret
+COOKIE_SECURE=true
 ```
 
-换成已经上线的 Go API 地址。
+`FRONTEND_ORIGIN` 可以不填，因为后台网页和 API 在同一个 Vercel 项目里。
 
 本地预览：
 

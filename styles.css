@@ -709,14 +709,14 @@ select:focus {
   transition: opacity 160ms ease, transform 160ms ease, border-color 160ms ease;
 }
 
-.map-link:not(.disabled):hover {
+.map-link:hover {
   border-color: var(--accent);
   transform: translateY(-1px);
 }
 
-.map-link.disabled {
-  cursor: not-allowed;
-  opacity: 0.48;
+.map-link.has-address {
+  border-color: var(--accent);
+  background: var(--gold-soft);
 }
 
 fieldset {

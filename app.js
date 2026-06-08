@@ -322,14 +322,12 @@ function updateAddressMapLink() {
   const address = customerAddressInput.value.trim();
   if (!address) {
     addressMapLink.href = "https://www.google.com/maps";
-    addressMapLink.classList.add("disabled");
-    addressMapLink.setAttribute("aria-disabled", "true");
+    addressMapLink.classList.remove("has-address");
     return;
   }
 
   addressMapLink.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
-  addressMapLink.classList.remove("disabled");
-  addressMapLink.setAttribute("aria-disabled", "false");
+  addressMapLink.classList.add("has-address");
 }
 
 function formatChoicesForDisplay(choices) {
@@ -940,12 +938,6 @@ cartList.addEventListener("click", (event) => {
 });
 
 customerAddressInput?.addEventListener("input", updateAddressMapLink);
-
-addressMapLink?.addEventListener("click", (event) => {
-  if (addressMapLink.classList.contains("disabled")) {
-    event.preventDefault();
-  }
-});
 
 languageButtons.forEach((button) => {
   button.addEventListener("click", () => {

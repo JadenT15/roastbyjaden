@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="賢仔港式烧腊商家后台，用来控制订单流程、接单状态和商品供应。"
+    />
+    <title>賢仔烧腊 | 商家后台</title>
+    <script>
+      window.ROAST_API_BASE_URL = "https://YOUR-BACKEND-API.example.com";
+    </script>
+    <link rel="stylesheet" href="admin.css?v=20260608-seller-vercel" />
+  </head>
+  <body>
+    <header class="admin-header">
+      <a class="brand" href="./" aria-label="賢仔港式烧腊商家后台">
+        <span class="brand-mark">
+          <img src="assets/xianzai-hero.jpg" alt="賢仔港式烧腊" />
+        </span>
+        <span>
+          <strong>商家后台</strong>
+          <small>賢仔港式烧腊</small>
+        </span>
+      </a>
+      <nav>
+        <span>独立商家控制台</span>
+      </nav>
+    </header>
+
+    <main class="admin-main">
+      <section class="admin-hero">
+        <div>
+          <p class="eyebrow">双向实时同步控制</p>
+          <h1>网站订单流程 & 商家制作流程控制</h1>
+          <p>
+            商家每更新一次订单进度，买家的订单查询页面会同步显示最新状态。后台操作走 API，再写入 Supabase/Postgres。
+          </p>
+        </div>
+        <div class="hero-card">
+          <span>当前系统</span>
+          <strong>独立后台 + Supabase</strong>
+          <small>订单、商品售罄、接单开关统一由商家后台控制</small>
+        </div>
+      </section>
+
+      <section class="auth-section" id="authSection">
+        <div class="auth-card">
+          <p class="eyebrow">商家登入</p>
+          <h2>进入后台控制台</h2>
+          <form id="loginForm" class="login-form">
+            <label>
+              Email / 电邮
+              <input id="loginEmail" type="email" value="seller@roastbyjaden.local" required />
+            </label>
+            <label>
+              Password / 密码
+              <input id="loginPassword" type="password" value="jaden123" required />
+            </label>
+            <button class="button primary full" type="submit">登入后台</button>
+          </form>
+          <p class="auth-note">
+            初始商家账号：seller@roastbyjaden.local / jaden123
+          </p>
+          <p class="auth-error" id="loginError" hidden>登入失败，请检查账号密码或 API 连接。</p>
+        </div>
+      </section>
+
+      <section class="console-section" id="consoleSection" hidden>
+        <div class="toolbar">
+          <div>
+            <p class="eyebrow">商家操作台</p>
+            <h2>今日订单控制</h2>
+          </div>
+          <div class="toolbar-actions">
+            <button class="button secondary" id="refreshButton" type="button">刷新订单</button>
+            <button class="button secondary" id="toggleOrderingButton" type="button">暂停接单</button>
+            <button class="button secondary" id="logoutButton" type="button">登出</button>
+          </div>
+        </div>
+
+        <div class="stats-grid" id="statsGrid"></div>
+
+        <section class="flow-panel admin-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">制作流程控制</p>
+              <h3>从新订单到已送达</h3>
+            </div>
+          </div>
+          <div class="flow-steps" id="flowSteps"></div>
+        </section>
+
+        <section class="admin-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">订单列表</p>
+              <h3>今日订单</h3>
+            </div>
+          </div>
+          <div class="orders-grid" id="adminOrders"></div>
+        </section>
+
+        <section class="admin-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">订单进度更新</p>
+              <h3>商家操作</h3>
+            </div>
+          </div>
+          <div class="selected-order" id="selectedOrder"></div>
+        </section>
+
+        <section class="admin-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">商品控制</p>
+              <h3>售罄 / 上架 / 下架</h3>
+            </div>
+          </div>
+          <div class="product-list" id="adminProductList"></div>
+        </section>
+
+        <section class="admin-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">选项控制</p>
+              <h3>部位 / 规格供应</h3>
+            </div>
+          </div>
+          <div class="option-group-list" id="adminOptionList"></div>
+        </section>
+
+        <section class="admin-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">新增商品</p>
+              <h3>加入菜单</h3>
+            </div>
+          </div>
+          <form class="add-product-form" id="addProductForm">
+            <label>
+              商品名称
+              <input id="productName" type="text" placeholder="招牌烧鸭腿饭" required />
+            </label>
+            <label>
+              分类
+              <input id="productCategory" type="text" list="categorySuggestions" placeholder="烧味饭" required />
+              <datalist id="categorySuggestions"></datalist>
+            </label>
+            <label>
+              价格
+              <input id="productPrice" type="number" min="0" step="0.1" placeholder="16.9" required />
+            </label>
+            <label class="full-span">
+              描述
+              <textarea id="productDescription" rows="3" placeholder="写给买家看的菜品说明。" required></textarea>
+            </label>
+            <label class="full-span">
+              图片网址
+              <input id="productImage" type="url" placeholder="https://..." />
+            </label>
+            <fieldset class="full-span" id="productChoiceFieldset">
+              <legend>选择规格选项</legend>
+            </fieldset>
+            <label class="toggle-row">
+              <input id="productEnabled" type="checkbox" checked />
+              立即上架
+            </label>
+            <label class="toggle-row">
+              <input id="productSoldOut" type="checkbox" />
+              先标记售罄
+            </label>
+            <button class="button primary" type="submit">新增商品</button>
+          </form>
+        </section>
+      </section>
+    </main>
+
+    <script type="module" src="admin.js?v=20260608-seller-vercel"></script>
+  </body>
+</html>

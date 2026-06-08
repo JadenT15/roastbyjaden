@@ -243,6 +243,8 @@ const storeNotice = document.querySelector("#storeNotice");
 const trackForm = document.querySelector("#trackForm");
 const trackCodeInput = document.querySelector("#trackCodeInput");
 const trackResult = document.querySelector("#trackResult");
+const customerAddressInput = document.querySelector("#customerAddress");
+const addressMapLink = document.querySelector("#addressMapLink");
 const languageSwitch = document.querySelector(".language-switch");
 const languageButtons = document.querySelectorAll("[data-language-option]");
 const languageBadge = document.querySelector("[data-language-badge]");
@@ -312,6 +314,22 @@ function renderLanguage() {
   if (languageBadge) {
     languageBadge.hidden = currentLanguage !== "en";
   }
+}
+
+function updateAddressMapLink() {
+  if (!customerAddressInput || !addressMapLink) return;
+
+  const address = customerAddressInput.value.trim();
+  if (!address) {
+    addressMapLink.href = "https://www.google.com/maps";
+    addressMapLink.classList.add("disabled");
+    addressMapLink.setAttribute("aria-disabled", "true");
+    return;
+  }
+
+  addressMapLink.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+  addressMapLink.classList.remove("disabled");
+  addressMapLink.setAttribute("aria-disabled", "false");
 }
 
 function formatChoicesForDisplay(choices) {
@@ -850,6 +868,7 @@ function clearCartAndForm() {
   cart.clear();
   orderForm.reset();
   renderPickupDates();
+  updateAddressMapLink();
 }
 
 function collectOrderPayload(state) {
@@ -918,6 +937,14 @@ cartList.addEventListener("click", (event) => {
 
   if (increaseButton) increaseCartItem(increaseButton.dataset.increase);
   if (decreaseButton) decreaseCartItem(decreaseButton.dataset.decrease);
+});
+
+customerAddressInput?.addEventListener("input", updateAddressMapLink);
+
+addressMapLink?.addEventListener("click", (event) => {
+  if (addressMapLink.classList.contains("disabled")) {
+    event.preventDefault();
+  }
 });
 
 languageButtons.forEach((button) => {
@@ -1001,6 +1028,7 @@ subscribe((state) => {
 
 renderLanguage();
 renderPickupDates();
+updateAddressMapLink();
 renderAll();
 
 try {

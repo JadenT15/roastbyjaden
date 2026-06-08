@@ -693,6 +693,32 @@ select:focus {
   box-shadow: 0 0 0 3px rgba(183, 42, 24, 0.14);
 }
 
+.map-link {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--accent-dark);
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: 900;
+  transition: opacity 160ms ease, transform 160ms ease, border-color 160ms ease;
+}
+
+.map-link:not(.disabled):hover {
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.map-link.disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
 fieldset {
   display: flex;
   flex-wrap: wrap;

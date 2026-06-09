@@ -255,6 +255,10 @@ const latestOrderCodeLabel = document.querySelector("#latestOrderCode");
 const latestOrderSummary = document.querySelector("#latestOrderSummary");
 const latestOrderTrackLink = document.querySelector("#latestOrderTrackLink");
 const latestOrderWhatsappLink = document.querySelector("#latestOrderWhatsappLink");
+const latestPaymentQrAmount = document.querySelector("#latestPaymentQrAmount");
+const latestPaymentQrReference = document.querySelector("#latestPaymentQrReference");
+const paymentQrPanel = document.querySelector("#paymentQrPanel");
+const paymentQrAmount = document.querySelector("#paymentQrAmount");
 const storeStatusHero = document.querySelector("#storeStatusHero");
 const storeNotice = document.querySelector("#storeNotice");
 const trackForm = document.querySelector("#trackForm");
@@ -734,7 +738,19 @@ function renderCart(state) {
     .join("");
 
   cartTotal.textContent = formatPrice(getCartTotal(state));
+  renderPaymentQr(state);
   mobileCartCount.textContent = `${totalQuantity} ${totalQuantity === 1 ? translateUi("item") : translateUi("items")}`;
+}
+
+function isTouchNGoSelected() {
+  const selectedPayment = document.querySelector("input[name='paymentMethod']:checked");
+  return selectedPayment?.value === "Touch 'n Go";
+}
+
+function renderPaymentQr(state) {
+  if (!paymentQrPanel || !paymentQrAmount) return;
+  paymentQrPanel.hidden = !isTouchNGoSelected();
+  paymentQrAmount.textContent = formatPrice(getCartTotal(state));
 }
 
 function renderStoreState(state) {
@@ -779,6 +795,8 @@ function renderLatestOrder(state) {
   });
   latestOrderTrackLink.href = "#track";
   latestOrderWhatsappLink.href = buildWhatsAppUrl(order);
+  latestPaymentQrAmount.textContent = formatPrice(order.total);
+  latestPaymentQrReference.textContent = order.code;
 }
 
 function renderTracking(state) {
@@ -1013,6 +1031,12 @@ cartList.addEventListener("click", (event) => {
 customerAddressInput?.addEventListener("input", updateAddressMapLink);
 
 useLocationButton?.addEventListener("click", useCurrentLocation);
+
+orderForm.addEventListener("change", (event) => {
+  if (event.target.name === "paymentMethod") {
+    renderPaymentQr(getState());
+  }
+});
 
 languageButtons.forEach((button) => {
   button.addEventListener("click", () => {

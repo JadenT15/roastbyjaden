@@ -668,6 +668,80 @@ h2 {
   font-size: 28px;
 }
 
+.payment-qr-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(150px, 190px);
+  gap: 16px;
+  align-items: center;
+  border: 1px solid #f4b2c9;
+  border-radius: 12px;
+  background: #fff7fb;
+  padding: 14px;
+}
+
+.payment-qr-card.compact {
+  margin: 16px 0;
+  background: #fff;
+}
+
+.payment-qr-card h3,
+.payment-qr-card h4 {
+  margin-bottom: 8px;
+}
+
+.payment-qr-card h4 {
+  font-size: 20px;
+}
+
+.payment-qr-copy {
+  min-width: 0;
+}
+
+.payment-qr-card p {
+  margin-bottom: 8px;
+  color: #3d342d;
+  line-height: 1.45;
+}
+
+.payment-qr-meta,
+.payment-qr-hint {
+  font-size: 14px;
+}
+
+.payment-qr-meta {
+  color: var(--muted);
+}
+
+.payment-qr-meta strong {
+  color: var(--accent-dark);
+}
+
+.payment-qr-hint {
+  margin-bottom: 0;
+  color: var(--muted);
+}
+
+.payment-qr-image-link {
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  border: 1px solid rgba(230, 15, 82, 0.24);
+  border-radius: 10px;
+  background: #fff;
+  padding: 10px;
+  color: #b80f43;
+  font-size: 13px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.payment-qr-image-link img {
+  display: block;
+  width: min(100%, 172px);
+  aspect-ratio: 1;
+  object-fit: contain;
+}
+
 label,
 legend {
   font-weight: 900;
@@ -875,8 +949,13 @@ fieldset {
   }
 
   .menu-card-top,
-  .cart-item {
+  .cart-item,
+  .payment-qr-card {
     grid-template-columns: 1fr;
+  }
+
+  .payment-qr-image-link img {
+    width: min(100%, 260px);
   }
 
   .menu-card-footer,

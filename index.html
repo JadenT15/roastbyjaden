@@ -8,7 +8,7 @@
       content="A mobile-friendly online menu and ordering site for Roast by Jaden."
     />
     <title>賢仔港式烧腊 | Online Menu</title>
-    <link rel="stylesheet" href="styles.css?v=20260609-white-chicken-part" />
+    <link rel="stylesheet" href="styles.css?v=20260609-tng-qr" />
   </head>
   <body>
     <header class="site-header">
@@ -111,6 +111,23 @@
             <p class="eyebrow" data-i18n data-zh="订单已提交" data-en="Order created">订单已提交</p>
             <h3 id="latestOrderCode">RBJ-0000</h3>
             <p id="latestOrderSummary"></p>
+            <div class="payment-qr-card compact">
+              <div>
+                <p class="eyebrow" data-i18n data-zh="Touch 'n Go / DuitNow QR" data-en="Touch 'n Go / DuitNow QR">Touch 'n Go / DuitNow QR</p>
+                <h4 data-i18n data-zh="请扫码付款" data-en="Scan to pay">请扫码付款</h4>
+                <p class="payment-qr-meta">
+                  <span data-i18n data-zh="金额" data-en="Amount">金额</span>:
+                  <strong id="latestPaymentQrAmount">RM0.00</strong>
+                </p>
+                <p class="payment-qr-meta">
+                  <span data-i18n data-zh="付款备注写订单号" data-en="Use order code as payment reference">付款备注写订单号</span>:
+                  <strong id="latestPaymentQrReference">RBJ-0000</strong>
+                </p>
+              </div>
+              <a class="payment-qr-image-link" href="assets/tng-duitnow-qr.png" target="_blank" rel="noreferrer" aria-label="Open Touch 'n Go DuitNow QR">
+                <img src="assets/tng-duitnow-qr.png" alt="Touch 'n Go DuitNow QR code for payment" />
+              </a>
+            </div>
             <div class="latest-order-actions">
               <a class="button primary" id="latestOrderTrackLink" href="#track" data-i18n data-zh="查看订单状态" data-en="Track this order">查看订单状态</a>
               <a class="button secondary" id="latestOrderWhatsappLink" href="#" target="_blank" rel="noreferrer" data-i18n data-zh="WhatsApp 联系" data-en="Send to WhatsApp">
@@ -178,6 +195,27 @@
               Transfer
             </label>
           </fieldset>
+
+          <div class="payment-qr-card" id="paymentQrPanel">
+            <div class="payment-qr-copy">
+              <p class="eyebrow" data-i18n data-zh="Touch 'n Go / DuitNow QR" data-en="Touch 'n Go / DuitNow QR">Touch 'n Go / DuitNow QR</p>
+              <h3 data-i18n data-zh="扫码付款更方便" data-en="Scan to pay faster">扫码付款更方便</h3>
+              <p data-i18n data-zh="提交订单后，请用 Touch 'n Go 或支持 DuitNow QR 的钱包扫码付款。" data-en="After placing the order, scan with Touch 'n Go or any DuitNow QR supported wallet.">
+                提交订单后，请用 Touch 'n Go 或支持 DuitNow QR 的钱包扫码付款。
+              </p>
+              <p class="payment-qr-meta">
+                <span data-i18n data-zh="当前金额" data-en="Current amount">当前金额</span>:
+                <strong id="paymentQrAmount">RM0.00</strong>
+              </p>
+              <p class="payment-qr-hint" data-i18n data-zh="付款时可以把订单编号写在备注，方便商家确认。" data-en="Use the order code as payment reference so the shop can confirm faster.">
+                付款时可以把订单编号写在备注，方便商家确认。
+              </p>
+            </div>
+            <a class="payment-qr-image-link" href="assets/tng-duitnow-qr.png" target="_blank" rel="noreferrer" aria-label="Open Touch 'n Go DuitNow QR">
+              <img src="assets/tng-duitnow-qr.png" alt="Touch 'n Go DuitNow QR code for payment" />
+              <span data-i18n data-zh="点开大图扫码" data-en="Tap to enlarge">点开大图扫码</span>
+            </a>
+          </div>
 
           <label>
             <span data-i18n data-zh="配送地址" data-en="Delivery address">配送地址</span>
@@ -270,6 +308,6 @@
       <a href="#order" data-i18n data-zh="结账" data-en="Checkout">结账</a>
     </div>
 
-    <script type="module" src="app.js?v=20260609-white-chicken-part"></script>
+    <script type="module" src="app.js?v=20260609-tng-qr"></script>
   </body>
 </html>

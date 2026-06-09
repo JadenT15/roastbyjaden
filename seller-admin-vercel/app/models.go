@@ -15,6 +15,7 @@ var OrderStatuses = map[string]bool{
 
 type Settings struct {
 	OrderingOpen bool `json:"orderingOpen"`
+	BusinessOpen bool `json:"businessOpen"`
 }
 
 type PublicState struct {

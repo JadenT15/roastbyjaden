@@ -739,7 +739,7 @@ fieldset {
   .toolbar-actions {
     display: grid;
     width: 100%;
-    grid-template-columns: minmax(78px, 0.8fr) minmax(142px, 1.5fr) minmax(64px, 0.7fr);
+    grid-template-columns: minmax(54px, 0.72fr) minmax(92px, 1.18fr) minmax(102px, 1.32fr) minmax(44px, 0.58fr);
     gap: 8px;
   }
 

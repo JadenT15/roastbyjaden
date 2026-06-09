@@ -10,6 +10,7 @@ import {
   restoreAdminSession,
   setAdminSession,
   subscribe,
+  toggleBusinessOpen,
   toggleOptionAvailability,
   toggleOrderingOpen,
   toggleProductEnabled,
@@ -42,6 +43,8 @@ const adminOrders = document.querySelector("#adminOrders");
 const selectedOrderPanel = document.querySelector("#selectedOrder");
 const adminProductList = document.querySelector("#adminProductList");
 const adminOptionList = document.querySelector("#adminOptionList");
+const openBusinessButton = document.querySelector("#openBusinessButton");
+const closeBusinessButton = document.querySelector("#closeBusinessButton");
 const openOrderingButton = document.querySelector("#openOrderingButton");
 const closeOrderingButton = document.querySelector("#closeOrderingButton");
 const refreshButton = document.querySelector("#refreshButton");
@@ -139,6 +142,10 @@ function renderStats(state) {
   closeOrderingButton.classList.toggle("active", !state.settings.orderingOpen);
   openOrderingButton.setAttribute("aria-pressed", String(state.settings.orderingOpen));
   closeOrderingButton.setAttribute("aria-pressed", String(!state.settings.orderingOpen));
+  openBusinessButton.classList.toggle("active", state.settings.businessOpen);
+  closeBusinessButton.classList.toggle("active", !state.settings.businessOpen);
+  openBusinessButton.setAttribute("aria-pressed", String(state.settings.businessOpen));
+  closeBusinessButton.setAttribute("aria-pressed", String(!state.settings.businessOpen));
 }
 
 function renderFlowSteps(state) {
@@ -430,12 +437,35 @@ async function setOrderingOpen(nextOpen) {
   }
 }
 
+async function setBusinessOpen(nextOpen) {
+  const currentOpen = getState().settings.businessOpen;
+  if (currentOpen === nextOpen) return;
+  openBusinessButton.disabled = true;
+  closeBusinessButton.disabled = true;
+  try {
+    await toggleBusinessOpen();
+  } catch (error) {
+    alert(error.message || "营业状态更新失败。");
+  } finally {
+    openBusinessButton.disabled = false;
+    closeBusinessButton.disabled = false;
+  }
+}
+
 openOrderingButton.addEventListener("click", () => {
   setOrderingOpen(true);
 });
 
 closeOrderingButton.addEventListener("click", () => {
   setOrderingOpen(false);
+});
+
+openBusinessButton.addEventListener("click", () => {
+  setBusinessOpen(true);
+});
+
+closeBusinessButton.addEventListener("click", () => {
+  setBusinessOpen(false);
 });
 
 logoutButton.addEventListener("click", async () => {

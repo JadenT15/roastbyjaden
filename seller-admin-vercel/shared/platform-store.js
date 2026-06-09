@@ -250,6 +250,7 @@ function buildInitialState() {
     version: 2,
     settings: {
       orderingOpen: true,
+      businessOpen: true,
     },
     session: {
       loggedIn: false,
@@ -506,6 +507,12 @@ export function loginAdmin(email, password) {
 export function toggleOrderingOpen() {
   mutateState((draft) => {
     draft.settings.orderingOpen = !draft.settings.orderingOpen;
+  });
+}
+
+export function toggleBusinessOpen() {
+  mutateState((draft) => {
+    draft.settings.businessOpen = draft.settings.businessOpen === false;
   });
 }
 

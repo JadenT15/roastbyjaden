@@ -28,7 +28,7 @@ const API_BASE_URL =
     : window.location.origin);
 
 let currentState = {
-  settings: { orderingOpen: true },
+  settings: { orderingOpen: true, businessOpen: true },
   session: { loggedIn: false },
   choiceGroups: {},
   products: [],
@@ -113,7 +113,10 @@ function apiXHR(path, options = {}) {
 
 function normalizeState(state) {
   return {
-    settings: { orderingOpen: Boolean(state?.settings?.orderingOpen) },
+    settings: {
+      orderingOpen: Boolean(state?.settings?.orderingOpen),
+      businessOpen: state?.settings?.businessOpen !== false,
+    },
     session: { loggedIn: Boolean(state?.session?.loggedIn) },
     choiceGroups: state?.choiceGroups || {},
     products: Array.isArray(state?.products) ? state.products : [],
@@ -249,6 +252,15 @@ export async function toggleOrderingOpen() {
   const settings = await apiFetch("/api/admin/settings", {
     method: "PATCH",
     body: JSON.stringify({ orderingOpen: nextValue }),
+  });
+  replaceState({ settings });
+}
+
+export async function toggleBusinessOpen() {
+  const nextValue = !currentState.settings.businessOpen;
+  const settings = await apiFetch("/api/admin/settings", {
+    method: "PATCH",
+    body: JSON.stringify({ businessOpen: nextValue }),
   });
   replaceState({ settings });
 }

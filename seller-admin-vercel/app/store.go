@@ -44,9 +44,10 @@ func (s Store) PublicState(ctx context.Context) (PublicState, error) {
 }
 
 func (s Store) Settings(ctx context.Context) (Settings, error) {
-	var orderingOpen bool
-	err := s.db.QueryRow(ctx, "select ordering_open from settings where id = 1").Scan(&orderingOpen)
-	return Settings{OrderingOpen: orderingOpen}, err
+	var settings Settings
+	err := s.db.QueryRow(ctx, "select ordering_open, business_open from settings where id = 1").
+		Scan(&settings.OrderingOpen, &settings.BusinessOpen)
+	return settings, err
 }
 
 func (s Store) ChoiceGroups(ctx context.Context) (map[string]ChoiceGroup, error) {
@@ -389,11 +390,16 @@ func (s Store) UpdateOrderStatus(ctx context.Context, orderID, status string) (O
 	return s.OrderByID(ctx, orderID)
 }
 
-func (s Store) UpdateSettings(ctx context.Context, orderingOpen bool) (Settings, error) {
-	if _, err := s.db.Exec(ctx, "update settings set ordering_open = $1, updated_at = now() where id = 1", orderingOpen); err != nil {
+func (s Store) UpdateSettings(ctx context.Context, orderingOpen, businessOpen *bool) (Settings, error) {
+	if _, err := s.db.Exec(ctx, `
+		update settings
+		set ordering_open = coalesce($1, ordering_open),
+			business_open = coalesce($2, business_open),
+			updated_at = now()
+		where id = 1`, orderingOpen, businessOpen); err != nil {
 		return Settings{}, err
 	}
-	return Settings{OrderingOpen: orderingOpen}, nil
+	return s.Settings(ctx)
 }
 
 func (s Store) UpdateProduct(ctx context.Context, productID string, enabled, soldOut *bool) (Product, error) {

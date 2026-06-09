@@ -222,13 +222,14 @@ func (s Server) handleAdminSettings(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var input struct {
-		OrderingOpen bool `json:"orderingOpen"`
+		OrderingOpen *bool `json:"orderingOpen"`
+		BusinessOpen *bool `json:"businessOpen"`
 	}
 	if err := readJSON(r, &input); err != nil {
 		writeError(w, http.StatusBadRequest, "Settings are invalid.")
 		return
 	}
-	settings, err := s.store.UpdateSettings(r.Context(), input.OrderingOpen)
+	settings, err := s.store.UpdateSettings(r.Context(), input.OrderingOpen, input.BusinessOpen)
 	if err != nil {
 		writeError(w, http.StatusInternalServerError, "Could not update settings.")
 		return

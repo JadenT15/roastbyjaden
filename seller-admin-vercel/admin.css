@@ -268,11 +268,16 @@ select {
   flex-wrap: wrap;
 }
 
+.toolbar-actions .button {
+  min-height: 40px;
+  padding: 9px 12px;
+}
+
 .ordering-toggle {
   display: inline-grid;
-  grid-template-columns: repeat(2, minmax(92px, 1fr));
+  grid-template-columns: repeat(2, minmax(72px, 1fr));
   overflow: hidden;
-  min-height: 44px;
+  min-height: 40px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: #fff;
@@ -282,7 +287,7 @@ select {
   border: 0;
   background: #fff;
   color: var(--muted);
-  padding: 11px 14px;
+  padding: 9px 10px;
   cursor: pointer;
   font-weight: 900;
 }
@@ -726,5 +731,22 @@ fieldset {
   .order-card-head {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .toolbar-actions {
+    display: grid;
+    width: 100%;
+    grid-template-columns: minmax(78px, 0.8fr) minmax(142px, 1.5fr) minmax(64px, 0.7fr);
+    gap: 8px;
+  }
+
+  .toolbar-actions .button,
+  .ordering-toggle {
+    width: 100%;
+  }
+
+  .toolbar-actions .button,
+  .ordering-toggle-button {
+    font-size: 14px;
   }
 }

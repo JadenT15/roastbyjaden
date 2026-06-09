@@ -268,6 +268,45 @@ select {
   flex-wrap: wrap;
 }
 
+.ordering-toggle {
+  display: inline-grid;
+  grid-template-columns: repeat(2, minmax(92px, 1fr));
+  overflow: hidden;
+  min-height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.ordering-toggle-button {
+  border: 0;
+  background: #fff;
+  color: var(--muted);
+  padding: 11px 14px;
+  cursor: pointer;
+  font-weight: 900;
+}
+
+.ordering-toggle-button + .ordering-toggle-button {
+  border-left: 1px solid var(--line);
+}
+
+.ordering-toggle-button.active {
+  background: var(--green);
+  color: #fff;
+}
+
+.ordering-toggle-button:not(.active):hover,
+.ordering-toggle-button:not(.active):focus-visible {
+  background: var(--green-soft);
+  color: var(--green-dark);
+}
+
+.ordering-toggle-button:disabled {
+  cursor: wait;
+  opacity: 0.68;
+}
+
 .console-section {
   display: grid;
   gap: 18px;

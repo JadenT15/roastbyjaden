@@ -42,7 +42,8 @@ const adminOrders = document.querySelector("#adminOrders");
 const selectedOrderPanel = document.querySelector("#selectedOrder");
 const adminProductList = document.querySelector("#adminProductList");
 const adminOptionList = document.querySelector("#adminOptionList");
-const toggleOrderingButton = document.querySelector("#toggleOrderingButton");
+const openOrderingButton = document.querySelector("#openOrderingButton");
+const closeOrderingButton = document.querySelector("#closeOrderingButton");
 const refreshButton = document.querySelector("#refreshButton");
 const logoutButton = document.querySelector("#logoutButton");
 const addProductForm = document.querySelector("#addProductForm");
@@ -134,8 +135,10 @@ function renderStats(state) {
     </article>
   `;
 
-  toggleOrderingButton.textContent = state.settings.orderingOpen ? "暂停接单" : "恢复接单";
-  toggleOrderingButton.classList.toggle("danger", state.settings.orderingOpen);
+  openOrderingButton.classList.toggle("active", state.settings.orderingOpen);
+  closeOrderingButton.classList.toggle("active", !state.settings.orderingOpen);
+  openOrderingButton.setAttribute("aria-pressed", String(state.settings.orderingOpen));
+  closeOrderingButton.setAttribute("aria-pressed", String(!state.settings.orderingOpen));
 }
 
 function renderFlowSteps(state) {
@@ -389,15 +392,27 @@ refreshButton.addEventListener("click", async () => {
   }
 });
 
-toggleOrderingButton.addEventListener("click", async () => {
-  toggleOrderingButton.disabled = true;
+async function setOrderingOpen(nextOpen) {
+  const currentOpen = getState().settings.orderingOpen;
+  if (currentOpen === nextOpen) return;
+  openOrderingButton.disabled = true;
+  closeOrderingButton.disabled = true;
   try {
     await toggleOrderingOpen();
   } catch (error) {
     alert(error.message || "接单状态更新失败。");
   } finally {
-    toggleOrderingButton.disabled = false;
+    openOrderingButton.disabled = false;
+    closeOrderingButton.disabled = false;
   }
+}
+
+openOrderingButton.addEventListener("click", () => {
+  setOrderingOpen(true);
+});
+
+closeOrderingButton.addEventListener("click", () => {
+  setOrderingOpen(false);
 });
 
 logoutButton.addEventListener("click", async () => {

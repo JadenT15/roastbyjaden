@@ -8,7 +8,7 @@
       content="賢仔港式烧腊商家后台，用来控制订单流程、接单状态和商品供应。"
     />
     <title>賢仔烧腊 | 商家后台</title>
-    <link rel="stylesheet" href="admin.css?v=20260609-flow-control" />
+    <link rel="stylesheet" href="admin.css?v=20260609-ordering-toggle" />
   </head>
   <body>
     <header class="admin-header">
@@ -72,7 +72,14 @@
           </div>
           <div class="toolbar-actions">
             <button class="button secondary" id="refreshButton" type="button">刷新订单</button>
-            <button class="button secondary" id="toggleOrderingButton" type="button">暂停接单</button>
+            <div class="ordering-toggle" aria-label="接单状态控制">
+              <button class="ordering-toggle-button" id="openOrderingButton" type="button" data-ordering-open="true">
+                接单中
+              </button>
+              <button class="ordering-toggle-button" id="closeOrderingButton" type="button" data-ordering-open="false">
+                暂停接单
+              </button>
+            </div>
             <button class="button secondary" id="logoutButton" type="button">登出</button>
           </div>
         </div>
@@ -175,6 +182,6 @@
       </section>
     </main>
 
-    <script type="module" src="admin.js?v=20260609-flow-control"></script>
+    <script type="module" src="admin.js?v=20260609-ordering-toggle"></script>
   </body>
 </html>

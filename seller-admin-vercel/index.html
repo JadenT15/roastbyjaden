@@ -170,12 +170,10 @@
               <textarea id="productDescription" rows="3" placeholder="写给买家看的菜品说明。" required></textarea>
             </label>
             <label class="full-span">
-              图片网址
-              <input id="productImage" type="url" placeholder="https://..." />
+              规格选项（可不填）
+              <input id="productChoicesText" type="text" list="choiceGroupSuggestions" placeholder="例如：叉烧肥瘦、白切鸡部位" />
+              <datalist id="choiceGroupSuggestions"></datalist>
             </label>
-            <fieldset class="full-span" id="productChoiceFieldset">
-              <legend>选择规格选项</legend>
-            </fieldset>
             <label class="toggle-row">
               <input id="productEnabled" type="checkbox" checked />
               立即上架
@@ -190,6 +188,6 @@
       </section>
     </main>
 
-    <script type="module" src="admin.js?v=20260609-orders-table"></script>
+    <script type="module" src="admin.js?v=20260609-add-product-text-specs"></script>
   </body>
 </html>

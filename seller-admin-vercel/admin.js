@@ -51,7 +51,7 @@ const refreshButton = document.querySelector("#refreshButton");
 const logoutButton = document.querySelector("#logoutButton");
 const addProductForm = document.querySelector("#addProductForm");
 const categorySuggestions = document.querySelector("#categorySuggestions");
-const productChoiceFieldset = document.querySelector("#productChoiceFieldset");
+const choiceGroupSuggestions = document.querySelector("#choiceGroupSuggestions");
 
 let selectedOrderId = "";
 let refreshTimer = null;
@@ -386,20 +386,33 @@ function renderAddProductForm(state) {
     .map((category) => `<option value="${escapeHTML(category)}"></option>`)
     .join("");
 
-  productChoiceFieldset.innerHTML = `
-    <legend>选择规格选项</legend>
-    ${Object.values(state.choiceGroups)
-      .filter((group) => group.id !== "roastMeatCombo")
-      .map(
-        (group) => `
-          <label class="toggle-row">
-            <input type="checkbox" name="productChoiceGroup" value="${group.id}" />
-            ${escapeHTML(group.label)}
-          </label>
-        `,
-      )
-      .join("")}
-  `;
+  choiceGroupSuggestions.innerHTML = Object.values(state.choiceGroups)
+    .filter((group) => group.id !== "roastMeatCombo")
+    .map((group) => `<option value="${escapeHTML(group.label)}"></option>`)
+    .join("");
+}
+
+function getTypedChoiceGroups(state) {
+  const input = document.querySelector("#productChoicesText").value.trim();
+  if (!input) return [];
+
+  const availableGroups = Object.values(state.choiceGroups).filter((group) => group.id !== "roastMeatCombo");
+  const groupLookup = new Map();
+  availableGroups.forEach((group) => {
+    groupLookup.set(group.id.toLowerCase(), group.id);
+    groupLookup.set(group.label.toLowerCase(), group.id);
+  });
+
+  const parts = input
+    .split(/[\n,，、]+/)
+    .map((part) => part.trim())
+    .filter(Boolean);
+  const unknownParts = parts.filter((part) => !groupLookup.has(part.toLowerCase()));
+  if (unknownParts.length) {
+    throw new Error(`找不到这个规格：${unknownParts.join("、")}。请用后台已有的规格名称。`);
+  }
+
+  return [...new Set(parts.map((part) => groupLookup.get(part.toLowerCase())))];
 }
 
 function renderAll(state = getState()) {
@@ -546,17 +559,14 @@ adminOptionList.addEventListener("click", async (event) => {
 addProductForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
-  const choices = [...document.querySelectorAll("input[name='productChoiceGroup']:checked")].map(
-    (input) => input.value,
-  );
-
   try {
+    const choices = getTypedChoiceGroups(getState());
     await addProduct({
       name: document.querySelector("#productName").value,
       category: document.querySelector("#productCategory").value,
       price: document.querySelector("#productPrice").value,
       description: document.querySelector("#productDescription").value,
-      image: document.querySelector("#productImage").value,
+      image: "",
       enabled: document.querySelector("#productEnabled").checked,
       soldOut: document.querySelector("#productSoldOut").checked,
       choices,

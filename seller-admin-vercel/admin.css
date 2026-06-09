@@ -746,10 +746,21 @@ fieldset {
   .toolbar-actions .button,
   .ordering-toggle {
     width: 100%;
+    min-width: 0;
   }
 
   .toolbar-actions .button,
   .ordering-toggle-button {
-    font-size: 13px;
+    font-size: 12px;
+  }
+
+  .toolbar-actions .ordering-toggle {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .toolbar-actions .button,
+  .toolbar-actions .ordering-toggle-button {
+    padding-right: 6px;
+    padding-left: 6px;
   }
 }

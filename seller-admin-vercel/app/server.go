@@ -282,12 +282,13 @@ func (s Server) handleAdminProductByID(w http.ResponseWriter, r *http.Request) {
 	var input struct {
 		Enabled *bool `json:"enabled"`
 		SoldOut *bool `json:"soldOut"`
+		Price   *float64 `json:"price"`
 	}
 	if err := readJSON(r, &input); err != nil {
 		writeError(w, http.StatusBadRequest, "Product update is invalid.")
 		return
 	}
-	product, err := s.store.UpdateProduct(r.Context(), productID, input.Enabled, input.SoldOut)
+	product, err := s.store.UpdateProduct(r.Context(), productID, input.Enabled, input.SoldOut, input.Price)
 	if err != nil {
 		writeError(w, http.StatusBadRequest, err.Error())
 		return

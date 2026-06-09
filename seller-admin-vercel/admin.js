@@ -16,7 +16,8 @@ import {
   toggleProductEnabled,
   toggleProductSoldOut,
   updateOrderStatus,
-} from "./shared/api-store.js?v=20260608-seller-vercel";
+  updateProductPrice,
+} from "./shared/api-store.js?v=20260609-product-price-edit";
 
 const sellerFlow = [
   { status: "NEW", label: "新订单", note: "系统自动接单", icon: "01" },
@@ -338,6 +339,13 @@ function renderProducts(state) {
           <div>
             <strong>${escapeHTML(product.name)}</strong>
             <span>${escapeHTML(product.category)} · ${formatPrice(product.price)}</span>
+            <div class="product-price-editor">
+              <label>
+                价格 RM
+                <input data-product-price="${escapeHTML(product.id)}" type="number" min="0" step="0.1" value="${product.price}" />
+              </label>
+              <button class="mini-button" type="button" data-save-price="${escapeHTML(product.id)}">保存价格</button>
+            </div>
           </div>
           <div class="row-actions">
             <button class="mini-button ${product.enabled ? "active" : ""}" type="button" data-toggle-enabled="${product.id}">
@@ -534,12 +542,22 @@ selectedOrderPanel.addEventListener("click", handleOrderStatusClick);
 adminProductList.addEventListener("click", async (event) => {
   const enabledButton = event.target.closest("[data-toggle-enabled]");
   const soldOutButton = event.target.closest("[data-toggle-soldout]");
+  const savePriceButton = event.target.closest("[data-save-price]");
 
   try {
     if (enabledButton) await toggleProductEnabled(enabledButton.dataset.toggleEnabled);
     if (soldOutButton) await toggleProductSoldOut(soldOutButton.dataset.toggleSoldout);
+    if (savePriceButton) {
+      savePriceButton.disabled = true;
+      const priceInput = adminProductList.querySelector(
+        `[data-product-price="${CSS.escape(savePriceButton.dataset.savePrice)}"]`,
+      );
+      await updateProductPrice(savePriceButton.dataset.savePrice, priceInput.value);
+    }
   } catch (error) {
     alert(error.message || "商品更新失败。");
+  } finally {
+    if (savePriceButton) savePriceButton.disabled = false;
   }
 });
 

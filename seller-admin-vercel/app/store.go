@@ -402,7 +402,7 @@ func (s Store) UpdateSettings(ctx context.Context, orderingOpen, businessOpen *b
 	return s.Settings(ctx)
 }
 
-func (s Store) UpdateProduct(ctx context.Context, productID string, enabled, soldOut *bool) (Product, error) {
+func (s Store) UpdateProduct(ctx context.Context, productID string, enabled, soldOut *bool, price *float64) (Product, error) {
 	if enabled != nil {
 		if _, err := s.db.Exec(ctx, "update products set enabled = $1, updated_at = now() where id = $2", *enabled, productID); err != nil {
 			return Product{}, err
@@ -410,6 +410,14 @@ func (s Store) UpdateProduct(ctx context.Context, productID string, enabled, sol
 	}
 	if soldOut != nil {
 		if _, err := s.db.Exec(ctx, "update products set sold_out = $1, updated_at = now() where id = $2", *soldOut, productID); err != nil {
+			return Product{}, err
+		}
+	}
+	if price != nil {
+		if *price < 0 {
+			return Product{}, errors.New("price must be 0 or higher")
+		}
+		if _, err := s.db.Exec(ctx, "update products set price = $1, updated_at = now() where id = $2", *price, productID); err != nil {
 			return Product{}, err
 		}
 	}
@@ -472,7 +480,7 @@ func (s Store) AddProduct(ctx context.Context, product Product) (Product, error)
 	if err := tx.Commit(ctx); err != nil {
 		return Product{}, err
 	}
-	return s.UpdateProduct(ctx, product.ID, nil, nil)
+	return s.UpdateProduct(ctx, product.ID, nil, nil, nil)
 }
 
 func slugify(value string) string {

@@ -294,6 +294,18 @@ export async function toggleProductSoldOut(productId) {
   await loadAdminState();
 }
 
+export async function updateProductPrice(productId, price) {
+  const nextPrice = Number(price);
+  if (!Number.isFinite(nextPrice) || nextPrice < 0) {
+    throw new ApiError("请输入正确的价格。", 400);
+  }
+  await apiFetch(`/api/admin/products/${encodeURIComponent(productId)}`, {
+    method: "PATCH",
+    body: JSON.stringify({ price: nextPrice }),
+  });
+  await loadAdminState();
+}
+
 export async function toggleOptionAvailability(groupId, optionValue) {
   const option = currentState.choiceGroups[groupId]?.options.find((entry) => entry.value === optionValue);
   if (!option?.id) return;

@@ -641,6 +641,25 @@ select:focus {
   display: block;
 }
 
+.product-price-editor {
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.product-price-editor label {
+  max-width: 140px;
+  font-size: 0.85rem;
+  font-weight: 900;
+}
+
+.product-price-editor input {
+  margin-top: 4px;
+  padding: 9px 10px;
+}
+
 .mini-button.active,
 .option-toggle.available {
   border-color: #bfe5ca;

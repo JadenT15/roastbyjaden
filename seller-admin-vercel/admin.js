@@ -171,6 +171,28 @@ function renderFlowSteps(state) {
     .join("");
 }
 
+function renderOrderStatusControls(order) {
+  return `
+    <div class="order-status-controls" aria-label="订单 ${escapeHTML(order.code)} 制作状态控制">
+      ${sellerFlow
+        .filter((step) => step.status !== "NEW")
+        .map(
+          (step) => `
+            <button
+              class="order-status-button ${step.status === order.status ? "current" : ""}"
+              type="button"
+              data-order-status="${order.id}"
+              data-next-status="${step.status}"
+            >
+              ${step.label}
+            </button>
+          `,
+        )
+        .join("")}
+    </div>
+  `;
+}
+
 function renderOrders(state) {
   const todayOrders = getTodayOrders(state);
 
@@ -208,6 +230,7 @@ function renderOrders(state) {
               )
               .join("")}
           </ul>
+          ${renderOrderStatusControls(order)}
           <button class="mini-button active" type="button">查看 / 更新</button>
         </article>
       `,
@@ -424,6 +447,7 @@ logoutButton.addEventListener("click", async () => {
 });
 
 adminOrders.addEventListener("click", (event) => {
+  if (event.target.closest("[data-order-status][data-next-status]")) return;
   const card = event.target.closest("[data-select-order]");
   if (!card) return;
   selectedOrderId = card.dataset.selectOrder;
@@ -445,6 +469,7 @@ async function handleOrderStatusClick(event) {
 }
 
 flowSteps.addEventListener("click", handleOrderStatusClick);
+adminOrders.addEventListener("click", handleOrderStatusClick);
 selectedOrderPanel.addEventListener("click", handleOrderStatusClick);
 
 adminProductList.addEventListener("click", async (event) => {

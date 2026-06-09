@@ -142,16 +142,27 @@ function renderFlowSteps(state) {
   const selectedOrder = getSelectedOrder(state);
   const currentIndex = selectedOrder ? getStatusIndex(selectedOrder.status) : -1;
 
+  if (!selectedOrder) {
+    flowSteps.innerHTML = '<div class="empty-panel flow-empty">有新订单后，商家可以在这里点击流程卡片更新状态。</div>';
+    return;
+  }
+
   flowSteps.innerHTML = sellerFlow
     .map((step, index) => {
       const complete = currentIndex >= index;
       const current = selectedOrder?.status === step.status;
       return `
-        <article class="flow-step ${complete ? "complete" : ""} ${current ? "current" : ""}">
+        <button
+          class="flow-step ${complete ? "complete" : ""} ${current ? "current" : ""}"
+          type="button"
+          data-order-status="${selectedOrder.id}"
+          data-next-status="${step.status}"
+        >
           <div class="flow-icon" aria-hidden="true">${step.icon}</div>
           <strong>${step.label}</strong>
           <span>${step.note}</span>
-        </article>
+          <small>${current ? "当前状态" : "点我设为此状态"}</small>
+        </button>
       `;
     })
     .join("");
@@ -404,7 +415,7 @@ adminOrders.addEventListener("click", (event) => {
   renderAll();
 });
 
-selectedOrderPanel.addEventListener("click", async (event) => {
+async function handleOrderStatusClick(event) {
   const button = event.target.closest("[data-order-status][data-next-status]");
   if (!button) return;
   button.disabled = true;
@@ -416,7 +427,10 @@ selectedOrderPanel.addEventListener("click", async (event) => {
   } finally {
     button.disabled = false;
   }
-});
+}
+
+flowSteps.addEventListener("click", handleOrderStatusClick);
+selectedOrderPanel.addEventListener("click", handleOrderStatusClick);
 
 adminProductList.addEventListener("click", async (event) => {
   const enabledButton = event.target.closest("[data-toggle-enabled]");

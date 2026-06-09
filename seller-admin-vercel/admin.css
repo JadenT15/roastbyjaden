@@ -403,26 +403,78 @@ select {
   grid-column: 1 / -1;
 }
 
-.orders-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
+.orders-table-wrap {
+  overflow-x: auto;
   margin-top: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
 }
 
-.order-card {
-  display: grid;
-  gap: 12px;
-  padding: 16px;
+.orders-table {
+  width: 100%;
+  min-width: 980px;
+  border-collapse: collapse;
+}
+
+.orders-table th,
+.orders-table td {
+  border-bottom: 1px solid var(--line);
+  padding: 12px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.orders-table th {
+  background: #fbfcfe;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.orders-table tbody tr {
   cursor: pointer;
 }
 
-.order-card.selected {
-  border-color: var(--green);
-  box-shadow: 0 0 0 3px rgba(24, 133, 59, 0.14), var(--shadow);
+.orders-table tbody tr.selected {
+  background: var(--green-soft);
 }
 
-.order-card h4,
+.orders-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.items-cell {
+  max-width: 280px;
+  overflow-wrap: anywhere;
+}
+
+.next-step-button,
+.done-label {
+  display: inline-flex;
+  min-height: 36px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.next-step-button {
+  border: 1px solid var(--green);
+  background: var(--green);
+  color: #fff;
+  cursor: pointer;
+}
+
+.done-label {
+  border: 1px solid #bfe5ca;
+  background: var(--green-soft);
+  color: var(--green-dark);
+}
+
 .option-group-card h4,
 .selected-order h4 {
   margin: 0;
@@ -456,49 +508,6 @@ select {
 .status-cancelled {
   background: var(--red-soft);
   color: var(--red);
-}
-
-.order-items {
-  display: grid;
-  gap: 8px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.order-items strong,
-.order-items span {
-  display: block;
-}
-
-.order-status-controls {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-}
-
-.order-status-button {
-  min-height: 38px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: #fff;
-  color: var(--green-dark);
-  padding: 8px 10px;
-  cursor: pointer;
-  font-size: 12px;
-  font-weight: 900;
-}
-
-.order-status-button.current {
-  border-color: var(--green);
-  background: var(--green);
-  color: #fff;
-}
-
-.order-status-button:not(.current):hover,
-.order-status-button:not(.current):focus-visible {
-  border-color: var(--green);
-  background: var(--green-soft);
 }
 
 .selected-order {
@@ -698,8 +707,7 @@ fieldset {
 }
 
 @media (max-width: 1180px) {
-  .stats-grid,
-  .orders-grid {
+  .stats-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -715,7 +723,6 @@ fieldset {
 @media (max-width: 820px) {
   .admin-hero,
   .stats-grid,
-  .orders-grid,
   .add-product-form,
   .status-buttons {
     grid-template-columns: 1fr;
@@ -730,8 +737,7 @@ fieldset {
   .toolbar,
   .panel-head,
   .product-row,
-  .row-actions,
-  .order-card-head {
+  .row-actions {
     align-items: flex-start;
     flex-direction: column;
   }
@@ -762,5 +768,62 @@ fieldset {
   .toolbar-actions .ordering-toggle-button {
     padding-right: 6px;
     padding-left: 6px;
+  }
+
+  .orders-table-wrap {
+    overflow: visible;
+    border: 0;
+    background: transparent;
+  }
+
+  .orders-table,
+  .orders-table thead,
+  .orders-table tbody,
+  .orders-table tr,
+  .orders-table td {
+    display: block;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .orders-table thead {
+    display: none;
+  }
+
+  .orders-table tr {
+    margin-bottom: 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  .orders-table td {
+    display: grid;
+    grid-template-columns: 86px minmax(0, 1fr);
+    gap: 10px;
+    border-bottom: 1px solid var(--line);
+    padding: 10px 12px;
+  }
+
+  .orders-table td::before {
+    content: attr(data-label);
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 900;
+  }
+
+  .orders-table td:last-child {
+    border-bottom: 0;
+  }
+
+  .items-cell {
+    max-width: none;
+  }
+
+  .next-step-button,
+  .done-label {
+    width: 100%;
   }
 }

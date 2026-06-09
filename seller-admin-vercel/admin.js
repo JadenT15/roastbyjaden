@@ -77,6 +77,24 @@ function getStatusIndex(status) {
   return sellerFlow.findIndex((step) => step.status === status);
 }
 
+function getNextOrderStep(status) {
+  const currentIndex = getStatusIndex(status);
+  if (currentIndex < 0 || currentIndex >= sellerFlow.length - 1) return null;
+  const nextStep = sellerFlow[currentIndex + 1];
+  const actionLabels = {
+    ACCEPTED: "接单",
+    PREPARING: "开始制作",
+    READY: "制作完成",
+    PACKING: "开始打包",
+    OUT_FOR_DELIVERY: "开始配送",
+    DONE: "完成订单",
+  };
+  return {
+    ...nextStep,
+    actionLabel: actionLabels[nextStep.status] || `设为${nextStep.label}`,
+  };
+}
+
 function getSelectedOrder(state) {
   const todayOrders = getTodayOrders(state);
   if (!todayOrders.length) return null;
@@ -178,28 +196,6 @@ function renderFlowSteps(state) {
     .join("");
 }
 
-function renderOrderStatusControls(order) {
-  return `
-    <div class="order-status-controls" aria-label="订单 ${escapeHTML(order.code)} 制作状态控制">
-      ${sellerFlow
-        .filter((step) => step.status !== "NEW")
-        .map(
-          (step) => `
-            <button
-              class="order-status-button ${step.status === order.status ? "current" : ""}"
-              type="button"
-              data-order-status="${order.id}"
-              data-next-status="${step.status}"
-            >
-              ${step.label}
-            </button>
-          `,
-        )
-        .join("")}
-    </div>
-  `;
-}
-
 function renderOrders(state) {
   const todayOrders = getTodayOrders(state);
 
@@ -212,37 +208,57 @@ function renderOrders(state) {
   const selectedOrder = getSelectedOrder(state);
   selectedOrderId = selectedOrder.id;
 
-  adminOrders.innerHTML = todayOrders
-    .map(
-      (order) => `
-        <article class="order-card ${order.id === selectedOrderId ? "selected" : ""}" data-select-order="${order.id}">
-          <div class="order-card-head">
-            <div>
-              <p class="eyebrow">订单 ${escapeHTML(order.code)}</p>
-              <h4>${escapeHTML(order.customerName)}</h4>
-            </div>
-            <span class="status-pill status-${order.status.toLowerCase()}">${getStatusLabel(order.status)}</span>
-          </div>
-          <p class="order-meta">${escapeHTML(order.orderType)} · ${formatPrice(order.total)} · ${formatDateTime(order.createdAt)}</p>
-          <p class="order-meta">${escapeHTML(order.customerPhone)}${order.customerAddress ? ` · ${escapeHTML(order.customerAddress)}` : ""}</p>
-          <ul class="order-items">
-            ${order.items
-              .map(
-                (item) => `
-                  <li>
-                    <strong>${item.quantity} x ${escapeHTML(item.name)}</strong>
-                    ${item.choicesText ? `<span>${escapeHTML(item.choicesText)}</span>` : ""}
-                  </li>
-                `,
-              )
-              .join("")}
-          </ul>
-          ${renderOrderStatusControls(order)}
-          <button class="mini-button active" type="button">查看 / 更新</button>
-        </article>
-      `,
-    )
-    .join("");
+  adminOrders.innerHTML = `
+    <div class="orders-table-wrap">
+      <table class="orders-table">
+        <thead>
+          <tr>
+            <th>订单</th>
+            <th>买家</th>
+            <th>电话</th>
+            <th>金额</th>
+            <th>时间</th>
+            <th>商品内容</th>
+            <th>状态</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${todayOrders
+            .map((order) => {
+              const nextStep = getNextOrderStep(order.status);
+              const itemsText = order.items
+                .map((item) => {
+                  const choices = item.choicesText ? `（${item.choicesText}）` : "";
+                  return `${item.quantity} x ${item.name}${choices}`;
+                })
+                .join("，");
+              return `
+                <tr class="${order.id === selectedOrderId ? "selected" : ""}" data-select-order="${order.id}">
+                  <td data-label="订单"><strong>${escapeHTML(order.code)}</strong></td>
+                  <td data-label="买家">${escapeHTML(order.customerName)}</td>
+                  <td data-label="电话">${escapeHTML(order.customerPhone)}</td>
+                  <td data-label="金额">${formatPrice(order.total)}</td>
+                  <td data-label="时间">${formatDateTime(order.createdAt)}</td>
+                  <td data-label="商品内容" class="items-cell">${escapeHTML(itemsText)}</td>
+                  <td data-label="状态">
+                    <span class="status-pill status-${order.status.toLowerCase()}">${getStatusLabel(order.status)}</span>
+                  </td>
+                  <td data-label="操作">
+                    ${
+                      nextStep
+                        ? `<button class="next-step-button" type="button" data-order-status="${order.id}" data-next-status="${nextStep.status}">${nextStep.actionLabel}</button>`
+                        : `<span class="done-label">${order.status === "CANCELLED" ? "已取消" : "已完成"}</span>`
+                    }
+                  </td>
+                </tr>
+              `;
+            })
+            .join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
 }
 
 function renderSelectedOrder(state) {

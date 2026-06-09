@@ -635,7 +635,7 @@ function renderComboGroup(product, group) {
 function getProductBadge(product, available) {
   if (!product.enabled) return `<span class="product-badge idle">${translateUi("unavailable")}</span>`;
   if (!available || product.soldOut) return `<span class="product-badge sold">${translateUi("soldOut")}</span>`;
-  return `<span class="product-badge live">${translateUi("available")}</span>`;
+  return "";
 }
 
 function renderMenu(state) {

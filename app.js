@@ -242,18 +242,18 @@ let currentLanguage = window.localStorage.getItem("roast-by-jaden-language") || 
 
 const productSortOrder = new Map(
   [
-    "roast-duck-rice",
-    "char-siu-rice",
-    "siew-yoke-rice",
-    "white-chicken-rice",
-    "hk-roast-chicken-rice",
-    "custom-double-rice",
-    "custom-triple-rice",
-    "four-treasure-rice",
-    "roast-duck-portion",
-    "char-siu-portion",
-    "siew-yoke-portion",
-  ].map((id, index) => [id, index]),
+    ["roast-duck-rice", 1000],
+    ["char-siu-rice", 1010],
+    ["siew-yoke-rice", 1020],
+    ["white-chicken-rice", 1030],
+    ["hk-roast-chicken-rice", 1040],
+    ["custom-double-rice", 2000],
+    ["custom-triple-rice", 3000],
+    ["four-treasure-rice", 4000],
+    ["roast-duck-portion", 5000],
+    ["char-siu-portion", 5010],
+    ["siew-yoke-portion", 5020],
+  ],
 );
 
 const categoryTabs = document.querySelector("#categoryTabs");
@@ -439,12 +439,12 @@ function getProductSortRank(product) {
     return productSortOrder.get(product.id);
   }
 
-  if (product.category === "烧味饭") return 100;
-  if (product.name.includes("双拼")) return 200;
-  if (product.name.includes("三拼")) return 300;
-  if (product.name.includes("四宝")) return 400;
-  if (product.category === "单点加料" || product.name.includes("例牌")) return 500;
-  return 900;
+  if (product.category === "烧味饭") return 1900;
+  if (product.name.includes("双拼")) return 2000;
+  if (product.name.includes("三拼")) return 3000;
+  if (product.name.includes("四宝")) return 4000;
+  if (product.category === "单点加料" || product.name.includes("例牌")) return 5000;
+  return 9000;
 }
 
 function getVisibleProducts(state) {

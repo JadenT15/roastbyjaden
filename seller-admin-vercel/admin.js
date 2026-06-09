@@ -152,7 +152,7 @@ function renderStats(state) {
     <article class="stat-card">
       <span>需注意商品</span>
       <strong>${soldOutProducts}</strong>
-      <small>已售罄或已下架</small>
+      <small>暂不售卖或已下架</small>
     </article>
   `;
 
@@ -344,7 +344,7 @@ function renderProducts(state) {
               ${product.enabled ? "已上架" : "已下架"}
             </button>
             <button class="mini-button ${product.soldOut ? "warn" : ""}" type="button" data-toggle-soldout="${product.id}">
-              ${product.soldOut ? "已售罄" : "设为售罄"}
+              ${product.soldOut ? "暂不售卖" : "标记暂不售卖"}
             </button>
           </div>
         </article>

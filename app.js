@@ -240,6 +240,22 @@ let trackedOrderCode = "";
 let publicRefreshTimer = null;
 let currentLanguage = window.localStorage.getItem("roast-by-jaden-language") || "zh";
 
+const productSortOrder = new Map(
+  [
+    "roast-duck-rice",
+    "char-siu-rice",
+    "siew-yoke-rice",
+    "white-chicken-rice",
+    "hk-roast-chicken-rice",
+    "custom-double-rice",
+    "custom-triple-rice",
+    "four-treasure-rice",
+    "roast-duck-portion",
+    "char-siu-portion",
+    "siew-yoke-portion",
+  ].map((id, index) => [id, index]),
+);
+
 const categoryTabs = document.querySelector("#categoryTabs");
 const menuGrid = document.querySelector("#menuGrid");
 const cartList = document.querySelector("#cartList");
@@ -418,6 +434,19 @@ function formatChoicesForOrder(choices) {
     .join(" / ");
 }
 
+function getProductSortRank(product) {
+  if (productSortOrder.has(product.id)) {
+    return productSortOrder.get(product.id);
+  }
+
+  if (product.category === "烧味饭") return 100;
+  if (product.name.includes("双拼")) return 200;
+  if (product.name.includes("三拼")) return 300;
+  if (product.name.includes("四宝")) return 400;
+  if (product.category === "单点加料" || product.name.includes("例牌")) return 500;
+  return 900;
+}
+
 function getVisibleProducts(state) {
   const products =
     activeCategory === "All"
@@ -425,8 +454,9 @@ function getVisibleProducts(state) {
       : state.products.filter((product) => product.category === activeCategory);
 
   return [...products].sort((left, right) => {
-    if (left.enabled === right.enabled) return left.name.localeCompare(right.name, "zh");
-    return left.enabled ? -1 : 1;
+    const rankDifference = getProductSortRank(left) - getProductSortRank(right);
+    if (rankDifference !== 0) return rankDifference;
+    return left.name.localeCompare(right.name, "zh");
   });
 }
 

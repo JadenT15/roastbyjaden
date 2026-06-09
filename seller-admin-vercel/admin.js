@@ -16,8 +16,9 @@ import {
   toggleProductEnabled,
   toggleProductSoldOut,
   updateOrderStatus,
+  updateProductImage,
   updateProductPrice,
-} from "./shared/api-store.js?v=20260609-product-price-edit";
+} from "./shared/api-store.js?v=20260609-product-image-upload";
 
 const sellerFlow = [
   { status: "NEW", label: "新订单", note: "系统自动接单", icon: "01" },
@@ -346,6 +347,10 @@ function renderProducts(state) {
               </label>
               <button class="mini-button" type="button" data-save-price="${escapeHTML(product.id)}">保存价格</button>
             </div>
+            <label class="product-image-upload">
+              <span data-image-upload-label>上传更新图片</span>
+              <input data-product-image="${escapeHTML(product.id)}" type="file" accept="image/*" />
+            </label>
           </div>
           <div class="row-actions">
             <button class="mini-button ${product.enabled ? "active" : ""}" type="button" data-toggle-enabled="${product.id}">
@@ -421,6 +426,42 @@ function getTypedChoiceGroups(state) {
   }
 
   return [...new Set(parts.map((part) => groupLookup.get(part.toLowerCase())))];
+}
+
+function readFileAsDataURL(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(new Error("图片读取失败。"));
+    reader.readAsDataURL(file);
+  });
+}
+
+function loadImage(src) {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    image.onload = () => resolve(image);
+    image.onerror = () => reject(new Error("图片无法使用。"));
+    image.src = src;
+  });
+}
+
+async function compressImageFile(file) {
+  if (!file.type.startsWith("image/")) {
+    throw new Error("请选择图片文件。");
+  }
+  const source = await readFileAsDataURL(file);
+  const image = await loadImage(source);
+  const maxSize = 900;
+  const scale = Math.min(1, maxSize / Math.max(image.width, image.height));
+  const width = Math.max(1, Math.round(image.width * scale));
+  const height = Math.max(1, Math.round(image.height * scale));
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const context = canvas.getContext("2d");
+  context.drawImage(image, 0, 0, width, height);
+  return canvas.toDataURL("image/jpeg", 0.82);
 }
 
 function renderAll(state = getState()) {
@@ -558,6 +599,27 @@ adminProductList.addEventListener("click", async (event) => {
     alert(error.message || "商品更新失败。");
   } finally {
     if (savePriceButton) savePriceButton.disabled = false;
+  }
+});
+
+adminProductList.addEventListener("change", async (event) => {
+  const imageInput = event.target.closest("[data-product-image]");
+  if (!imageInput) return;
+  const file = imageInput.files?.[0];
+  if (!file) return;
+  const labelText = imageInput.closest(".product-image-upload")?.querySelector("[data-image-upload-label]");
+  const originalText = labelText?.textContent || "上传更新图片";
+  imageInput.disabled = true;
+  if (labelText) labelText.textContent = "图片上传中...";
+  try {
+    const image = await compressImageFile(file);
+    await updateProductImage(imageInput.dataset.productImage, image);
+  } catch (error) {
+    alert(error.message || "图片更新失败。");
+  } finally {
+    imageInput.value = "";
+    imageInput.disabled = false;
+    if (labelText) labelText.textContent = originalText;
   }
 });
 

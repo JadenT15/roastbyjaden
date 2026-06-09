@@ -306,6 +306,17 @@ export async function updateProductPrice(productId, price) {
   await loadAdminState();
 }
 
+export async function updateProductImage(productId, image) {
+  if (!image || typeof image !== "string") {
+    throw new ApiError("请选择一张图片。", 400);
+  }
+  await apiFetch(`/api/admin/products/${encodeURIComponent(productId)}`, {
+    method: "PATCH",
+    body: JSON.stringify({ image }),
+  });
+  await loadAdminState();
+}
+
 export async function toggleOptionAvailability(groupId, optionValue) {
   const option = currentState.choiceGroups[groupId]?.options.find((entry) => entry.value === optionValue);
   if (!option?.id) return;

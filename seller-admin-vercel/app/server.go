@@ -38,7 +38,7 @@ func (s Server) Handler() http.Handler {
 func (s Server) withCORS(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		origin := r.Header.Get("Origin")
-		if origin == s.cfg.FrontendOrigin {
+		if s.isAllowedOrigin(origin) {
 			w.Header().Set("Access-Control-Allow-Origin", origin)
 			w.Header().Set("Access-Control-Allow-Credentials", "true")
 			w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
@@ -50,6 +50,26 @@ func (s Server) withCORS(next http.Handler) http.Handler {
 		}
 		next.ServeHTTP(w, r)
 	})
+}
+
+func (s Server) isAllowedOrigin(origin string) bool {
+	if origin == "" {
+		return false
+	}
+	for _, candidate := range strings.Split(s.cfg.FrontendOrigin, ",") {
+		if origin == strings.TrimSpace(candidate) {
+			return true
+		}
+	}
+	switch origin {
+	case "https://roastbyjaden.vercel.app",
+		"https://roastbyjaden-seller-admin.vercel.app",
+		"http://127.0.0.1:4173",
+		"http://127.0.0.1:4175":
+		return true
+	default:
+		return false
+	}
 }
 
 func (s Server) withAdmin(next http.HandlerFunc) http.HandlerFunc {

@@ -18,6 +18,8 @@ import {
   orderStatuses,
 } from "./platform-store.js";
 
+const REMOTE_API_BASE_URL = "https://roastbyjaden-seller-admin.vercel.app";
+
 const API_BASE_URL =
   window.ROAST_API_BASE_URL ||
   window.localStorage.getItem("ROAST_API_BASE_URL") ||
@@ -25,10 +27,10 @@ const API_BASE_URL =
   window.location.hostname === "127.0.0.1" ||
   window.location.hostname === "localhost"
     ? "http://127.0.0.1:8080"
-    : window.location.origin);
+    : REMOTE_API_BASE_URL);
 
 let currentState = {
-  settings: { orderingOpen: true },
+  settings: { orderingOpen: true, businessOpen: true },
   session: { loggedIn: false },
   choiceGroups: {},
   products: [],
@@ -113,7 +115,10 @@ function apiXHR(path, options = {}) {
 
 function normalizeState(state) {
   return {
-    settings: { orderingOpen: Boolean(state?.settings?.orderingOpen) },
+    settings: {
+      orderingOpen: Boolean(state?.settings?.orderingOpen),
+      businessOpen: state?.settings?.businessOpen !== false,
+    },
     session: { loggedIn: Boolean(state?.session?.loggedIn) },
     choiceGroups: state?.choiceGroups || {},
     products: Array.isArray(state?.products) ? state.products : [],

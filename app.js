@@ -13,7 +13,7 @@ import {
   fetchOrderByCode,
   loadPublicState,
   subscribe,
-} from "./shared/api-store.js?v=20260607-live-look-api";
+} from "./shared/api-store.js?v=20260609-business-open";
 
 const translations = {
   en: {
@@ -131,6 +131,9 @@ const translations = {
       removeOne: "Remove one",
       menuQuantity: "menu quantity",
       openForOrders: "Open for orders",
+      closedByShop: "Shop is resting",
+      closedNotice:
+        "The shop is resting right now. You can still browse the menu and track existing orders.",
       pausedBySeller: "Paused by shop",
       pausedNotice:
         "The shop has paused ordering for now. You can still browse the menu and track existing orders.",
@@ -141,6 +144,7 @@ const translations = {
       noProducts: "No products in this category yet.",
       emptyCartAlert: "Please add at least one item before placing the order.",
       pausedAlert: "Ordering is paused right now.",
+      closedAlert: "The shop is resting right now.",
       addressAlert: "Please fill in the delivery address.",
       comboAlert: "Please select exactly {count} roast meats.",
       placingOrder: "Sending order...",
@@ -194,6 +198,8 @@ const translations = {
       removeOne: "减少一份",
       menuQuantity: "菜单数量",
       openForOrders: "营业中",
+      closedByShop: "休息中",
+      closedNotice: "商家现在休息中。你仍然可以浏览菜单，也可以查询已经提交的订单。",
       pausedBySeller: "商家暂停接单",
       pausedNotice: "商家现在暂停接单。你仍然可以浏览菜单，也可以查询已经提交的订单。",
       activeOrderNote: "订单会直接发送给商家，并保存到订单系统。",
@@ -202,6 +208,7 @@ const translations = {
       noProducts: "这个分类暂时没有产品。",
       emptyCartAlert: "请先加入至少一份菜品再下单。",
       pausedAlert: "商家现在暂停接单。",
+      closedAlert: "商家现在休息中。",
       addressAlert: "配送订单请填写地址。",
       comboAlert: "请选择刚好 {count} 款烧味。",
       placingOrder: "正在提交...",
@@ -729,7 +736,13 @@ function renderCart(state) {
 }
 
 function renderStoreState(state) {
-  if (state.settings.orderingOpen) {
+  if (!state.settings.businessOpen) {
+    storeStatusHero.textContent = translateUi("closedByShop");
+    storeNotice.hidden = false;
+    storeNotice.textContent = translateUi("closedNotice");
+    placeOrderButton.disabled = true;
+    orderFormNote.textContent = translateUi("closedNotice");
+  } else if (state.settings.orderingOpen) {
     storeStatusHero.textContent = translateUi("openForOrders");
     storeNotice.hidden = true;
     placeOrderButton.disabled = false;
@@ -1022,6 +1035,11 @@ orderForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   const state = getState();
+  if (!state.settings.businessOpen) {
+    alert(translateUi("closedAlert"));
+    return;
+  }
+
   if (!state.settings.orderingOpen) {
     alert(translateUi("pausedAlert"));
     return;
@@ -1051,7 +1069,8 @@ orderForm.addEventListener("submit", async (event) => {
   } catch (error) {
     alert(error.message || translateUi("orderError"));
   } finally {
-    placeOrderButton.disabled = !getState().settings.orderingOpen;
+    const nextState = getState();
+    placeOrderButton.disabled = !nextState.settings.businessOpen || !nextState.settings.orderingOpen;
     placeOrderButton.textContent = translateUi("placeOrder");
   }
 });

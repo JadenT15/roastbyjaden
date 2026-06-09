@@ -120,9 +120,9 @@ const translations = {
     },
     ui: {
       available: "Available",
-      soldOut: "Sold Out",
+      soldOut: "Temporarily unavailable",
       unavailable: "Unavailable",
-      notAvailable: "Not Available",
+      notAvailable: "Temporarily unavailable",
       each: "each",
       item: "item",
       items: "items",
@@ -187,9 +187,9 @@ const translations = {
     },
     ui: {
       available: "可购买",
-      soldOut: "已售完",
+      soldOut: "暂不售卖",
       unavailable: "暂不售卖",
-      notAvailable: "不可购买",
+      notAvailable: "暂不售卖",
       each: "每份",
       item: "份",
       items: "份",
@@ -634,7 +634,8 @@ function renderComboGroup(product, group) {
 
 function getProductBadge(product, available) {
   if (!product.enabled) return `<span class="product-badge idle">${translateUi("unavailable")}</span>`;
-  if (!available || product.soldOut) return `<span class="product-badge sold">${translateUi("soldOut")}</span>`;
+  if (product.soldOut) return `<span class="product-badge sold">${translateUi("soldOut")}</span>`;
+  if (!available) return `<span class="product-badge sold">${translateUi("notAvailable")}</span>`;
   return "";
 }
 
@@ -650,8 +651,8 @@ function renderMenu(state) {
     .map((product) => {
       const available = isProductAvailable(product, state);
       const defaultChoices = getDefaultChoices(product, state);
-      const choiceGroups = getChoiceGroupsForProduct(product, state);
-      const comboGroup = getComboGroupForProduct(product, state);
+      const choiceGroups = available ? getChoiceGroupsForProduct(product, state) : [];
+      const comboGroup = available ? getComboGroupForProduct(product, state) : null;
 
       return `
         <article class="menu-card" data-item-card="${product.id}">
@@ -680,7 +681,7 @@ function renderMenu(state) {
                       <button type="button" data-add="${product.id}" aria-label="${translateUi("addOne")} ${translateProductName(product)}">+</button>
                     </div>
                   `
-                  : `<button class="add-button" type="button" disabled>${translateUi("notAvailable")}</button>`
+                  : `<button class="add-button" type="button" disabled>${product.soldOut || !product.enabled ? translateUi("unavailable") : translateUi("notAvailable")}</button>`
               }
             </div>
           </div>

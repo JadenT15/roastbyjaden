@@ -79,6 +79,7 @@ const translations = {
     },
     choiceLabels: {
       鸡肉部位: "Chicken Cut",
+      白切鸡部位: "White Chicken Cut",
       叉烧肥瘦: "Char Siu Cut",
       重量: "Weight",
       烧鸭规格: "Roast Duck Size",
@@ -86,6 +87,7 @@ const translations = {
       选择三款烧味: "Choose 3 Roast Meats",
     },
     choiceValues: {
+      全部: "All Parts",
       鸡胸: "Breast",
       鸡二度: "Second Joint",
       鸡翅: "Wing",

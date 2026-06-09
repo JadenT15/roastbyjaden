@@ -59,6 +59,17 @@ const defaultChoiceGroups = {
       { value: "鸡腿", available: true },
     ],
   },
+  whiteChickenPart: {
+    id: "whiteChickenPart",
+    label: "白切鸡部位",
+    options: [
+      { value: "全部", available: true },
+      { value: "鸡胸", available: true },
+      { value: "鸡二度", available: true },
+      { value: "鸡翅", available: true },
+      { value: "鸡腿", available: true },
+    ],
+  },
   charSiuCut: {
     id: "charSiuCut",
     label: "叉烧肥瘦",
@@ -141,7 +152,7 @@ const defaultProducts = [
     image: menuImages.roastChicken,
     enabled: true,
     soldOut: false,
-    choices: ["chickenPart"],
+    choices: ["whiteChickenPart"],
   },
   {
     id: "hk-roast-chicken-rice",

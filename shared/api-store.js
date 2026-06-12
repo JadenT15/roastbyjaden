@@ -168,22 +168,13 @@ export function subscribe(listener) {
 
 export async function createOrder(payload) {
   if (usingLocalFallback) {
-    const order = createLocalOrder(payload);
-    replaceWithLocalState();
-    return order;
+    throw new ApiError("云端订单系统未连接，订单没有发送到商家后台。请刷新页面后再试。", 0);
   }
 
-  let order;
-  try {
-    order = await apiFetch("/api/orders", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    });
-  } catch (error) {
-    order = createLocalOrder(payload);
-    replaceWithLocalState();
-    return order;
-  }
+  const order = await apiFetch("/api/orders", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
   replaceState({ orders: [order, ...currentState.orders] });
   return order;
 }

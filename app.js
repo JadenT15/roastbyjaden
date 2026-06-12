@@ -13,7 +13,7 @@ import {
   fetchOrderByCode,
   loadPublicState,
   subscribe,
-} from "./shared/api-store.js?v=20260609-business-open";
+} from "./shared/api-store.js?v=20260612-order-sync";
 
 const translations = {
   en: {

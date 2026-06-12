@@ -13,7 +13,9 @@ import {
   fetchOrderByCode,
   loadPublicState,
   subscribe,
-} from "./shared/api-store.js?v=20260612-pay-before-order";
+} from "./shared/api-store.js?v=20260612-tng-payment-link";
+
+const TNG_PAYMENT_LINK = "https://payment.tngdigital.com.my/sc/bDLos9KsJZ";
 
 const translations = {
   en: {
@@ -149,6 +151,7 @@ const translations = {
       closedAlert: "The shop is resting right now.",
       addressAlert: "Please fill in the delivery address.",
       paymentConfirmAlert: "Please complete payment and tick the payment confirmation before placing the order.",
+      tngPaymentButton: "Pay with TNG {total}",
       comboAlert: "Please select exactly {count} roast meats.",
       placingOrder: "Sending order...",
       placeOrder: "Paid, place order",
@@ -214,6 +217,7 @@ const translations = {
       closedAlert: "商家现在休息中。",
       addressAlert: "配送订单请填写地址。",
       paymentConfirmAlert: "请先完成付款，并勾选付款确认后再提交订单。",
+      tngPaymentButton: "去 TNG 付款 {total}",
       comboAlert: "请选择刚好 {count} 款烧味。",
       placingOrder: "正在提交...",
       placeOrder: "已付款，提交订单",
@@ -277,6 +281,7 @@ const latestPaymentQrAmount = document.querySelector("#latestPaymentQrAmount");
 const latestPaymentQrReference = document.querySelector("#latestPaymentQrReference");
 const paymentQrPanel = document.querySelector("#paymentQrPanel");
 const paymentQrAmount = document.querySelector("#paymentQrAmount");
+const tngPaymentLink = document.querySelector("#tngPaymentLink");
 const paymentConfirmedInput = document.querySelector("#paymentConfirmed");
 const storeStatusHero = document.querySelector("#storeStatusHero");
 const storeNotice = document.querySelector("#storeNotice");
@@ -783,8 +788,13 @@ function isTouchNGoSelected() {
 
 function renderPaymentQr(state) {
   if (!paymentQrPanel || !paymentQrAmount) return;
+  const total = formatPrice(getCartTotal(state));
   paymentQrPanel.hidden = !isTouchNGoSelected();
-  paymentQrAmount.textContent = formatPrice(getCartTotal(state));
+  paymentQrAmount.textContent = total;
+  if (tngPaymentLink) {
+    tngPaymentLink.href = TNG_PAYMENT_LINK;
+    tngPaymentLink.textContent = translateUi("tngPaymentButton", { total });
+  }
 }
 
 function renderStoreState(state) {

@@ -8,7 +8,7 @@
       content="A mobile-friendly online menu and ordering site for Roast by Jaden."
     />
     <title>賢仔港式烧腊 | Online Menu</title>
-    <link rel="stylesheet" href="styles.css?v=20260612-pay-before-order" />
+    <link rel="stylesheet" href="styles.css?v=20260612-tng-payment-link" />
   </head>
   <body>
     <header class="site-header">
@@ -200,8 +200,8 @@
             <div class="payment-qr-copy">
               <p class="eyebrow" data-i18n data-zh="Touch 'n Go / DuitNow QR" data-en="Touch 'n Go / DuitNow QR">Touch 'n Go / DuitNow QR</p>
               <h3 data-i18n data-zh="请先付款，再提交订单" data-en="Pay first, then place the order">请先付款，再提交订单</h3>
-              <p data-i18n data-zh="请先用 Touch 'n Go 或支持 DuitNow QR 的钱包扫码付款，付款后再提交订单给商家。" data-en="Please scan and pay first with Touch 'n Go or any DuitNow QR supported wallet, then place the order.">
-                请先用 Touch 'n Go 或支持 DuitNow QR 的钱包扫码付款，付款后再提交订单给商家。
+              <p data-i18n data-zh="请先确认金额，再跳转到 Touch 'n Go 付款。付款后回来勾选确认，订单才会发送给商家。" data-en="Check the amount, then open Touch 'n Go to pay. After paying, come back and confirm so the order is sent to the shop.">
+                请先确认金额，再跳转到 Touch 'n Go 付款。付款后回来勾选确认，订单才会发送给商家。
               </p>
               <p class="payment-qr-meta">
                 <span data-i18n data-zh="当前金额" data-en="Current amount">当前金额</span>:
@@ -210,6 +210,18 @@
               <p class="payment-qr-hint" data-i18n data-zh="付款备注可以写你的名字或电话，方便商家确认。" data-en="Use your name or phone as the payment reference so the shop can confirm faster.">
                 付款备注可以写你的名字或电话，方便商家确认。
               </p>
+              <a
+                class="button primary payment-link-button"
+                id="tngPaymentLink"
+                href="https://payment.tngdigital.com.my/sc/bDLos9KsJZ"
+                target="_blank"
+                rel="noreferrer"
+                data-i18n
+                data-zh="去 TNG 付款 RM0.00"
+                data-en="Pay with TNG RM0.00"
+              >
+                去 TNG 付款 RM0.00
+              </a>
             </div>
             <a class="payment-qr-image-link" href="assets/tng-duitnow-qr.png" target="_blank" rel="noreferrer" aria-label="Open Touch 'n Go DuitNow QR">
               <img src="assets/tng-duitnow-qr.png" alt="Touch 'n Go DuitNow QR code for payment" />
@@ -313,6 +325,6 @@
       <a href="#order" data-i18n data-zh="结账" data-en="Checkout">结账</a>
     </div>
 
-    <script type="module" src="app.js?v=20260612-pay-before-order"></script>
+    <script type="module" src="app.js?v=20260612-tng-payment-link"></script>
   </body>
 </html>

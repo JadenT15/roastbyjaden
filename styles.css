@@ -742,6 +742,23 @@ h2 {
   object-fit: contain;
 }
 
+.payment-confirm-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #bfe5ca;
+  border-radius: 10px;
+  background: #effaf2;
+  padding: 12px 14px;
+  color: var(--green-dark);
+  font-weight: 900;
+}
+
+.payment-confirm-row input {
+  width: auto;
+  margin: 0;
+}
+
 label,
 legend {
   font-weight: 900;

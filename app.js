@@ -13,7 +13,7 @@ import {
   fetchOrderByCode,
   loadPublicState,
   subscribe,
-} from "./shared/api-store.js?v=20260612-order-sync";
+} from "./shared/api-store.js?v=20260612-pay-before-order";
 
 const translations = {
   en: {
@@ -139,7 +139,7 @@ const translations = {
       pausedBySeller: "Paused by shop",
       pausedNotice:
         "The shop has paused ordering for now. You can still browse the menu and track existing orders.",
-      activeOrderNote: "Your order goes directly to the shop and is saved in the order system.",
+      activeOrderNote: "Please pay first. The order is sent to the shop only after you confirm payment.",
       pausedOrderNote: "Ordering is currently paused by the shop.",
       loadingMenu:
         "Menu is loading from the kitchen system. If this stays here, please check that the backend is running.",
@@ -148,9 +148,10 @@ const translations = {
       pausedAlert: "Ordering is paused right now.",
       closedAlert: "The shop is resting right now.",
       addressAlert: "Please fill in the delivery address.",
+      paymentConfirmAlert: "Please complete payment and tick the payment confirmation before placing the order.",
       comboAlert: "Please select exactly {count} roast meats.",
       placingOrder: "Sending order...",
-      placeOrder: "Place order",
+      placeOrder: "Paid, place order",
       orderError: "Could not place the order. Please try again.",
       latestSummary: "{status} • {total} • {type}",
       trackingEmpty: "Enter your order code to view the latest status.",
@@ -204,7 +205,7 @@ const translations = {
       closedNotice: "商家现在休息中。你仍然可以浏览菜单，也可以查询已经提交的订单。",
       pausedBySeller: "商家暂停接单",
       pausedNotice: "商家现在暂停接单。你仍然可以浏览菜单，也可以查询已经提交的订单。",
-      activeOrderNote: "订单会直接发送给商家，并保存到订单系统。",
+      activeOrderNote: "请先完成付款，勾选确认后订单才会发送给商家。",
       pausedOrderNote: "商家现在暂停接单。",
       loadingMenu: "菜单正在从厨房系统读取。如果一直没有显示，请确认后端已经启动。",
       noProducts: "这个分类暂时没有产品。",
@@ -212,9 +213,10 @@ const translations = {
       pausedAlert: "商家现在暂停接单。",
       closedAlert: "商家现在休息中。",
       addressAlert: "配送订单请填写地址。",
+      paymentConfirmAlert: "请先完成付款，并勾选付款确认后再提交订单。",
       comboAlert: "请选择刚好 {count} 款烧味。",
       placingOrder: "正在提交...",
-      placeOrder: "提交订单",
+      placeOrder: "已付款，提交订单",
       orderError: "订单提交失败，请再试一次。",
       latestSummary: "{status} • {total} • {type}",
       trackingEmpty: "输入订单编号查看最新状态。",
@@ -275,6 +277,7 @@ const latestPaymentQrAmount = document.querySelector("#latestPaymentQrAmount");
 const latestPaymentQrReference = document.querySelector("#latestPaymentQrReference");
 const paymentQrPanel = document.querySelector("#paymentQrPanel");
 const paymentQrAmount = document.querySelector("#paymentQrAmount");
+const paymentConfirmedInput = document.querySelector("#paymentConfirmed");
 const storeStatusHero = document.querySelector("#storeStatusHero");
 const storeNotice = document.querySelector("#storeNotice");
 const trackForm = document.querySelector("#trackForm");
@@ -1110,6 +1113,11 @@ orderForm.addEventListener("submit", async (event) => {
   const payload = collectOrderPayload(state);
   if (payload.orderType === "Delivery" && !payload.customerAddress) {
     alert(translateUi("addressAlert"));
+    return;
+  }
+
+  if (!paymentConfirmedInput?.checked) {
+    alert(translateUi("paymentConfirmAlert"));
     return;
   }
 

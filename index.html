@@ -8,7 +8,7 @@
       content="A mobile-friendly online menu and ordering site for Roast by Jaden."
     />
     <title>賢仔港式烧腊 | Online Menu</title>
-    <link rel="stylesheet" href="styles.css?v=20260609-tng-qr" />
+    <link rel="stylesheet" href="styles.css?v=20260612-pay-before-order" />
   </head>
   <body>
     <header class="site-header">
@@ -114,13 +114,13 @@
             <div class="payment-qr-card compact">
               <div>
                 <p class="eyebrow" data-i18n data-zh="Touch 'n Go / DuitNow QR" data-en="Touch 'n Go / DuitNow QR">Touch 'n Go / DuitNow QR</p>
-                <h4 data-i18n data-zh="请扫码付款" data-en="Scan to pay">请扫码付款</h4>
+                <h4 data-i18n data-zh="已收到付款确认" data-en="Payment confirmed">已收到付款确认</h4>
                 <p class="payment-qr-meta">
                   <span data-i18n data-zh="金额" data-en="Amount">金额</span>:
                   <strong id="latestPaymentQrAmount">RM0.00</strong>
                 </p>
                 <p class="payment-qr-meta">
-                  <span data-i18n data-zh="付款备注写订单号" data-en="Use order code as payment reference">付款备注写订单号</span>:
+                  <span data-i18n data-zh="订单编号" data-en="Order code">订单编号</span>:
                   <strong id="latestPaymentQrReference">RBJ-0000</strong>
                 </p>
               </div>
@@ -199,16 +199,16 @@
           <div class="payment-qr-card" id="paymentQrPanel">
             <div class="payment-qr-copy">
               <p class="eyebrow" data-i18n data-zh="Touch 'n Go / DuitNow QR" data-en="Touch 'n Go / DuitNow QR">Touch 'n Go / DuitNow QR</p>
-              <h3 data-i18n data-zh="扫码付款更方便" data-en="Scan to pay faster">扫码付款更方便</h3>
-              <p data-i18n data-zh="提交订单后，请用 Touch 'n Go 或支持 DuitNow QR 的钱包扫码付款。" data-en="After placing the order, scan with Touch 'n Go or any DuitNow QR supported wallet.">
-                提交订单后，请用 Touch 'n Go 或支持 DuitNow QR 的钱包扫码付款。
+              <h3 data-i18n data-zh="请先付款，再提交订单" data-en="Pay first, then place the order">请先付款，再提交订单</h3>
+              <p data-i18n data-zh="请先用 Touch 'n Go 或支持 DuitNow QR 的钱包扫码付款，付款后再提交订单给商家。" data-en="Please scan and pay first with Touch 'n Go or any DuitNow QR supported wallet, then place the order.">
+                请先用 Touch 'n Go 或支持 DuitNow QR 的钱包扫码付款，付款后再提交订单给商家。
               </p>
               <p class="payment-qr-meta">
                 <span data-i18n data-zh="当前金额" data-en="Current amount">当前金额</span>:
                 <strong id="paymentQrAmount">RM0.00</strong>
               </p>
-              <p class="payment-qr-hint" data-i18n data-zh="付款时可以把订单编号写在备注，方便商家确认。" data-en="Use the order code as payment reference so the shop can confirm faster.">
-                付款时可以把订单编号写在备注，方便商家确认。
+              <p class="payment-qr-hint" data-i18n data-zh="付款备注可以写你的名字或电话，方便商家确认。" data-en="Use your name or phone as the payment reference so the shop can confirm faster.">
+                付款备注可以写你的名字或电话，方便商家确认。
               </p>
             </div>
             <a class="payment-qr-image-link" href="assets/tng-duitnow-qr.png" target="_blank" rel="noreferrer" aria-label="Open Touch 'n Go DuitNow QR">
@@ -216,6 +216,11 @@
               <span data-i18n data-zh="点开大图扫码" data-en="Tap to enlarge">点开大图扫码</span>
             </a>
           </div>
+
+          <label class="payment-confirm-row">
+            <input id="paymentConfirmed" type="checkbox" />
+            <span data-i18n data-zh="我已完成付款，现在提交订单给商家" data-en="I have paid and want to send this order to the shop">我已完成付款，现在提交订单给商家</span>
+          </label>
 
           <label>
             <span data-i18n data-zh="配送地址" data-en="Delivery address">配送地址</span>
@@ -265,9 +270,9 @@
             ></textarea>
           </label>
 
-          <button class="button primary full" type="submit" id="placeOrderButton" data-i18n data-zh="提交订单" data-en="Place order">提交订单</button>
-          <p class="form-note" id="orderFormNote" data-i18n data-zh="订单会直接发送给商家，并保存到订单系统。" data-en="Your order goes directly to the shop and is saved in the order system.">
-            订单会直接发送给商家，并保存到订单系统。
+          <button class="button primary full" type="submit" id="placeOrderButton" data-i18n data-zh="已付款，提交订单" data-en="Paid, place order">已付款，提交订单</button>
+          <p class="form-note" id="orderFormNote" data-i18n data-zh="请先完成付款，勾选确认后订单才会发送给商家。" data-en="Please pay first. The order is sent to the shop only after you confirm payment.">
+            请先完成付款，勾选确认后订单才会发送给商家。
           </p>
         </form>
       </section>
@@ -308,6 +313,6 @@
       <a href="#order" data-i18n data-zh="结账" data-en="Checkout">结账</a>
     </div>
 
-    <script type="module" src="app.js?v=20260612-order-sync"></script>
+    <script type="module" src="app.js?v=20260612-pay-before-order"></script>
   </body>
 </html>

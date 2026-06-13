@@ -1,9 +1,11 @@
 package app
 
 import (
+	"crypto/subtle"
 	"encoding/json"
 	"net/http"
 	"strings"
+	"time"
 )
 
 type Server struct {
@@ -22,6 +24,7 @@ func (s Server) Handler() http.Handler {
 	mux.HandleFunc("/api/settings", s.handleSettings)
 	mux.HandleFunc("/api/orders", s.handleOrders)
 	mux.HandleFunc("/api/orders/", s.handleOrderByCode)
+	mux.HandleFunc("/api/webhooks/n8n/payment", s.handleN8NPaymentWebhook)
 	mux.HandleFunc("/api/admin/login", s.handleAdminLogin)
 	mux.HandleFunc("/api/admin/logout", s.withAdmin(s.handleAdminLogout))
 	mux.HandleFunc("/api/admin/me", s.withAdmin(s.handleAdminMe))
@@ -218,6 +221,23 @@ func (s Server) handleAdminOrderByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	orderID, suffix := splitNestedPath(strings.TrimPrefix(r.URL.Path, "/api/admin/orders/"))
+	if suffix == "payment" {
+		var input struct {
+			PaymentStatus    string `json:"paymentStatus"`
+			PaymentReference string `json:"paymentReference"`
+		}
+		if err := readJSON(r, &input); err != nil {
+			writeError(w, http.StatusBadRequest, "Payment status is invalid.")
+			return
+		}
+		order, err := s.store.UpdateOrderPaymentStatus(r.Context(), orderID, input.PaymentStatus, input.PaymentReference)
+		if err != nil {
+			writeError(w, http.StatusBadRequest, err.Error())
+			return
+		}
+		writeJSON(w, http.StatusOK, order)
+		return
+	}
 	if suffix != "status" {
 		writeError(w, http.StatusNotFound, "Admin order route not found.")
 		return
@@ -230,6 +250,58 @@ func (s Server) handleAdminOrderByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	order, err := s.store.UpdateOrderStatus(r.Context(), orderID, input.Status)
+	if err != nil {
+		writeError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	writeJSON(w, http.StatusOK, order)
+}
+
+func (s Server) handleN8NPaymentWebhook(w http.ResponseWriter, r *http.Request) {
+	if !requireMethod(w, r, http.MethodPost) {
+		return
+	}
+	if s.cfg.N8NWebhookSecret == "" {
+		writeError(w, http.StatusServiceUnavailable, "Payment webhook is not configured.")
+		return
+	}
+	secret := r.Header.Get("X-N8N-Webhook-Secret")
+	if secret == "" && strings.HasPrefix(r.Header.Get("Authorization"), "Bearer ") {
+		secret = strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
+	}
+	if subtle.ConstantTimeCompare([]byte(secret), []byte(s.cfg.N8NWebhookSecret)) != 1 {
+		writeError(w, http.StatusUnauthorized, "Webhook secret is invalid.")
+		return
+	}
+	var input struct {
+		OrderCode string  `json:"orderCode"`
+		Amount    float64 `json:"amount"`
+		Reference string  `json:"reference"`
+		PaidAt    string  `json:"paidAt"`
+		Source    string  `json:"source"`
+	}
+	if err := readJSON(r, &input); err != nil {
+		writeError(w, http.StatusBadRequest, "Payment details are invalid.")
+		return
+	}
+	if strings.TrimSpace(input.OrderCode) == "" || input.Amount <= 0 {
+		writeError(w, http.StatusBadRequest, "Order code and amount are required.")
+		return
+	}
+	var paidAt *time.Time
+	if strings.TrimSpace(input.PaidAt) != "" {
+		parsed, err := time.Parse(time.RFC3339, input.PaidAt)
+		if err != nil {
+			writeError(w, http.StatusBadRequest, "Paid time must be RFC3339 format.")
+			return
+		}
+		paidAt = &parsed
+	}
+	reference := strings.TrimSpace(input.Reference)
+	if input.Source != "" {
+		reference = strings.TrimSpace(reference + " " + input.Source)
+	}
+	order, err := s.store.ConfirmPaymentByCode(r.Context(), input.OrderCode, input.Amount, reference, paidAt)
 	if err != nil {
 		writeError(w, http.StatusBadRequest, err.Error())
 		return

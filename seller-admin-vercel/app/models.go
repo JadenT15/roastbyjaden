@@ -13,6 +13,13 @@ var OrderStatuses = map[string]bool{
 	"CANCELLED":        true,
 }
 
+var PaymentStatuses = map[string]bool{
+	"UNPAID":         true,
+	"PENDING":        true,
+	"PAID":           true,
+	"PAYMENT_REVIEW": true,
+}
+
 type Settings struct {
 	OrderingOpen bool `json:"orderingOpen"`
 	BusinessOpen bool `json:"businessOpen"`
@@ -93,6 +100,9 @@ type Order struct {
 	PickupDate      string              `json:"pickupDate"`
 	PickupTime      string              `json:"pickupTime"`
 	PaymentMethod   string              `json:"paymentMethod"`
+	PaymentStatus   string              `json:"paymentStatus"`
+	PaymentReference string              `json:"paymentReference"`
+	PaidAt          *time.Time          `json:"paidAt,omitempty"`
 	CustomerAddress string              `json:"customerAddress"`
 	CustomerNotes   string              `json:"customerNotes"`
 	Items           []OrderItem         `json:"items"`

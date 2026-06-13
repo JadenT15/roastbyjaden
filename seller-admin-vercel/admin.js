@@ -15,6 +15,7 @@ import {
   toggleOrderingOpen,
   toggleProductEnabled,
   toggleProductSoldOut,
+  updateOrderPaymentStatus,
   updateOrderStatus,
   updateProductImage,
   updateProductPrice,
@@ -34,6 +35,13 @@ const statusLabels = sellerFlow.reduce(
   (labels, step) => ({ ...labels, [step.status]: step.label }),
   { CANCELLED: "已取消" },
 );
+
+const paymentStatusLabels = {
+  UNPAID: "未付款",
+  PENDING: "待确认",
+  PAID: "已付款",
+  PAYMENT_REVIEW: "金额需确认",
+};
 
 const authSection = document.querySelector("#authSection");
 const consoleSection = document.querySelector("#consoleSection");
@@ -69,6 +77,10 @@ function escapeHTML(value = "") {
 
 function getStatusLabel(status) {
   return statusLabels[status] || status;
+}
+
+function getPaymentStatusLabel(status = "UNPAID") {
+  return paymentStatusLabels[status] || status;
 }
 
 function getVisibleStatuses() {
@@ -219,6 +231,7 @@ function renderOrders(state) {
             <th>买家</th>
             <th>电话</th>
             <th>金额</th>
+            <th>付款</th>
             <th>时间</th>
             <th>商品内容</th>
             <th>状态</th>
@@ -241,6 +254,9 @@ function renderOrders(state) {
                   <td data-label="买家">${escapeHTML(order.customerName)}</td>
                   <td data-label="电话">${escapeHTML(order.customerPhone)}</td>
                   <td data-label="金额">${formatPrice(order.total)}</td>
+                  <td data-label="付款">
+                    <span class="payment-pill payment-${(order.paymentStatus || "UNPAID").toLowerCase()}">${getPaymentStatusLabel(order.paymentStatus)}</span>
+                  </td>
                   <td data-label="时间">${formatDateTime(order.createdAt)}</td>
                   <td data-label="商品内容" class="items-cell">${escapeHTML(itemsText)}</td>
                   <td data-label="状态">
@@ -284,6 +300,9 @@ function renderSelectedOrder(state) {
         <h4>${escapeHTML(order.customerName)} (${escapeHTML(order.customerPhone)})</h4>
         <p>商品：${order.items.map((item) => `${item.quantity} x ${escapeHTML(item.name)}`).join("，")}</p>
         <p>总额：${formatPrice(order.total)}</p>
+        <p>付款：<span class="payment-pill payment-${(order.paymentStatus || "UNPAID").toLowerCase()}">${getPaymentStatusLabel(order.paymentStatus)}</span></p>
+        ${order.paymentReference ? `<p>付款备注：${escapeHTML(order.paymentReference)}</p>` : ""}
+        ${order.paidAt ? `<p>到账时间：${formatDateTime(order.paidAt)}</p>` : ""}
         <p>配送方式：${escapeHTML(order.orderType)} · ${escapeHTML(order.pickupDate)} ${escapeHTML(order.pickupTime)}</p>
         ${order.customerAddress ? `<p>地址：${escapeHTML(order.customerAddress)}</p>` : ""}
         ${order.customerNotes ? `<p>备注：${escapeHTML(order.customerNotes)}</p>` : ""}
@@ -301,6 +320,30 @@ function renderSelectedOrder(state) {
             .join("")}
         </div>
         <div class="status-buttons">
+          <button
+            class="status-button payment"
+            type="button"
+            data-order-payment="${order.id}"
+            data-payment-status="PAID"
+          >
+            标记已付款
+          </button>
+          <button
+            class="status-button payment-review"
+            type="button"
+            data-order-payment="${order.id}"
+            data-payment-status="PENDING"
+          >
+            标记待确认
+          </button>
+          <button
+            class="status-button payment-unpaid"
+            type="button"
+            data-order-payment="${order.id}"
+            data-payment-status="UNPAID"
+          >
+            标记未付款
+          </button>
           ${getVisibleStatuses()
             .map(
               (status) => `
@@ -576,9 +619,24 @@ async function handleOrderStatusClick(event) {
   }
 }
 
+async function handleOrderPaymentClick(event) {
+  const button = event.target.closest("[data-order-payment][data-payment-status]");
+  if (!button) return;
+  button.disabled = true;
+  try {
+    await updateOrderPaymentStatus(button.dataset.orderPayment, button.dataset.paymentStatus, "Seller manual update");
+  } catch (error) {
+    alert(error.message || "付款状态更新失败。");
+    await loadAdminState();
+  } finally {
+    button.disabled = false;
+  }
+}
+
 flowSteps.addEventListener("click", handleOrderStatusClick);
 adminOrders.addEventListener("click", handleOrderStatusClick);
 selectedOrderPanel.addEventListener("click", handleOrderStatusClick);
+selectedOrderPanel.addEventListener("click", handleOrderPaymentClick);
 
 adminProductList.addEventListener("click", async (event) => {
   const enabledButton = event.target.closest("[data-toggle-enabled]");

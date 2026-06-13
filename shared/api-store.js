@@ -258,6 +258,15 @@ export async function updateOrderStatus(orderId, nextStatus) {
   replaceState({ orders });
 }
 
+export async function updateOrderPaymentStatus(orderId, paymentStatus, paymentReference = "") {
+  const order = await apiFetch(`/api/admin/orders/${encodeURIComponent(orderId)}/payment`, {
+    method: "PATCH",
+    body: JSON.stringify({ paymentStatus, paymentReference }),
+  });
+  const orders = currentState.orders.map((entry) => (entry.id === order.id ? order : entry));
+  replaceState({ orders });
+}
+
 export async function toggleProductEnabled(productId) {
   const product = currentState.products.find((entry) => entry.id === productId);
   if (!product) return;

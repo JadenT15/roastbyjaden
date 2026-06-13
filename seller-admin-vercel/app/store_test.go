@@ -21,3 +21,19 @@ func TestOrderStatusesIncludesPacking(t *testing.T) {
 		t.Fatal("OrderStatuses should include PACKING for seller packing flow")
 	}
 }
+
+func TestMarshalOrderChoicesForPostgresReturnsJSONString(t *testing.T) {
+	choices := []OrderChoice{
+		{Label: "Rice", Value: "Oil rice"},
+	}
+
+	got, err := marshalOrderChoicesForPostgres(choices)
+	if err != nil {
+		t.Fatalf("marshalOrderChoicesForPostgres() error = %v", err)
+	}
+
+	want := `[{"label":"Rice","value":"Oil rice"}]`
+	if got != want {
+		t.Fatalf("marshalOrderChoicesForPostgres() = %q, want %q", got, want)
+	}
+}

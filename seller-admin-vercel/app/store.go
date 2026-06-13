@@ -206,7 +206,7 @@ func (s Store) CreateOrder(ctx context.Context, input Order) (Order, error) {
 	}
 
 	for _, item := range input.Items {
-		choicesJSON, err := json.Marshal(item.Choices)
+		choicesJSON, err := marshalOrderChoicesForPostgres(item.Choices)
 		if err != nil {
 			return Order{}, err
 		}
@@ -226,6 +226,14 @@ func (s Store) CreateOrder(ctx context.Context, input Order) (Order, error) {
 		return Order{}, err
 	}
 	return s.OrderByCode(ctx, order.Code)
+}
+
+func marshalOrderChoicesForPostgres(choices []OrderChoice) (string, error) {
+	choicesJSON, err := json.Marshal(choices)
+	if err != nil {
+		return "", err
+	}
+	return string(choicesJSON), nil
 }
 
 func (s Store) OrderByCode(ctx context.Context, code string) (Order, error) {

@@ -1128,7 +1128,7 @@ orderForm.addEventListener("submit", async (event) => {
     trackCodeInput.value = order.code;
     clearCartAndForm();
     renderAll();
-    latestOrder.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    trackSection.scrollIntoView({ behavior: "smooth", block: "start" });
   } catch (error) {
     alert(error.message || translateUi("orderError"));
   } finally {

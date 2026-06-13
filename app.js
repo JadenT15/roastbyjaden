@@ -883,18 +883,6 @@ function renderTracking(state) {
         )
         .join("")}
     </ul>
-    <div class="track-history">
-      ${order.history
-        .map(
-          (entry) => `
-            <div class="track-history-row">
-              <strong>${translateStatus(entry.status)}</strong>
-              <span>${new Date(entry.timestamp).toLocaleString(currentLanguage === "zh" ? "zh-MY" : "en-MY")}</span>
-            </div>
-          `,
-        )
-        .join("")}
-    </div>
   `;
 }
 

@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"math"
 	"strings"
 	"time"
 
@@ -191,11 +192,11 @@ func (s Store) CreateOrder(ctx context.Context, input Order) (Order, error) {
 	err = tx.QueryRow(ctx, `
 		insert into orders (
 			code, customer_name, customer_phone, order_type, pickup_date, pickup_time,
-			payment_method, customer_address, customer_notes, total, status
+			payment_method, payment_status, customer_address, customer_notes, total, status
 		)
 		values (
 			'RBJ-' || lpad(nextval('order_code_seq')::text, 4, '0'),
-			$1, $2, $3, $4, $5, $6, $7, $8, $9, 'NEW'
+			$1, $2, $3, $4, $5, $6, 'UNPAID', $7, $8, $9, 'NEW'
 		)
 		returning id::text, code, created_at, updated_at, status`,
 		input.CustomerName, input.CustomerPhone, input.OrderType, input.PickupDate, input.PickupTime,
@@ -246,15 +247,20 @@ func (s Store) OrderByID(ctx context.Context, id string) (Order, error) {
 
 func (s Store) orderByWhere(ctx context.Context, where string, value string) (Order, error) {
 	var order Order
+	var paidAt sql.NullTime
 	err := s.db.QueryRow(ctx, `
 		select o.id::text, o.code, o.created_at, o.updated_at, o.status, o.customer_name, o.customer_phone,
-			o.order_type, o.pickup_date, o.pickup_time, o.payment_method, o.customer_address, o.customer_notes, o.total
+			o.order_type, o.pickup_date, o.pickup_time, o.payment_method, o.payment_status, o.payment_reference,
+			o.paid_at, o.customer_address, o.customer_notes, o.total
 		from orders o where `+where,
-		value).Scan(&order.ID, &order.Code, &order.CreatedAt, &order.UpdatedAt, &order.Status, &order.CustomerName,
+	value).Scan(&order.ID, &order.Code, &order.CreatedAt, &order.UpdatedAt, &order.Status, &order.CustomerName,
 		&order.CustomerPhone, &order.OrderType, &order.PickupDate, &order.PickupTime, &order.PaymentMethod,
-		&order.CustomerAddress, &order.CustomerNotes, &order.Total)
+		&order.PaymentStatus, &order.PaymentReference, &paidAt, &order.CustomerAddress, &order.CustomerNotes, &order.Total)
 	if err != nil {
 		return Order{}, err
+	}
+	if paidAt.Valid {
+		order.PaidAt = &paidAt.Time
 	}
 	items, err := s.orderItems(ctx, order.ID)
 	if err != nil {
@@ -396,6 +402,60 @@ func (s Store) UpdateOrderStatus(ctx context.Context, orderID, status string) (O
 		return Order{}, err
 	}
 	return s.OrderByID(ctx, orderID)
+}
+
+func (s Store) UpdateOrderPaymentStatus(ctx context.Context, orderID, paymentStatus, reference string) (Order, error) {
+	if !PaymentStatuses[paymentStatus] {
+		return Order{}, errors.New("invalid payment status")
+	}
+	var paidAt interface{}
+	if paymentStatus == "PAID" {
+		paidAt = time.Now()
+	}
+	result, err := s.db.Exec(ctx, `
+		update orders
+		set payment_status = $1,
+			payment_reference = coalesce(nullif($2, ''), payment_reference),
+			paid_at = case when $1 = 'PAID' then coalesce(paid_at, $3) else paid_at end,
+			updated_at = now()
+		where id = $4`,
+		paymentStatus, strings.TrimSpace(reference), paidAt, orderID)
+	if err != nil {
+		return Order{}, err
+	}
+	if result.RowsAffected() == 0 {
+		return Order{}, errors.New("order not found")
+	}
+	return s.OrderByID(ctx, orderID)
+}
+
+func (s Store) ConfirmPaymentByCode(ctx context.Context, code string, amount float64, reference string, paidAt *time.Time) (Order, error) {
+	order, err := s.OrderByCode(ctx, code)
+	if err != nil {
+		return Order{}, err
+	}
+	expectedCents := int(math.Round(order.Total * 100))
+	receivedCents := int(math.Round(amount * 100))
+	nextStatus := "PAID"
+	if expectedCents != receivedCents {
+		nextStatus = "PAYMENT_REVIEW"
+	}
+	if paidAt == nil {
+		now := time.Now()
+		paidAt = &now
+	}
+	_, err = s.db.Exec(ctx, `
+		update orders
+		set payment_status = $1,
+			payment_reference = coalesce(nullif($2, ''), payment_reference),
+			paid_at = case when $1 = 'PAID' then coalesce(paid_at, $3) else paid_at end,
+			updated_at = now()
+		where id = $4`,
+		nextStatus, strings.TrimSpace(reference), paidAt, order.ID)
+	if err != nil {
+		return Order{}, err
+	}
+	return s.OrderByID(ctx, order.ID)
 }
 
 func (s Store) UpdateSettings(ctx context.Context, orderingOpen, businessOpen *bool) (Settings, error) {

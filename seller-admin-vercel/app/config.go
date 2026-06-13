@@ -13,6 +13,7 @@ type Config struct {
 	FrontendOrigin string
 	Port           string
 	CookieSecure   bool
+	N8NWebhookSecret string
 }
 
 func LoadConfig() (Config, error) {
@@ -24,6 +25,7 @@ func LoadConfig() (Config, error) {
 		FrontendOrigin: os.Getenv("FRONTEND_ORIGIN"),
 		Port:           getenv("PORT", "8080"),
 		CookieSecure:   getenv("COOKIE_SECURE", getenv("VERCEL", "false")) == "true",
+		N8NWebhookSecret: os.Getenv("N8N_WEBHOOK_SECRET"),
 	}
 	if cfg.FrontendOrigin == "" {
 		cfg.FrontendOrigin = "http://127.0.0.1:4173"

@@ -510,6 +510,34 @@ select {
   color: var(--red);
 }
 
+.payment-pill {
+  display: inline-flex;
+  min-height: 28px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: 950;
+  white-space: nowrap;
+}
+
+.payment-unpaid {
+  background: #f0f2f5;
+  color: #5d6775;
+}
+
+.payment-pending,
+.payment-payment_review {
+  background: #fff2cf;
+  color: #8a5a00;
+}
+
+.payment-paid {
+  background: var(--green-soft);
+  color: var(--green-dark);
+}
+
 .selected-order {
   margin-top: 16px;
   padding: 0;
@@ -595,6 +623,23 @@ select {
 
 .status-button.cancel {
   color: var(--red);
+}
+
+.status-button.payment {
+  border-color: #bfe5ca;
+  background: var(--green-soft);
+}
+
+.status-button.payment-review {
+  border-color: #f7df9e;
+  background: #fff8df;
+  color: #8a5a00;
+}
+
+.status-button.payment-unpaid {
+  border-color: #d6dce4;
+  background: #f7f8fa;
+  color: #5d6775;
 }
 
 .whatsapp-preview {

@@ -837,7 +837,7 @@ function renderLatestOrder(state) {
     total: formatPrice(order.total),
     type: translateOrderType(order.orderType),
   });
-  latestOrderTrackLink.href = "#track";
+  latestOrderTrackLink.href = `track.html?code=${encodeURIComponent(order.code)}`;
   latestOrderWhatsappLink.href = buildWhatsAppUrl(order);
   latestPaymentQrAmount.textContent = formatPrice(order.total);
   latestPaymentQrReference.textContent = order.code;
@@ -1127,8 +1127,7 @@ orderForm.addEventListener("submit", async (event) => {
     trackedOrderCode = order.code;
     trackCodeInput.value = order.code;
     clearCartAndForm();
-    renderAll();
-    trackSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    window.location.href = `track.html?code=${encodeURIComponent(order.code)}`;
   } catch (error) {
     alert(error.message || translateUi("orderError"));
   } finally {

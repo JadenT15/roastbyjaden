@@ -4,17 +4,17 @@ import test from "node:test";
 
 const appSource = readFileSync(new URL("../app.js", import.meta.url), "utf8");
 
-test("successful checkout scrolls buyers to the tracking section", () => {
+test("successful checkout opens the dedicated tracking page", () => {
   const submitHandler = appSource.match(/orderForm\.addEventListener\("submit", async \(event\) => \{[\s\S]*?\n\}\);/)?.[0] || "";
 
   assert.match(
     submitHandler,
-    /trackSection\.scrollIntoView\(\{ behavior: "smooth", block: "start" \}\);/,
-    "checkout success should scroll to the order tracking section",
+    /window\.location\.href = `track\.html\?code=\$\{encodeURIComponent\(order\.code\)\}`;/,
+    "checkout success should navigate to the dedicated tracking page",
   );
   assert.doesNotMatch(
     submitHandler,
-    /latestOrder\.scrollIntoView/,
-    "checkout success should not stop at the latest-order confirmation card",
+    /scrollIntoView/,
+    "checkout success should not scroll within the menu page",
   );
 });

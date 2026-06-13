@@ -879,6 +879,16 @@ fieldset {
   margin-bottom: 18px;
 }
 
+.standalone-track {
+  min-height: calc(100vh - 92px);
+  background:
+    linear-gradient(180deg, rgba(255, 236, 184, 0.54), rgba(255, 255, 255, 0));
+}
+
+.track-back-button {
+  margin-top: 18px;
+}
+
 .track-result.empty,
 .empty-card {
   display: grid;

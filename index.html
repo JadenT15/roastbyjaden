@@ -26,7 +26,7 @@
         <nav aria-label="Main navigation">
           <a href="#menu" data-i18n data-zh="菜单" data-en="Menu">菜单</a>
           <a href="#order" data-i18n data-zh="下单" data-en="Order">下单</a>
-          <a href="#track" data-i18n data-zh="查订单" data-en="Track">查订单</a>
+          <a href="track.html" data-i18n data-zh="查订单" data-en="Track">查订单</a>
           <a href="#contact" data-i18n data-zh="联系" data-en="Contact">联系</a>
         </nav>
         <div class="language-switch" aria-label="Language switch">
@@ -129,7 +129,7 @@
               </a>
             </div>
             <div class="latest-order-actions">
-              <a class="button primary" id="latestOrderTrackLink" href="#track" data-i18n data-zh="查看订单状态" data-en="Track this order">查看订单状态</a>
+              <a class="button primary" id="latestOrderTrackLink" href="track.html" data-i18n data-zh="查看订单状态" data-en="Track this order">查看订单状态</a>
               <a class="button secondary" id="latestOrderWhatsappLink" href="#" target="_blank" rel="noreferrer" data-i18n data-zh="WhatsApp 联系" data-en="Send to WhatsApp">
                 WhatsApp 联系
               </a>
@@ -289,7 +289,7 @@
         </form>
       </section>
 
-      <section class="track-section" id="track">
+      <section class="track-section" id="track" hidden>
         <div class="section-heading">
           <p class="eyebrow" data-i18n data-zh="订单查询" data-en="Tracking">订单查询</p>
           <h2 data-i18n data-zh="查看订单状态" data-en="Track your order">查看订单状态</h2>
@@ -325,6 +325,6 @@
       <a href="#order" data-i18n data-zh="结账" data-en="Checkout">结账</a>
     </div>
 
-    <script type="module" src="app.js?v=20260613-current-status-only"></script>
+    <script type="module" src="app.js?v=20260613-track-page"></script>
   </body>
 </html>

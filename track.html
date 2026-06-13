@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Track your Roast by Jaden order status."
+    />
+    <title>订单状态 | 賢仔港式烧腊</title>
+    <link rel="stylesheet" href="styles.css?v=20260612-tng-payment-link" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="Roast by Jaden home">
+        <span class="brand-mark">
+          <img src="assets/xianzai-hero.jpg" alt="賢仔港式烧腊 logo" />
+        </span>
+        <span>
+          <strong>賢仔港式烧腊</strong>
+          <small>Roast by Jaden</small>
+        </span>
+      </a>
+
+      <div class="header-actions">
+        <nav aria-label="Main navigation">
+          <a href="index.html#menu">菜单</a>
+          <a href="index.html#order">下单</a>
+          <a href="track.html">查订单</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="track-section standalone-track">
+        <div class="section-heading">
+          <p class="eyebrow">订单查询</p>
+          <h1>查看订单状态</h1>
+        </div>
+
+        <form class="track-form" id="trackPageForm">
+          <label>
+            <span>订单编号</span>
+            <input id="trackPageCodeInput" type="text" placeholder="RBJ-1001" />
+          </label>
+          <button class="button primary" type="submit">查看状态</button>
+        </form>
+
+        <div class="track-result empty" id="trackPageResult">
+          输入订单编号查看最新状态。
+        </div>
+
+        <a class="button secondary track-back-button" href="index.html">返回菜单</a>
+      </section>
+    </main>
+
+    <script type="module" src="track.js?v=20260613-track-page"></script>
+  </body>
+</html>

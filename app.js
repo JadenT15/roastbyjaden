@@ -286,6 +286,7 @@ const paymentConfirmedInput = document.querySelector("#paymentConfirmed");
 const storeStatusHero = document.querySelector("#storeStatusHero");
 const storeNotice = document.querySelector("#storeNotice");
 const trackForm = document.querySelector("#trackForm");
+const trackSection = document.querySelector("#track");
 const trackCodeInput = document.querySelector("#trackCodeInput");
 const trackResult = document.querySelector("#trackResult");
 const customerAddressInput = document.querySelector("#customerAddress");
@@ -1140,7 +1141,7 @@ orderForm.addEventListener("submit", async (event) => {
     trackCodeInput.value = order.code;
     clearCartAndForm();
     renderAll();
-    latestOrder.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    trackSection.scrollIntoView({ behavior: "smooth", block: "start" });
   } catch (error) {
     alert(error.message || translateUi("orderError"));
   } finally {

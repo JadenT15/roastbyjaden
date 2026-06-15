@@ -13,7 +13,7 @@ import {
   fetchOrderByCode,
   loadPublicState,
   subscribe,
-} from "./shared/api-store.js?v=20260612-tng-payment-link";
+} from "./shared/api-store.js?v=20260615-english-menu-names";
 
 const TNG_PAYMENT_LINK = "https://payment.tngdigital.com.my/sc/bDLos9KsJZ";
 
@@ -239,6 +239,25 @@ const translations = {
   },
 };
 
+const productNameTranslationHints = [
+  {
+    matches: ["滑蛋叉烧饭", "滑蛋叉燒飯"],
+    name: "Scrambled Egg Char Siu Rice",
+    description: "Char siu slices served over steamed rice with silky scrambled egg.",
+  },
+  {
+    matches: ["玫瑰露豉油鸡饭", "玫瑰露豉油雞飯", "玫瑰露豉油鸡", "玫瑰露豉油雞"],
+    name: "Rose Wine Soy Sauce Chicken Rice",
+    description:
+      "Soy sauce chicken scented with rose wine, served with steamed rice, Hong Kong greens and roast gravy.",
+  },
+  {
+    matches: ["玫瑰露酒"],
+    name: "Rose Dew Wine",
+    description: "Chinese rose-infused baijiu with a floral aroma.",
+  },
+];
+
 const cart = new Map();
 let activeCategory = "All";
 let latestOrderCode = "";
@@ -300,11 +319,23 @@ function translateCategory(category) {
 }
 
 function translateProductName(product) {
-  return translations[currentLanguage]?.items?.[product.id]?.name || product.name;
+  const hintedTranslation =
+    currentLanguage === "en" &&
+    productNameTranslationHints.find((entry) =>
+      entry.matches.some((name) => product.name.includes(name)),
+    );
+
+  return hintedTranslation?.name || translations[currentLanguage]?.items?.[product.id]?.name || product.name;
 }
 
 function translateProductDescription(product) {
-  return translations[currentLanguage]?.items?.[product.id]?.description || product.description;
+  const hintedTranslation =
+    currentLanguage === "en" &&
+    productNameTranslationHints.find((entry) =>
+      entry.matches.some((name) => product.name.includes(name)),
+    );
+
+  return hintedTranslation?.description || translations[currentLanguage]?.items?.[product.id]?.description || product.description;
 }
 
 function translateChoiceLabel(label) {

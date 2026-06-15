@@ -19,15 +19,17 @@ import {
 } from "./platform-store.js";
 
 const REMOTE_API_BASE_URL = "https://roastbyjaden-seller-admin.vercel.app";
+const LOCAL_API_BASE_URL = "http://127.0.0.1:8080";
+const IS_LOCAL_PREVIEW =
+  window.location.protocol === "file:" ||
+  window.location.hostname === "127.0.0.1" ||
+  window.location.hostname === "localhost";
 
 const API_BASE_URL =
   window.ROAST_API_BASE_URL ||
-  window.localStorage.getItem("ROAST_API_BASE_URL") ||
-  (window.location.protocol === "file:" ||
-  window.location.hostname === "127.0.0.1" ||
-  window.location.hostname === "localhost"
-    ? "http://127.0.0.1:8080"
-    : REMOTE_API_BASE_URL);
+  (IS_LOCAL_PREVIEW
+    ? LOCAL_API_BASE_URL
+    : window.localStorage.getItem("ROAST_API_BASE_URL") || REMOTE_API_BASE_URL);
 
 let currentState = {
   settings: { orderingOpen: true, businessOpen: true },

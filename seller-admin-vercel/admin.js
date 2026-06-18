@@ -377,9 +377,9 @@ function renderSelectedOrder(state) {
 
 function getProductImageSrc(product) {
   const image = String(product.image || "").trim();
-  if (!image) return "assets/roastbyjaden-logo.png";
+  if (!image) return "assets/xianzai-hero.jpg";
   if (/^(https?:|data:|blob:|\/)/.test(image)) return image;
-  if (image.startsWith("assets/")) return `../${image}`;
+  if (image.startsWith("assets/")) return `https://roastbyjaden.vercel.app/${image}`;
   return image;
 }
 

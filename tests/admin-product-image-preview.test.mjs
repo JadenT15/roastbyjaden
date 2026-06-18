@@ -7,7 +7,7 @@ const adminCss = readFileSync(new URL("../seller-admin-vercel/admin.css", import
 
 test("seller product cards show each product image", () => {
   assert.match(adminSource, /function getProductImageSrc\(product\)/);
-  assert.match(adminSource, /\.\.\/\$\{image\}/);
+  assert.match(adminSource, /https:\/\/roastbyjaden\.vercel\.app\/\$\{image\}/);
   assert.match(adminSource, /class="product-image-preview"/);
   assert.match(adminSource, /src="\$\{escapeHTML\(getProductImageSrc\(product\)\)/);
   assert.match(adminSource, /alt="\$\{escapeHTML\(product\.name/);

@@ -675,10 +675,35 @@ select:focus {
 }
 
 .product-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: #fbfcfe;
   padding: 14px 16px;
+}
+
+.product-image-preview {
+  flex: 0 0 112px;
+  width: 112px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  aspect-ratio: 1 / 1;
+}
+
+.product-image-preview img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-row-main {
+  min-width: 0;
+  flex: 1;
 }
 
 .product-row strong,

@@ -375,12 +375,23 @@ function renderSelectedOrder(state) {
   `;
 }
 
+function getProductImageSrc(product) {
+  const image = String(product.image || "").trim();
+  if (!image) return "assets/roastbyjaden-logo.png";
+  if (/^(https?:|data:|blob:|\/)/.test(image)) return image;
+  if (image.startsWith("assets/")) return `../${image}`;
+  return image;
+}
+
 function renderProducts(state) {
   adminProductList.innerHTML = state.products
     .map(
       (product) => `
         <article class="product-row">
-          <div>
+          <div class="product-image-preview">
+            <img src="${escapeHTML(getProductImageSrc(product))}" alt="${escapeHTML(product.name)}" loading="lazy" />
+          </div>
+          <div class="product-row-main">
             <strong>${escapeHTML(product.name)}</strong>
             <span>${escapeHTML(product.category)} · ${formatPrice(product.price)}</span>
             <div class="product-price-editor">

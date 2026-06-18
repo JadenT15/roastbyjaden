@@ -8,7 +8,7 @@
       content="A mobile-friendly online menu and ordering site for Roast by Jaden."
     />
     <title>賢仔港式烧腊 | Online Menu</title>
-    <link rel="stylesheet" href="styles.css?v=20260612-tng-payment-link" />
+    <link rel="stylesheet" href="styles.css?v=20260618-local-address-preview" />
   </head>
   <body>
     <header class="site-header">
@@ -244,30 +244,7 @@
               data-zh-placeholder="配送订单请填写地址"
               data-en-placeholder="Required for delivery orders"
             ></textarea>
-            <div class="address-actions">
-              <button
-                class="map-link"
-                id="useLocationButton"
-                type="button"
-                data-i18n
-                data-zh="使用当前位置"
-                data-en="Use current location"
-              >
-                使用当前位置
-              </button>
-              <a
-                class="map-link"
-                id="addressMapLink"
-                href="https://www.google.com/maps"
-                target="_blank"
-                rel="noreferrer"
-                data-i18n
-                data-zh="在 Google Maps 打开"
-                data-en="Open in Google Maps"
-              >
-                在 Google Maps 打开
-              </a>
-            </div>
+            <div class="address-suggestions" id="addressSuggestions" hidden></div>
           </label>
 
           <label>
@@ -325,6 +302,6 @@
       <a href="#order" data-i18n data-zh="结账" data-en="Checkout">结账</a>
     </div>
 
-    <script type="module" src="app.js?v=20260615-english-menu-names"></script>
+    <script type="module" src="app.js?v=20260618-local-address-preview"></script>
   </body>
 </html>

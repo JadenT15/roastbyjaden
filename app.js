@@ -258,6 +258,209 @@ const productNameTranslationHints = [
   },
 ];
 
+const localAddressSuggestions = [
+  {
+    id: "taman-desa",
+    name: "Taman Desa",
+    address: "Taman Desa, 58100 Kuala Lumpur, Wilayah Persekutuan Kuala Lumpur",
+    lat: "3.101684",
+    lng: "101.684064",
+    keywords: ["taman", "desa", "kl", "kuala lumpur"],
+  },
+  {
+    id: "desa-business-park",
+    name: "Desa Business Park",
+    address: "Desa Business Park, Jalan 3/109F, Taman Desa, 58100 Kuala Lumpur",
+    lat: "3.102613",
+    lng: "101.686998",
+    keywords: ["desa", "business", "park", "taman"],
+  },
+  {
+    id: "mid-valley",
+    name: "Mid Valley Megamall",
+    address: "Mid Valley Megamall, Lingkaran Syed Putra, 59200 Kuala Lumpur",
+    lat: "3.118859",
+    lng: "101.677882",
+    keywords: ["mid", "valley", "meg", "mall", "kuala lumpur"],
+  },
+  {
+    id: "old-klang-road",
+    name: "Old Klang Road",
+    address: "Jalan Klang Lama, 58200 Kuala Lumpur",
+    lat: "3.089663",
+    lng: "101.674269",
+    keywords: ["old", "klang", "road", "jalan", "lama"],
+  },
+  {
+    id: "oug",
+    name: "Taman OUG",
+    address: "Taman OUG, 58200 Kuala Lumpur",
+    lat: "3.073426",
+    lng: "101.671572",
+    keywords: ["oug", "overseas", "union", "garden"],
+  },
+  {
+    id: "endah-puri",
+    name: "Endah Puri Condominium",
+    address: "Endah Puri Condominium, Bandar Baru Sri Petaling, 57000 Kuala Lumpur",
+    lat: "3.071595",
+    lng: "101.690721",
+    keywords: ["endah", "puri", "condominium", "sri", "petaling", "bandar", "baru"],
+  },
+  {
+    id: "sri-petaling",
+    name: "Bandar Baru Sri Petaling",
+    address: "Bandar Baru Sri Petaling, 57000 Kuala Lumpur",
+    lat: "3.070948",
+    lng: "101.692158",
+    keywords: ["sri", "petaling", "bandar", "baru"],
+  },
+  {
+    id: "bukit-jalil",
+    name: "Bukit Jalil",
+    address: "Bukit Jalil, 57000 Kuala Lumpur",
+    lat: "3.058824",
+    lng: "101.691737",
+    keywords: ["bukit", "jalil", "stadium", "axiata", "arena"],
+  },
+  {
+    id: "pavilion-bukit-jalil",
+    name: "Pavilion Bukit Jalil",
+    address: "Pavilion Bukit Jalil, 2, Persiaran Jalil 8, Bukit Jalil, 57000 Kuala Lumpur",
+    lat: "3.050286",
+    lng: "101.670806",
+    keywords: ["pavilion", "bukit", "jalil", "mall"],
+  },
+  {
+    id: "aurora-place",
+    name: "Aurora Place Bukit Jalil",
+    address: "Aurora Place, Persiaran Jalil 1, Bukit Jalil, 57000 Kuala Lumpur",
+    lat: "3.052187",
+    lng: "101.671862",
+    keywords: ["aurora", "place", "bukit", "jalil"],
+  },
+  {
+    id: "kuchai-lama",
+    name: "Kuchai Lama",
+    address: "Kuchai Lama, 58200 Kuala Lumpur",
+    lat: "3.090521",
+    lng: "101.686788",
+    keywords: ["kuchai", "lama", "entrepreneurs", "park"],
+  },
+  {
+    id: "kuchai-entrepreneurs-park",
+    name: "Kuchai Entrepreneurs Park",
+    address: "Kuchai Entrepreneurs Park, Jalan Kuchai Lama, 58200 Kuala Lumpur",
+    lat: "3.089826",
+    lng: "101.684428",
+    keywords: ["kuchai", "entrepreneurs", "park", "jalan", "lama"],
+  },
+  {
+    id: "happy-garden",
+    name: "Happy Garden",
+    address: "Happy Garden, 58200 Kuala Lumpur",
+    lat: "3.083540",
+    lng: "101.678982",
+    keywords: ["happy", "garden", "kuchai", "jalan", "senang"],
+  },
+  {
+    id: "salak-south",
+    name: "Salak South",
+    address: "Salak South, 57100 Kuala Lumpur",
+    lat: "3.083097",
+    lng: "101.702633",
+    keywords: ["salak", "south", "selatan"],
+  },
+  {
+    id: "sungai-besi",
+    name: "Sungai Besi",
+    address: "Sungai Besi, 57000 Kuala Lumpur",
+    lat: "3.063799",
+    lng: "101.708505",
+    keywords: ["sungai", "besi", "sg", "besi"],
+  },
+  {
+    id: "the-link-2",
+    name: "The Link 2 Bukit Jalil",
+    address: "The Link 2, Bukit Jalil, 57000 Kuala Lumpur",
+    lat: "3.055367",
+    lng: "101.670382",
+    keywords: ["link", "2", "bukit", "jalil"],
+  },
+  {
+    id: "paradigm-og-heights",
+    name: "OG Heights",
+    address: "OG Heights, Taman Yarl, 58200 Kuala Lumpur",
+    lat: "3.075961",
+    lng: "101.666819",
+    keywords: ["og", "heights", "taman", "yarl", "oug"],
+  },
+  {
+    id: "taman-yarl",
+    name: "Taman Yarl",
+    address: "Taman Yarl, 58200 Kuala Lumpur",
+    lat: "3.078609",
+    lng: "101.668995",
+    keywords: ["taman", "yarl", "oug"],
+  },
+  {
+    id: "scott-garden",
+    name: "The Scott Garden",
+    address: "The Scott Garden, Jalan Klang Lama, 58100 Kuala Lumpur",
+    lat: "3.095820",
+    lng: "101.675841",
+    keywords: ["scott", "garden", "old", "klang", "road"],
+  },
+  {
+    id: "pearl-point",
+    name: "Pearl Point Shopping Mall",
+    address: "Pearl Point Shopping Mall, Jalan Klang Lama, 58000 Kuala Lumpur",
+    lat: "3.088682",
+    lng: "101.676817",
+    keywords: ["pearl", "point", "old", "klang", "road"],
+  },
+  {
+    id: "seputeh",
+    name: "Seputeh",
+    address: "Seputeh, 58000 Kuala Lumpur",
+    lat: "3.114942",
+    lng: "101.683770",
+    keywords: ["seputeh", "mid", "valley"],
+  },
+  {
+    id: "bangsar-south",
+    name: "Bangsar South",
+    address: "Bangsar South, 59200 Kuala Lumpur",
+    lat: "3.111491",
+    lng: "101.665755",
+    keywords: ["bangsar", "south", "kerinchi"],
+  },
+  {
+    id: "kerinchi",
+    name: "Kerinchi",
+    address: "Kerinchi, 59200 Kuala Lumpur",
+    lat: "3.113594",
+    lng: "101.668021",
+    keywords: ["kerinchi", "bangsar", "south"],
+  },
+  {
+    id: "taman-connaught",
+    name: "Taman Connaught",
+    address: "Taman Connaught, 56000 Kuala Lumpur",
+    lat: "3.080701",
+    lng: "101.736489",
+    keywords: ["taman", "connaught", "cheras"],
+  },
+  {
+    id: "cheras-leisure-mall",
+    name: "Cheras Leisure Mall",
+    address: "Cheras Leisure Mall, Jalan Manis 6, Taman Segar, 56100 Kuala Lumpur",
+    lat: "3.090862",
+    lng: "101.742562",
+    keywords: ["cheras", "leisure", "mall", "taman", "segar"],
+  },
+];
+
 const cart = new Map();
 let activeCategory = "All";
 let latestOrderCode = "";
@@ -309,7 +512,7 @@ const trackSection = document.querySelector("#track");
 const trackCodeInput = document.querySelector("#trackCodeInput");
 const trackResult = document.querySelector("#trackResult");
 const customerAddressInput = document.querySelector("#customerAddress");
-const addressMapLink = document.querySelector("#addressMapLink");
+const addressSuggestions = document.querySelector("#addressSuggestions");
 const useLocationButton = document.querySelector("#useLocationButton");
 const languageSwitch = document.querySelector(".language-switch");
 const languageButtons = document.querySelectorAll("[data-language-option]");
@@ -394,31 +597,81 @@ function renderLanguage() {
   }
 }
 
-function updateAddressMapLink() {
-  if (!customerAddressInput || !addressMapLink) return;
+function getMatchingAddressSuggestions(query) {
+  const terms = query
+    .toLowerCase()
+    .split(/\s+/)
+    .map((term) => term.trim())
+    .filter(Boolean);
 
-  const address = customerAddressInput.value.trim();
-  if (!address) {
-    addressMapLink.href = "https://www.google.com/maps";
-    addressMapLink.classList.remove("has-address");
-    return;
+  if (!terms.length) return [];
+
+  return localAddressSuggestions
+    .filter((suggestion) => {
+      const haystack = [suggestion.name, suggestion.address, ...suggestion.keywords].join(" ").toLowerCase();
+      return terms.every((term) => haystack.includes(term));
+    })
+    .slice(0, 4);
+}
+
+function renderAddressSuggestions() {
+  if (!addressSuggestions || !customerAddressInput) return;
+
+  const query = customerAddressInput.value.trim();
+  const suggestions = query.length >= 2 ? getMatchingAddressSuggestions(query) : [];
+  addressSuggestions.hidden = suggestions.length === 0;
+  addressSuggestions.innerHTML = suggestions
+    .map(
+      (suggestion) => `
+        <button class="address-suggestion" type="button" data-address-suggestion="${suggestion.id}">
+          <strong>${suggestion.name}</strong>
+          <span>${suggestion.address}</span>
+        </button>
+      `,
+    )
+    .join("");
+}
+
+function selectAddressSuggestion(suggestionId) {
+  const suggestion = localAddressSuggestions.find((entry) => entry.id === suggestionId);
+  if (!suggestion) return;
+
+  setCustomerAddress(`${suggestion.address}\nGoogle Maps: https://www.google.com/maps?q=${suggestion.lat},${suggestion.lng}`);
+  if (addressSuggestions) {
+    addressSuggestions.hidden = true;
+    addressSuggestions.innerHTML = "";
   }
+}
 
-  const mapsUrl = address.match(/https:\/\/www\.google\.com\/maps[^\s]*/)?.[0];
-  if (mapsUrl) {
-    addressMapLink.href = mapsUrl;
-    addressMapLink.classList.add("has-address");
-    return;
-  }
+function getDistanceKm(fromLatitude, fromLongitude, toLatitude, toLongitude) {
+  const earthRadiusKm = 6371;
+  const degreesToRadians = (degrees) => (degrees * Math.PI) / 180;
+  const latitudeDelta = degreesToRadians(toLatitude - fromLatitude);
+  const longitudeDelta = degreesToRadians(toLongitude - fromLongitude);
+  const fromLatRadians = degreesToRadians(fromLatitude);
+  const toLatRadians = degreesToRadians(toLatitude);
+  const haversine =
+    Math.sin(latitudeDelta / 2) ** 2 +
+    Math.cos(fromLatRadians) * Math.cos(toLatRadians) * Math.sin(longitudeDelta / 2) ** 2;
 
-  addressMapLink.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
-  addressMapLink.classList.add("has-address");
+  return earthRadiusKm * 2 * Math.atan2(Math.sqrt(haversine), Math.sqrt(1 - haversine));
+}
+
+function getNearestLocalAddress(latitude, longitude) {
+  const nearestAddress = localAddressSuggestions
+    .map((suggestion) => ({
+      ...suggestion,
+      distanceKm: getDistanceKm(latitude, longitude, Number(suggestion.lat), Number(suggestion.lng)),
+    }))
+    .sort((left, right) => left.distanceKm - right.distanceKm)[0];
+
+  return nearestAddress && nearestAddress.distanceKm <= 5 ? nearestAddress : null;
 }
 
 function setCustomerAddress(value) {
   if (!customerAddressInput) return;
   customerAddressInput.value = value;
-  updateAddressMapLink();
+  renderAddressSuggestions();
 }
 
 function useCurrentLocation() {
@@ -436,7 +689,9 @@ function useCurrentLocation() {
     (position) => {
       const { latitude, longitude } = position.coords;
       const coordinates = `${latitude.toFixed(6)},${longitude.toFixed(6)}`;
-      setCustomerAddress(`Google Maps: https://www.google.com/maps?q=${coordinates}`);
+      const nearestAddress = getNearestLocalAddress(latitude, longitude);
+      const addressText = nearestAddress ? nearestAddress.address : "当前位置";
+      setCustomerAddress(`${addressText}\nGoogle Maps: https://www.google.com/maps?q=${coordinates}`);
       if (useLocationButton) {
         useLocationButton.disabled = false;
         useLocationButton.textContent = translateUi("useCurrentLocation");
@@ -1021,7 +1276,7 @@ function clearCartAndForm() {
   cart.clear();
   orderForm.reset();
   renderPickupDates();
-  updateAddressMapLink();
+  renderAddressSuggestions();
 }
 
 function collectOrderPayload(state) {
@@ -1092,7 +1347,15 @@ cartList.addEventListener("click", (event) => {
   if (decreaseButton) decreaseCartItem(decreaseButton.dataset.decrease);
 });
 
-customerAddressInput?.addEventListener("input", updateAddressMapLink);
+customerAddressInput?.addEventListener("input", () => {
+  renderAddressSuggestions();
+});
+
+addressSuggestions?.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-address-suggestion]");
+  if (!button) return;
+  selectAddressSuggestion(button.dataset.addressSuggestion);
+});
 
 useLocationButton?.addEventListener("click", useCurrentLocation);
 
@@ -1194,7 +1457,6 @@ subscribe((state) => {
 
 renderLanguage();
 renderPickupDates();
-updateAddressMapLink();
 renderAll();
 
 try {

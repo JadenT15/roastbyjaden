@@ -797,6 +797,47 @@ select:focus {
   margin-top: 10px;
 }
 
+.address-suggestions {
+  display: grid;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.address-suggestion {
+  display: grid;
+  gap: 3px;
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fffdf9;
+  color: var(--ink);
+  cursor: pointer;
+  padding: 10px 12px;
+  font-weight: 600;
+  text-align: left;
+}
+
+.address-suggestion:hover,
+.address-suggestion:focus-visible {
+  border-color: var(--accent);
+  background: var(--gold-soft);
+  outline: none;
+}
+
+.address-suggestion strong {
+  display: block;
+  font-size: 14px;
+  line-height: 1.25;
+}
+
+.address-suggestion span {
+  display: block;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
 .map-link {
   display: inline-flex;
   width: fit-content;
@@ -816,11 +857,6 @@ select:focus {
 .map-link:hover {
   border-color: var(--accent);
   transform: translateY(-1px);
-}
-
-.map-link.has-address {
-  border-color: var(--accent);
-  background: var(--gold-soft);
 }
 
 .map-link:disabled {

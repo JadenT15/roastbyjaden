@@ -31,6 +31,8 @@ const API_BASE_URL =
     ? LOCAL_API_BASE_URL
     : window.localStorage.getItem("ROAST_API_BASE_URL") || REMOTE_API_BASE_URL);
 
+export { IS_LOCAL_PREVIEW };
+
 let currentState = {
   settings: { orderingOpen: true, businessOpen: true },
   session: { loggedIn: false },
@@ -63,13 +65,16 @@ async function apiFetch(path, options = {}) {
   if (typeof window.fetch !== "function") {
     return apiXHR(path, options);
   }
+  const isFormData = typeof FormData !== "undefined" && options.body instanceof FormData;
 
   const response = await fetch(`${API_BASE_URL}${path}`, {
     credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      ...(options.headers || {}),
-    },
+    headers: isFormData
+      ? { ...(options.headers || {}) }
+      : {
+          "Content-Type": "application/json",
+          ...(options.headers || {}),
+        },
     ...options,
   });
 
@@ -85,10 +90,11 @@ async function apiFetch(path, options = {}) {
 
 function apiXHR(path, options = {}) {
   return new Promise((resolve, reject) => {
+    const isFormData = typeof FormData !== "undefined" && options.body instanceof FormData;
     const request = new XMLHttpRequest();
     request.open(options.method || "GET", `${API_BASE_URL}${path}`);
     request.withCredentials = true;
-    request.setRequestHeader("Content-Type", "application/json");
+    if (!isFormData) request.setRequestHeader("Content-Type", "application/json");
     Object.entries(options.headers || {}).forEach(([key, value]) => {
       request.setRequestHeader(key, value);
     });
@@ -198,6 +204,19 @@ export async function fetchOrderByCode(code) {
     replaceWithLocalState();
     return localOrder;
   }
+  const others = currentState.orders.filter((entry) => entry.code !== order.code);
+  replaceState({ orders: [order, ...others] });
+  return order;
+}
+
+export async function confirmLocalTestPayment(orderCode, amount) {
+  if (!IS_LOCAL_PREVIEW) {
+    throw new ApiError("Local test payment is only available in preview.", 403);
+  }
+  const order = await apiFetch("/api/webhooks/local/payment-test", {
+    method: "POST",
+    body: JSON.stringify({ orderCode, amount }),
+  });
   const others = currentState.orders.filter((entry) => entry.code !== order.code);
   replaceState({ orders: [order, ...others] });
   return order;
@@ -314,6 +333,71 @@ export async function addProduct(productInput) {
     }),
   });
   await loadAdminState();
+}
+
+export async function loadAccountingMonth(month) {
+  const query = month ? `?month=${encodeURIComponent(month)}` : "";
+  const [summary, expensePayload] = await Promise.all([
+    apiFetch(`/api/admin/accounting/summary${query}`),
+    apiFetch(`/api/admin/expenses${query}`),
+  ]);
+  return {
+    summary,
+    categories: Array.isArray(expensePayload?.categories) ? expensePayload.categories : [],
+    expenses: Array.isArray(expensePayload?.expenses) ? expensePayload.expenses : [],
+  };
+}
+
+export async function createExpense(expenseInput) {
+  return apiFetch("/api/admin/expenses", {
+    method: "POST",
+    body: JSON.stringify(expenseInput),
+  });
+}
+
+export async function updateExpense(expenseId, expenseInput) {
+  return apiFetch(`/api/admin/expenses/${encodeURIComponent(expenseId)}`, {
+    method: "PATCH",
+    body: JSON.stringify(expenseInput),
+  });
+}
+
+export async function deleteExpense(expenseId) {
+  return apiFetch(`/api/admin/expenses/${encodeURIComponent(expenseId)}`, {
+    method: "DELETE",
+  });
+}
+
+export async function loadReceiptUploads(status = "") {
+  const query = status ? `?status=${encodeURIComponent(status)}` : "";
+  const payload = await apiFetch(`/api/admin/receipts${query}`);
+  return Array.isArray(payload?.receipts) ? payload.receipts : [];
+}
+
+export async function uploadReceipt(file) {
+  const formData = new FormData();
+  formData.append("receipt", file);
+  return apiFetch("/api/admin/receipts/upload", {
+    method: "POST",
+    body: formData,
+  });
+}
+
+export async function analyzeReceipt(receiptId) {
+  return apiFetch(`/api/admin/receipts/${encodeURIComponent(receiptId)}/analyze`, {
+    method: "POST",
+  });
+}
+
+export async function confirmReceiptExpense(receiptId, expenseInput) {
+  return apiFetch(`/api/admin/receipts/${encodeURIComponent(receiptId)}/confirm-expense`, {
+    method: "POST",
+    body: JSON.stringify(expenseInput),
+  });
+}
+
+export async function getReceiptSignedUrl(receiptId) {
+  return apiFetch(`/api/admin/receipts/${encodeURIComponent(receiptId)}/signed-url`);
 }
 
 export function getTodayOrders(state = currentState) {

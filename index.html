@@ -135,6 +135,45 @@
               </a>
             </div>
           </article>
+
+          <article class="order-payment-panel" id="orderPaymentPanel" hidden>
+            <div class="payment-panel-head">
+              <div>
+                <p class="eyebrow" data-i18n data-zh="订单专属付款" data-en="Order payment">订单专属付款</p>
+                <h3 id="orderPaymentTitle">等待付款</h3>
+              </div>
+              <span class="payment-status-badge" id="orderPaymentStatus">UNPAID</span>
+            </div>
+            <div class="order-payment-grid">
+              <div class="payment-test-qr" id="orderPaymentQr" aria-label="Local test payment QR"></div>
+              <div class="order-payment-details">
+                <p class="payment-qr-meta">
+                  <span data-i18n data-zh="订单编号" data-en="Order code">订单编号</span>:
+                  <strong id="orderPaymentCode">RBJ-0000</strong>
+                </p>
+                <p class="payment-qr-meta">
+                  <span data-i18n data-zh="顾客电话" data-en="Customer phone">顾客电话</span>:
+                  <strong id="orderPaymentPhone">-</strong>
+                </p>
+                <p class="payment-qr-meta">
+                  <span data-i18n data-zh="固定金额" data-en="Fixed amount">固定金额</span>:
+                  <strong id="orderPaymentAmount">RM0.00</strong>
+                </p>
+                <p class="payment-qr-meta">
+                  <span data-i18n data-zh="付款倒数" data-en="Payment timer">付款倒数</span>:
+                  <strong id="orderPaymentTimer">15:00</strong>
+                </p>
+                <p class="payment-qr-hint" id="orderPaymentHint">
+                  本地测试 QR，不会真实扣款。正式上线会换成 gateway 生成的动态 DuitNow QR。
+                </p>
+                <div class="order-payment-actions">
+                  <button class="button primary" type="button" id="simulatePaymentSuccess">模拟付款成功</button>
+                  <button class="button secondary" type="button" id="simulatePaymentMismatch">模拟金额错误</button>
+                  <button class="button secondary" type="button" id="copyPaymentCode">复制订单号</button>
+                </div>
+              </div>
+            </div>
+          </article>
         </div>
 
         <form class="customer-form" id="orderForm">
@@ -196,44 +235,6 @@
             </label>
           </fieldset>
 
-          <div class="payment-qr-card" id="paymentQrPanel">
-            <div class="payment-qr-copy">
-              <p class="eyebrow" data-i18n data-zh="Touch 'n Go / DuitNow QR" data-en="Touch 'n Go / DuitNow QR">Touch 'n Go / DuitNow QR</p>
-              <h3 data-i18n data-zh="请先付款，再提交订单" data-en="Pay first, then place the order">请先付款，再提交订单</h3>
-              <p data-i18n data-zh="请先确认金额，再跳转到 Touch 'n Go 付款。付款后回来勾选确认，订单才会发送给商家。" data-en="Check the amount, then open Touch 'n Go to pay. After paying, come back and confirm so the order is sent to the shop.">
-                请先确认金额，再跳转到 Touch 'n Go 付款。付款后回来勾选确认，订单才会发送给商家。
-              </p>
-              <p class="payment-qr-meta">
-                <span data-i18n data-zh="当前金额" data-en="Current amount">当前金额</span>:
-                <strong id="paymentQrAmount">RM0.00</strong>
-              </p>
-              <p class="payment-qr-hint" data-i18n data-zh="付款备注可以写你的名字或电话，方便商家确认。" data-en="Use your name or phone as the payment reference so the shop can confirm faster.">
-                付款备注可以写你的名字或电话，方便商家确认。
-              </p>
-              <a
-                class="button primary payment-link-button"
-                id="tngPaymentLink"
-                href="https://payment.tngdigital.com.my/sc/bDLos9KsJZ"
-                target="_blank"
-                rel="noreferrer"
-                data-i18n
-                data-zh="去 TNG 付款 RM0.00"
-                data-en="Pay with TNG RM0.00"
-              >
-                去 TNG 付款 RM0.00
-              </a>
-            </div>
-            <a class="payment-qr-image-link" href="assets/tng-duitnow-qr.png" target="_blank" rel="noreferrer" aria-label="Open Touch 'n Go DuitNow QR">
-              <img src="assets/tng-duitnow-qr.png" alt="Touch 'n Go DuitNow QR code for payment" />
-              <span data-i18n data-zh="点开大图扫码" data-en="Tap to enlarge">点开大图扫码</span>
-            </a>
-          </div>
-
-          <label class="payment-confirm-row">
-            <input id="paymentConfirmed" type="checkbox" />
-            <span data-i18n data-zh="我已完成付款，现在提交订单给商家" data-en="I have paid and want to send this order to the shop">我已完成付款，现在提交订单给商家</span>
-          </label>
-
           <label>
             <span data-i18n data-zh="配送地址" data-en="Delivery address">配送地址</span>
             <textarea
@@ -259,9 +260,9 @@
             ></textarea>
           </label>
 
-          <button class="button primary full" type="submit" id="placeOrderButton" data-i18n data-zh="已付款，提交订单" data-en="Paid, place order">已付款，提交订单</button>
-          <p class="form-note" id="orderFormNote" data-i18n data-zh="请先完成付款，勾选确认后订单才会发送给商家。" data-en="Please pay first. The order is sent to the shop only after you confirm payment.">
-            请先完成付款，勾选确认后订单才会发送给商家。
+          <button class="button primary full" type="submit" id="placeOrderButton" data-i18n data-zh="确认订单" data-en="Confirm order">确认订单</button>
+          <p class="form-note" id="orderFormNote" data-i18n data-zh="先确认订单，系统会显示固定金额的专属付款 QR。" data-en="Create the order first. The payment QR will appear with the fixed amount.">
+            先确认订单，系统会显示固定金额的专属付款 QR。
           </p>
         </form>
       </section>

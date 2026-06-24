@@ -1,5 +1,6 @@
 import {
   buildWhatsAppUrl,
+  confirmLocalTestPayment,
   createOrder,
   findOrderByCode,
   formatPrice,
@@ -10,12 +11,11 @@ import {
   getFirstAvailableOption,
   getState,
   isProductAvailable,
+  IS_LOCAL_PREVIEW,
   fetchOrderByCode,
   loadPublicState,
   subscribe,
 } from "./shared/api-store.js?v=20260615-english-menu-names";
-
-const TNG_PAYMENT_LINK = "https://payment.tngdigital.com.my/sc/bDLos9KsJZ";
 
 const translations = {
   en: {
@@ -141,7 +141,7 @@ const translations = {
       pausedBySeller: "Paused by shop",
       pausedNotice:
         "The shop has paused ordering for now. You can still browse the menu and track existing orders.",
-      activeOrderNote: "Please pay first. The order is sent to the shop only after you confirm payment.",
+      activeOrderNote: "Create the order first. The payment QR will appear with the fixed amount.",
       pausedOrderNote: "Ordering is currently paused by the shop.",
       loadingMenu:
         "Menu is loading from the kitchen system. If this stays here, please check that the backend is running.",
@@ -150,11 +150,20 @@ const translations = {
       pausedAlert: "Ordering is paused right now.",
       closedAlert: "The shop is resting right now.",
       addressAlert: "Please fill in the delivery address.",
-      paymentConfirmAlert: "Please complete payment and tick the payment confirmation before placing the order.",
-      tngPaymentButton: "Pay with TNG {total}",
+      paymentWaiting: "Waiting for payment",
+      paymentPaid: "Payment confirmed",
+      paymentReview: "Needs payment review",
+      paymentTestHint:
+        "Local test QR only. It will not charge money. Production will use a gateway dynamic DuitNow QR.",
+      paymentLiveHint:
+        "Use the fixed amount QR for this order. On one phone, save or enlarge the QR, then scan from your wallet gallery.",
+      simulatePaid: "Simulate paid",
+      simulateMismatch: "Simulate wrong amount",
+      copyOrderCode: "Copy order code",
+      copied: "Copied",
       comboAlert: "Please select exactly {count} roast meats.",
       placingOrder: "Sending order...",
-      placeOrder: "Paid, place order",
+      placeOrder: "Confirm order",
       orderError: "Could not place the order. Please try again.",
       latestSummary: "{status} • {total} • {type}",
       trackingEmpty: "Enter your order code to view the latest status.",
@@ -208,7 +217,7 @@ const translations = {
       closedNotice: "商家现在休息中。你仍然可以浏览菜单，也可以查询已经提交的订单。",
       pausedBySeller: "商家暂停接单",
       pausedNotice: "商家现在暂停接单。你仍然可以浏览菜单，也可以查询已经提交的订单。",
-      activeOrderNote: "请先完成付款，勾选确认后订单才会发送给商家。",
+      activeOrderNote: "先确认订单，系统会显示固定金额的专属付款 QR。",
       pausedOrderNote: "商家现在暂停接单。",
       loadingMenu: "菜单正在从厨房系统读取。如果一直没有显示，请确认后端已经启动。",
       noProducts: "这个分类暂时没有产品。",
@@ -216,11 +225,18 @@ const translations = {
       pausedAlert: "商家现在暂停接单。",
       closedAlert: "商家现在休息中。",
       addressAlert: "配送订单请填写地址。",
-      paymentConfirmAlert: "请先完成付款，并勾选付款确认后再提交订单。",
-      tngPaymentButton: "去 TNG 付款 {total}",
+      paymentWaiting: "等待付款",
+      paymentPaid: "付款已确认",
+      paymentReview: "付款需人工确认",
+      paymentTestHint: "本地测试 QR，不会真实扣款。正式上线会换成 gateway 生成的动态 DuitNow QR。",
+      paymentLiveHint: "请使用这张订单的固定金额 QR。若用同一台手机付款，请保存或点开大图后从钱包相册扫描。",
+      simulatePaid: "模拟付款成功",
+      simulateMismatch: "模拟金额错误",
+      copyOrderCode: "复制订单号",
+      copied: "已复制",
       comboAlert: "请选择刚好 {count} 款烧味。",
       placingOrder: "正在提交...",
-      placeOrder: "已付款，提交订单",
+      placeOrder: "确认订单",
       orderError: "订单提交失败，请再试一次。",
       latestSummary: "{status} • {total} • {type}",
       trackingEmpty: "输入订单编号查看最新状态。",
@@ -466,6 +482,11 @@ let activeCategory = "All";
 let latestOrderCode = "";
 let trackedOrderCode = "";
 let publicRefreshTimer = null;
+let paymentPendingOrderCode = "";
+let paymentPanelExpiresAt = 0;
+let paymentPollTimer = null;
+let paymentCountdownTimer = null;
+let lastAutoTrackedPaidCode = "";
 let currentLanguage = window.localStorage.getItem("roast-by-jaden-language") || "zh";
 
 const productSortOrder = new Map(
@@ -501,10 +522,18 @@ const latestOrderTrackLink = document.querySelector("#latestOrderTrackLink");
 const latestOrderWhatsappLink = document.querySelector("#latestOrderWhatsappLink");
 const latestPaymentQrAmount = document.querySelector("#latestPaymentQrAmount");
 const latestPaymentQrReference = document.querySelector("#latestPaymentQrReference");
-const paymentQrPanel = document.querySelector("#paymentQrPanel");
-const paymentQrAmount = document.querySelector("#paymentQrAmount");
-const tngPaymentLink = document.querySelector("#tngPaymentLink");
-const paymentConfirmedInput = document.querySelector("#paymentConfirmed");
+const orderPaymentPanel = document.querySelector("#orderPaymentPanel");
+const orderPaymentTitle = document.querySelector("#orderPaymentTitle");
+const orderPaymentStatus = document.querySelector("#orderPaymentStatus");
+const orderPaymentQr = document.querySelector("#orderPaymentQr");
+const orderPaymentCode = document.querySelector("#orderPaymentCode");
+const orderPaymentPhone = document.querySelector("#orderPaymentPhone");
+const orderPaymentAmount = document.querySelector("#orderPaymentAmount");
+const orderPaymentTimer = document.querySelector("#orderPaymentTimer");
+const orderPaymentHint = document.querySelector("#orderPaymentHint");
+const simulatePaymentSuccessButton = document.querySelector("#simulatePaymentSuccess");
+const simulatePaymentMismatchButton = document.querySelector("#simulatePaymentMismatch");
+const copyPaymentCodeButton = document.querySelector("#copyPaymentCode");
 const storeStatusHero = document.querySelector("#storeStatusHero");
 const storeNotice = document.querySelector("#storeNotice");
 const trackForm = document.querySelector("#trackForm");
@@ -556,6 +585,12 @@ function translateChoiceValue(value) {
 
 function translateStatus(status) {
   return translations[currentLanguage]?.statuses?.[status] || status;
+}
+
+function translatePaymentStatus(status) {
+  if (status === "PAID") return translateUi("paymentPaid");
+  if (status === "PAYMENT_REVIEW") return translateUi("paymentReview");
+  return translateUi("paymentWaiting");
 }
 
 function translateOrderType(type) {
@@ -1064,23 +1099,106 @@ function renderCart(state) {
     .join("");
 
   cartTotal.textContent = formatPrice(getCartTotal(state));
-  renderPaymentQr(state);
   mobileCartCount.textContent = `${totalQuantity} ${totalQuantity === 1 ? translateUi("item") : translateUi("items")}`;
 }
 
-function isTouchNGoSelected() {
-  const selectedPayment = document.querySelector("input[name='paymentMethod']:checked");
-  return selectedPayment?.value === "Touch 'n Go";
+function escapeHTML(value = "") {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
 
-function renderPaymentQr(state) {
-  if (!paymentQrPanel || !paymentQrAmount) return;
-  const total = formatPrice(getCartTotal(state));
-  paymentQrPanel.hidden = !isTouchNGoSelected();
-  paymentQrAmount.textContent = total;
-  if (tngPaymentLink) {
-    tngPaymentLink.href = TNG_PAYMENT_LINK;
-    tngPaymentLink.textContent = translateUi("tngPaymentButton", { total });
+function encodePaymentPayload(order) {
+  const payload = {
+    orderCode: order.code,
+    amount: Number(order.total).toFixed(2),
+    customerPhone: order.customerPhone,
+    expiresAt: new Date(paymentPanelExpiresAt).toISOString(),
+  };
+  return JSON.stringify(payload);
+}
+
+function renderLocalTestQr(payload) {
+  const qrImage = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(payload)}`;
+  return `
+    <img class="payment-test-qr-image" src="${qrImage}" alt="Order payment QR with fixed amount" />
+    <small>${escapeHTML(payload)}</small>
+  `;
+}
+
+function updatePaymentCountdown() {
+  if (!orderPaymentTimer || !paymentPanelExpiresAt) return;
+  const remainingMs = Math.max(0, paymentPanelExpiresAt - Date.now());
+  const minutes = Math.floor(remainingMs / 60000);
+  const seconds = Math.floor((remainingMs % 60000) / 1000);
+  orderPaymentTimer.textContent = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+}
+
+function ensurePaymentTimers() {
+  if (!paymentCountdownTimer) {
+    paymentCountdownTimer = window.setInterval(updatePaymentCountdown, 1000);
+  }
+  if (!paymentPollTimer) {
+    paymentPollTimer = window.setInterval(async () => {
+      if (!paymentPendingOrderCode) return;
+      try {
+        const order = await fetchOrderByCode(paymentPendingOrderCode);
+        if (order.paymentStatus === "PAID") {
+          renderOrderPaymentPanel(order);
+        }
+      } catch {
+        // Keep the visible payment instructions if the local API briefly drops.
+      }
+    }, 3000);
+  }
+}
+
+function scrollToOrderStatus(order) {
+  if (!order || lastAutoTrackedPaidCode === order.code) return;
+  lastAutoTrackedPaidCode = order.code;
+  trackedOrderCode = order.code;
+  if (trackCodeInput) trackCodeInput.value = order.code;
+  renderTracking(getState());
+  trackSection.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function renderOrderPaymentPanel(order) {
+  if (!orderPaymentPanel) return;
+  if (!order) {
+    orderPaymentPanel.hidden = true;
+    return;
+  }
+  if (!paymentPanelExpiresAt) {
+    paymentPanelExpiresAt = Date.now() + 15 * 60 * 1000;
+  }
+  const paymentStatus = order.paymentStatus || "UNPAID";
+  const isPaid = paymentStatus === "PAID";
+  const isReview = paymentStatus === "PAYMENT_REVIEW";
+
+  orderPaymentPanel.hidden = false;
+  orderPaymentPanel.classList.toggle("paid", isPaid);
+  orderPaymentPanel.classList.toggle("review", isReview);
+  orderPaymentTitle.textContent = translatePaymentStatus(paymentStatus);
+  orderPaymentStatus.textContent = paymentStatus;
+  orderPaymentCode.textContent = order.code;
+  orderPaymentPhone.textContent = order.customerPhone || "-";
+  orderPaymentAmount.textContent = formatPrice(order.total);
+  orderPaymentHint.textContent = IS_LOCAL_PREVIEW ? translateUi("paymentTestHint") : translateUi("paymentLiveHint");
+
+  const payload = encodePaymentPayload(order);
+  orderPaymentQr.innerHTML = renderLocalTestQr(payload);
+  simulatePaymentSuccessButton.hidden = !IS_LOCAL_PREVIEW || isPaid;
+  simulatePaymentMismatchButton.hidden = !IS_LOCAL_PREVIEW || isPaid;
+  simulatePaymentSuccessButton.textContent = translateUi("simulatePaid");
+  simulatePaymentMismatchButton.textContent = translateUi("simulateMismatch");
+  copyPaymentCodeButton.textContent = translateUi("copyOrderCode");
+  updatePaymentCountdown();
+  ensurePaymentTimers();
+  if (order.paymentStatus === "PAID" && paymentPendingOrderCode === order.code) {
+    scrollToOrderStatus(order);
   }
 }
 
@@ -1108,12 +1226,14 @@ function renderStoreState(state) {
 function renderLatestOrder(state) {
   if (!latestOrderCode) {
     latestOrder.hidden = true;
+    renderOrderPaymentPanel(null);
     return;
   }
 
   const order = findOrderByCode(latestOrderCode) || state.orders.find((entry) => entry.code === latestOrderCode);
   if (!order) {
     latestOrder.hidden = true;
+    renderOrderPaymentPanel(null);
     return;
   }
 
@@ -1128,6 +1248,9 @@ function renderLatestOrder(state) {
   latestOrderWhatsappLink.href = buildWhatsAppUrl(order);
   latestPaymentQrAmount.textContent = formatPrice(order.total);
   latestPaymentQrReference.textContent = order.code;
+  if (paymentPendingOrderCode === order.code || order.paymentStatus !== "PAID") {
+    renderOrderPaymentPanel(order);
+  }
 }
 
 function renderTracking(state) {
@@ -1156,7 +1279,7 @@ function renderTracking(state) {
       </div>
       <span class="status-pill">${translateStatus(order.status)}</span>
     </div>
-    <p class="track-meta">${order.customerName} • ${translateOrderType(order.orderType)} • ${formatPrice(order.total)}</p>
+    <p class="track-meta">${order.customerName} • ${translateOrderType(order.orderType)} • ${formatPrice(order.total)} • ${translatePaymentStatus(order.paymentStatus)}</p>
     <ul class="track-items">
       ${order.items
         .map(
@@ -1359,12 +1482,6 @@ addressSuggestions?.addEventListener("click", (event) => {
 
 useLocationButton?.addEventListener("click", useCurrentLocation);
 
-orderForm.addEventListener("change", (event) => {
-  if (event.target.name === "paymentMethod") {
-    renderPaymentQr(getState());
-  }
-});
-
 languageButtons.forEach((button) => {
   button.addEventListener("click", () => {
     currentLanguage = button.dataset.languageOption;
@@ -1409,27 +1526,81 @@ orderForm.addEventListener("submit", async (event) => {
     return;
   }
 
-  if (!paymentConfirmedInput?.checked) {
-    alert(translateUi("paymentConfirmAlert"));
-    return;
-  }
-
   try {
     placeOrderButton.disabled = true;
     placeOrderButton.textContent = translateUi("placingOrder");
     const order = await createOrder(payload);
     latestOrderCode = order.code;
     trackedOrderCode = order.code;
+    paymentPendingOrderCode = order.code;
+    paymentPanelExpiresAt = Date.now() + 15 * 60 * 1000;
     trackCodeInput.value = order.code;
     clearCartAndForm();
+    renderOrderPaymentPanel(order);
     renderAll();
-    trackSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    orderPaymentPanel?.scrollIntoView({ behavior: "smooth", block: "start" });
   } catch (error) {
     alert(error.message || translateUi("orderError"));
   } finally {
     const nextState = getState();
     placeOrderButton.disabled = !nextState.settings.businessOpen || !nextState.settings.orderingOpen;
     placeOrderButton.textContent = translateUi("placeOrder");
+  }
+});
+
+simulatePaymentSuccessButton?.addEventListener("click", async () => {
+  const order = findOrderByCode(paymentPendingOrderCode || latestOrderCode);
+  if (!order) return;
+  simulatePaymentSuccessButton.disabled = true;
+  simulatePaymentMismatchButton.disabled = true;
+  try {
+    const updated = await confirmLocalTestPayment(order.code, Number(order.total));
+    paymentPendingOrderCode = updated.code;
+    latestOrderCode = updated.code;
+    trackedOrderCode = updated.code;
+    trackCodeInput.value = updated.code;
+    renderOrderPaymentPanel(updated);
+    renderAll();
+  } catch (error) {
+    alert(error.message || translateUi("orderError"));
+  } finally {
+    simulatePaymentSuccessButton.disabled = false;
+    simulatePaymentMismatchButton.disabled = false;
+  }
+});
+
+simulatePaymentMismatchButton?.addEventListener("click", async () => {
+  const order = findOrderByCode(paymentPendingOrderCode || latestOrderCode);
+  if (!order) return;
+  simulatePaymentSuccessButton.disabled = true;
+  simulatePaymentMismatchButton.disabled = true;
+  try {
+    const updated = await confirmLocalTestPayment(order.code, Number(order.total) + 0.01);
+    paymentPendingOrderCode = updated.code;
+    latestOrderCode = updated.code;
+    trackedOrderCode = updated.code;
+    trackCodeInput.value = updated.code;
+    renderOrderPaymentPanel(updated);
+    renderAll();
+  } catch (error) {
+    alert(error.message || translateUi("orderError"));
+  } finally {
+    simulatePaymentSuccessButton.disabled = false;
+    simulatePaymentMismatchButton.disabled = false;
+  }
+});
+
+copyPaymentCodeButton?.addEventListener("click", async () => {
+  const code = orderPaymentCode?.textContent?.trim();
+  if (!code) return;
+  try {
+    await navigator.clipboard.writeText(code);
+    copyPaymentCodeButton.textContent = translateUi("copied");
+    window.setTimeout(() => {
+      copyPaymentCodeButton.textContent = translateUi("copyOrderCode");
+    }, 1400);
+  } catch {
+    window.prompt(translateUi("copyOrderCode"), code);
   }
 });
 

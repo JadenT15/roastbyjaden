@@ -463,6 +463,24 @@ export function buildWhatsAppUrl(order) {
   return `https://wa.me/${business.whatsappNumber}?text=${encodeURIComponent(message)}`;
 }
 
+export function buildPaymentWhatsAppUrl(order) {
+  const message = [
+    `Hi ${business.name}, I have placed this order and paid by DuitNow QR / Touch 'n Go.`,
+    "",
+    `Order code: ${order.code}`,
+    `Amount: ${formatPrice(order.total)}`,
+    `Name: ${order.customerName}`,
+    `Phone: ${order.customerPhone}`,
+    `Order type: ${order.orderType}`,
+    `Date: ${order.pickupDate}`,
+    `Time: ${order.pickupTime}`,
+    "",
+    "I will attach the payment screenshot here for confirmation.",
+  ].join("\n");
+
+  return `https://wa.me/${business.whatsappNumber}?text=${encodeURIComponent(message)}`;
+}
+
 export function createOrder(payload) {
   let createdOrder = null;
 

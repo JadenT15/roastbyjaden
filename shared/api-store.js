@@ -1,5 +1,6 @@
 import {
   business,
+  buildPaymentWhatsAppUrl,
   buildWhatsAppUrl,
   formatChoiceSummary,
   formatDateTime,
@@ -16,7 +17,7 @@ import {
   createOrder as createLocalOrder,
   findOrderByCode as findLocalOrderByCode,
   orderStatuses,
-} from "./platform-store.js";
+} from "./platform-store.js?v=20260625-payment-whatsapp";
 
 const REMOTE_API_BASE_URL = "https://roastbyjaden-seller-admin.vercel.app";
 const LOCAL_API_BASE_URL = "http://127.0.0.1:8080";
@@ -414,6 +415,7 @@ export function getTodayRevenue(state = currentState) {
 export {
   API_BASE_URL,
   business,
+  buildPaymentWhatsAppUrl,
   buildWhatsAppUrl,
   formatChoiceSummary,
   formatDateTime,

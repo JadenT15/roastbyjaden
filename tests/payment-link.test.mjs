@@ -16,8 +16,9 @@ test("buyer checkout creates the order before showing the payment QR", () => {
   assert.doesNotMatch(appJs, /paymentConfirmAlert/);
   assert.match(indexHtml, /id="orderPaymentPanel"/);
   assert.match(appJs, /paymentPendingOrder/);
-  assert.match(appJs, /api\.qrserver\.com\/v1\/create-qr-code/);
-  assert.match(appJs, /amount: Number\(order\.total\)\.toFixed\(2\)/);
+  assert.match(indexHtml, /assets\/tng-duitnow-qr\.png/);
+  assert.match(indexHtml, /id="paymentWhatsappLink"/);
+  assert.doesNotMatch(appJs, /api\.qrserver\.com\/v1\/create-qr-code/);
 });
 
 test("local payment confirmation is available only for preview testing", () => {

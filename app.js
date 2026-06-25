@@ -1,4 +1,5 @@
 import {
+  buildPaymentWhatsAppUrl,
   buildWhatsAppUrl,
   confirmLocalTestPayment,
   createOrder,
@@ -15,7 +16,7 @@ import {
   fetchOrderByCode,
   loadPublicState,
   subscribe,
-} from "./shared/api-store.js?v=20260615-english-menu-names";
+} from "./shared/api-store.js?v=20260625-payment-whatsapp";
 
 const translations = {
   en: {
@@ -154,9 +155,10 @@ const translations = {
       paymentPaid: "Payment confirmed",
       paymentReview: "Needs payment review",
       paymentTestHint:
-        "Local test QR only. It will not charge money. Production will use a gateway dynamic DuitNow QR.",
+        "Scan this DuitNow QR with Touch 'n Go or any supported wallet, pay the amount shown here, then tap WhatsApp to send the order to the shop.",
       paymentLiveHint:
-        "Use the fixed amount QR for this order. On one phone, save or enlarge the QR, then scan from your wallet gallery.",
+        "Scan this DuitNow QR with Touch 'n Go or any supported wallet, pay the amount shown here, then tap WhatsApp to send the order to the shop.",
+      whatsappPayment: "Send to WhatsApp",
       simulatePaid: "Simulate paid",
       simulateMismatch: "Simulate wrong amount",
       copyOrderCode: "Copy order code",
@@ -228,8 +230,9 @@ const translations = {
       paymentWaiting: "等待付款",
       paymentPaid: "付款已确认",
       paymentReview: "付款需人工确认",
-      paymentTestHint: "本地测试 QR，不会真实扣款。正式上线会换成 gateway 生成的动态 DuitNow QR。",
-      paymentLiveHint: "请使用这张订单的固定金额 QR。若用同一台手机付款，请保存或点开大图后从钱包相册扫描。",
+      paymentTestHint: "请用 Touch 'n Go 或支持 DuitNow QR 的钱包扫描，并按这里显示的金额付款。付好后点 WhatsApp 发给商家。",
+      paymentLiveHint: "请用 Touch 'n Go 或支持 DuitNow QR 的钱包扫描，并按这里显示的金额付款。付好后点 WhatsApp 发给商家。",
+      whatsappPayment: "WhatsApp 发给商家",
       simulatePaid: "模拟付款成功",
       simulateMismatch: "模拟金额错误",
       copyOrderCode: "复制订单号",
@@ -328,6 +331,7 @@ const orderPaymentPhone = document.querySelector("#orderPaymentPhone");
 const orderPaymentAmount = document.querySelector("#orderPaymentAmount");
 const orderPaymentTimer = document.querySelector("#orderPaymentTimer");
 const orderPaymentHint = document.querySelector("#orderPaymentHint");
+const paymentWhatsappLink = document.querySelector("#paymentWhatsappLink");
 const simulatePaymentSuccessButton = document.querySelector("#simulatePaymentSuccess");
 const simulatePaymentMismatchButton = document.querySelector("#simulatePaymentMismatch");
 const copyPaymentCodeButton = document.querySelector("#copyPaymentCode");
@@ -855,21 +859,12 @@ function escapeHTML(value = "") {
     .replaceAll("'", "&#039;");
 }
 
-function encodePaymentPayload(order) {
-  const payload = {
-    orderCode: order.code,
-    amount: Number(order.total).toFixed(2),
-    customerPhone: order.customerPhone,
-    expiresAt: new Date(paymentPanelExpiresAt).toISOString(),
-  };
-  return JSON.stringify(payload);
-}
-
-function renderLocalTestQr(payload) {
-  const qrImage = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(payload)}`;
+function renderStaticPaymentQr(order) {
   return `
-    <img class="payment-test-qr-image" src="${qrImage}" alt="Order payment QR with fixed amount" />
-    <small>${escapeHTML(payload)}</small>
+    <a class="payment-qr-image-link payment-static-qr" href="assets/tng-duitnow-qr.png" target="_blank" rel="noreferrer" aria-label="Open Touch 'n Go DuitNow QR">
+      <img src="assets/tng-duitnow-qr.png" alt="Touch 'n Go DuitNow QR code for payment" />
+      <span>${escapeHTML(formatPrice(order.total))} · ${escapeHTML(order.code)}</span>
+    </a>
   `;
 }
 
@@ -931,9 +926,10 @@ function renderOrderPaymentPanel(order) {
   orderPaymentPhone.textContent = order.customerPhone || "-";
   orderPaymentAmount.textContent = formatPrice(order.total);
   orderPaymentHint.textContent = IS_LOCAL_PREVIEW ? translateUi("paymentTestHint") : translateUi("paymentLiveHint");
+  paymentWhatsappLink.href = buildPaymentWhatsAppUrl(order);
+  paymentWhatsappLink.textContent = translateUi("whatsappPayment");
 
-  const payload = encodePaymentPayload(order);
-  orderPaymentQr.innerHTML = renderLocalTestQr(payload);
+  orderPaymentQr.innerHTML = renderStaticPaymentQr(order);
   simulatePaymentSuccessButton.hidden = !IS_LOCAL_PREVIEW || isPaid;
   simulatePaymentMismatchButton.hidden = !IS_LOCAL_PREVIEW || isPaid;
   simulatePaymentSuccessButton.textContent = translateUi("simulatePaid");

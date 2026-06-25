@@ -66,9 +66,10 @@ async function apiFetch(path, options = {}) {
     return apiXHR(path, options);
   }
   const isFormData = typeof FormData !== "undefined" && options.body instanceof FormData;
+  const requestCredentials = window.location.protocol === "file:" ? "omit" : "include";
 
   const response = await fetch(`${API_BASE_URL}${path}`, {
-    credentials: "include",
+    credentials: requestCredentials,
     headers: isFormData
       ? { ...(options.headers || {}) }
       : {
@@ -91,9 +92,10 @@ async function apiFetch(path, options = {}) {
 function apiXHR(path, options = {}) {
   return new Promise((resolve, reject) => {
     const isFormData = typeof FormData !== "undefined" && options.body instanceof FormData;
+    const requestCredentials = window.location.protocol === "file:" ? "omit" : "include";
     const request = new XMLHttpRequest();
     request.open(options.method || "GET", `${API_BASE_URL}${path}`);
-    request.withCredentials = true;
+    request.withCredentials = requestCredentials === "include";
     if (!isFormData) request.setRequestHeader("Content-Type", "application/json");
     Object.entries(options.headers || {}).forEach(([key, value]) => {
       request.setRequestHeader(key, value);

@@ -36,5 +36,10 @@ test("paid orders automatically show the tracking section", () => {
 
 test("file preview sends buyer orders to the live backend", () => {
   assert.match(apiStoreJs, /REMOTE_API_BASE_URL = "https:\/\/roastbyjaden-seller-admin\.vercel\.app"/);
-  assert.doesNotMatch(apiStoreJs, /window\.location\.protocol === "file:"/);
+  assert.match(apiStoreJs, /const IS_LOCAL_PREVIEW =\s+window\.location\.hostname === "127\.0\.0\.1" \|\|\s+window\.location\.hostname === "localhost"/);
+});
+
+test("file preview does not send browser cookies to the live backend", () => {
+  assert.match(apiStoreJs, /const requestCredentials = window\.location\.protocol === "file:" \? "omit" : "include"/);
+  assert.match(apiStoreJs, /credentials: requestCredentials/);
 });

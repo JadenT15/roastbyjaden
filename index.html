@@ -145,7 +145,12 @@
               <span class="payment-status-badge" id="orderPaymentStatus">UNPAID</span>
             </div>
             <div class="order-payment-grid">
-              <div class="payment-test-qr" id="orderPaymentQr" aria-label="Local test payment QR"></div>
+              <div class="payment-test-qr" id="orderPaymentQr" aria-label="Touch 'n Go DuitNow payment QR">
+                <a class="payment-qr-image-link payment-static-qr" href="assets/tng-duitnow-qr.png" target="_blank" rel="noreferrer" aria-label="Open Touch 'n Go DuitNow QR">
+                  <img src="assets/tng-duitnow-qr.png" alt="Touch 'n Go DuitNow QR code for payment" />
+                  <span data-i18n data-zh="点开大图扫码" data-en="Open large QR">点开大图扫码</span>
+                </a>
+              </div>
               <div class="order-payment-details">
                 <p class="payment-qr-meta">
                   <span data-i18n data-zh="订单编号" data-en="Order code">订单编号</span>:
@@ -167,6 +172,9 @@
                   本地测试 QR，不会真实扣款。正式上线会换成 gateway 生成的动态 DuitNow QR。
                 </p>
                 <div class="order-payment-actions">
+                  <a class="button primary" id="paymentWhatsappLink" href="#" target="_blank" rel="noreferrer" data-i18n data-zh="WhatsApp 发给商家" data-en="Send to WhatsApp">
+                    WhatsApp 发给商家
+                  </a>
                   <button class="button primary" type="button" id="simulatePaymentSuccess">模拟付款成功</button>
                   <button class="button secondary" type="button" id="simulatePaymentMismatch">模拟金额错误</button>
                   <button class="button secondary" type="button" id="copyPaymentCode">复制订单号</button>
@@ -303,6 +311,6 @@
       <a href="#order" data-i18n data-zh="结账" data-en="Checkout">结账</a>
     </div>
 
-    <script type="module" src="app.js?v=20260618-local-address-preview"></script>
+    <script type="module" src="app.js?v=20260625-payment-whatsapp"></script>
   </body>
 </html>

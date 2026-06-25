@@ -4,6 +4,7 @@ import test from "node:test";
 
 const indexHtml = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 const appJs = readFileSync(new URL("../app.js", import.meta.url), "utf8");
+const apiStoreJs = readFileSync(new URL("../shared/api-store.js", import.meta.url), "utf8");
 
 test("buyer checkout hides payment QR until an order is created", () => {
   assert.doesNotMatch(indexHtml, /id="paymentQrPanel"/);
@@ -31,4 +32,9 @@ test("paid orders automatically show the tracking section", () => {
   assert.match(appJs, /scrollToOrderStatus/);
   assert.match(appJs, /order\.paymentStatus === "PAID"/);
   assert.match(appJs, /trackSection\.scrollIntoView/);
+});
+
+test("file preview sends buyer orders to the live backend", () => {
+  assert.match(apiStoreJs, /REMOTE_API_BASE_URL = "https:\/\/roastbyjaden-seller-admin\.vercel\.app"/);
+  assert.doesNotMatch(apiStoreJs, /window\.location\.protocol === "file:"/);
 });

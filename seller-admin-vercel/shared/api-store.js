@@ -354,7 +354,7 @@ export async function addProduct(productInput) {
 }
 
 export function getTodayOrders(state = currentState) {
-  return state.orders.filter((order) => isToday(order.createdAt));
+  return state.orders;
 }
 
 export function getTodayRevenue(state = currentState) {

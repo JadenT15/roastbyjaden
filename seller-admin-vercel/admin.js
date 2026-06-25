@@ -19,7 +19,7 @@ import {
   updateOrderStatus,
   updateProductImage,
   updateProductPrice,
-} from "./shared/api-store.js?v=20260609-product-image-upload";
+} from "./shared/api-store.js?v=20260625-admin-orders";
 
 const sellerFlow = [
   { status: "NEW", label: "新订单", note: "系统自动接单", icon: "01" },

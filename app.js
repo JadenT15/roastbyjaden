@@ -16,7 +16,7 @@ import {
   fetchOrderByCode,
   loadPublicState,
   subscribe,
-} from "./shared/api-store.js?v=20260625-payment-whatsapp";
+} from "./shared/api-store.js?v=20260625-file-cors";
 
 const translations = {
   en: {

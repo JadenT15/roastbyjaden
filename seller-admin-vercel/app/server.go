@@ -41,7 +41,11 @@ func (s Server) Handler() http.Handler {
 func (s Server) withCORS(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		origin := r.Header.Get("Origin")
-		if s.isAllowedOrigin(origin) {
+		if s.isAllowedFileOrigin(origin, r.URL.Path) {
+			w.Header().Set("Access-Control-Allow-Origin", origin)
+			w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+			w.Header().Set("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
+		} else if s.isAllowedOrigin(origin) {
 			w.Header().Set("Access-Control-Allow-Origin", origin)
 			w.Header().Set("Access-Control-Allow-Credentials", "true")
 			w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
@@ -53,6 +57,16 @@ func (s Server) withCORS(next http.Handler) http.Handler {
 		}
 		next.ServeHTTP(w, r)
 	})
+}
+
+func (s Server) isAllowedFileOrigin(origin string, path string) bool {
+	if origin != "null" {
+		return false
+	}
+	return path == "/api/menu" ||
+		path == "/api/settings" ||
+		path == "/api/orders" ||
+		strings.HasPrefix(path, "/api/orders/")
 }
 
 func (s Server) isAllowedOrigin(origin string) bool {
